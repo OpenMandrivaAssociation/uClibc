@@ -3,13 +3,17 @@
 
 # workaround some rpm bug
 %define _requires_exceptions statically\\|linked\\|devel(/lib/libNoVersion)\\|bash
+
+# disable stack protector, build doesn't work with it
+%define _ssp_cflags %{nil}
+
 %define	mainver	0.9.28
 %define	subver	1
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{mainver}.%{subver}
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
