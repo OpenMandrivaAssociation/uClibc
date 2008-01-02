@@ -29,6 +29,7 @@ Patch6:		uClibc-sparc.patch
 Patch7:		uClibc-x86_64.patch
 BuildRequires:	which kernel-source
 #Requires:	binutils gcc-cpp = %{gcc_version}
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 uClibc (pronounced yew-see-lib-see) is a C library for developing
