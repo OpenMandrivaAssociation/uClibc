@@ -19,7 +19,7 @@ Group:		System/Libraries
 URL:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2
 Source1:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
-Patch0:		uClibc-0.9.27-mdkconf.patch
+Patch0:		uClibc-0.9.28.1-mdkconf.patch
 Patch1:		uClibc-newsoname.patch
 Patch2:		uClibc-alpha.patch
 Patch3:		uClibc-toolchain-wrapper.patch
@@ -76,7 +76,7 @@ Static uClibc libratries.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-#%patch6 -p1
+#patch6 -p1
 %patch7 -p1
 
 mkdir -p extra/gcc-uClibc
