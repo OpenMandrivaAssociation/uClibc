@@ -7,28 +7,17 @@
 # disable stack protector, build doesn't work with it
 %define _ssp_cflags %{nil}
 
-%define	mainver	0.9.28
-%define	subver	1
-
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	%{mainver}.%{subver}
-Release:	%mkrel 6
+Version:	0.9.30.1
+Release:	%mkrel 1
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2
 Source1:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
-Patch0:		uClibc-0.9.28.1-mdkconf.patch
-Patch1:		uClibc-newsoname.patch
-Patch2:		uClibc-alpha.patch
-Patch3:		uClibc-toolchain-wrapper.patch
-Patch4:		uClibc-targetcpu.patch
-Patch5:		uClibc-O_DIRECT.patch
-Patch6:		uClibc-sparc.patch
-Patch7:		uClibc-x86_64.patch
-BuildRequires:	which kernel-source
-#Requires:	binutils gcc-cpp = %{gcc_version}
+Source2:	uClibc-0.9.30.1-config
+Patch0:		uClibc-0.9.30.1-getline.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -53,7 +42,6 @@ you plan to burn Linux into the system's firmware...
 Summary:	Development files for uClibc
 Group:		Development/C
 Requires:	%{name} = %{version}-%{release}
-#Requires:	gcc = %{gcc_version}
 
 %description	devel
 Small libc for building embedded applications.
@@ -69,143 +57,82 @@ Static uClibc libratries.
 
 %prep
 %setup -q
-#cp %SOURCE2 ldso/ldso/x86_64
-%patch0 -p1 -b .mdkconf
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-#patch6 -p1
-%patch7 -p1
-
-mkdir -p extra/gcc-uClibc
-cp -a extra/gcc-uClibc extra/tmpgcc
- 
-find -name ".svn" | xargs rm -rf
+%patch0 -p1 -b .getline~
 
 %build
-make defconfig TARGET_ARCH="%{_arch}" TARGET_CPU="%{_target_cpu}" KERNEL_SOURCE=%{_prefix} HOSTCFLAGS="%{optflags}" OPTIMIZATION="%{optflags} -Os" GCC_BIN="%{_bindir}/gcc"
+arch=$(echo %{_arch}=y | sed -e 's/ppc/powerpc/')
+echo "TARGET_$arch=y" >.config
+echo "TARGET_ARCH=\"$arch\"" >>.config
+cat %{SOURCE2} |sed -e 's|^.*UCLIBC_EXTRA_CFLAGS.*$|UCLIBC_EXTRA_CFLAGS="%{optflags} -Os"|g'>> .config
+yes "" | %make oldconfig V=1
 
-rm -f include/bits/uClibc_config.h
-
-%make TARGET_ARCH="%{_arch}" TARGET_CPU="%{_target_cpu}" KERNEL_SOURCE=%{_prefix} HOSTCFLAGS="%{optflags}" OPTIMIZATION="%{optflags} -Os" GCC_BIN="%{_bindir}/gcc"
+%make V=1
 
 %check
-#cd test
-#make
+ln -sf %{_includedir}/{asm,asm-generic,linux} test
+ln -sf %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc install_dir
+# broken due dependency on DO_C99_MATH, which results in segfault..?
+%make -C test -k V=1 || /bin/true
 
 %install
 rm -rf %{buildroot}
 
+make PREFIX=%{buildroot} install
+
 install -d %{buildroot}%{_bindir}
-
-make TARGET_ARCH="%{_arch}" TARGET_CPU="%{_target_cpu}" PREFIX=%{buildroot} install
-make TARGET_ARCH="%{_arch}" TARGET_CPU="%{_target_cpu}" PREFIX=%{buildroot} -C extra/gcc-uClibc install
-
-# We need to build a temporary compiler that looks into our
-# build directory instead of /usr
-pushd extra/tmpgcc
-    perl -pi -e "s/^all:/DEVEL_PREFIX=\.\.\/\nall:/;" Makefile
-    %make TARGET_ARCH="%{_arch}" TARGET_CPU="%{_target_cpu}" KERNEL_SOURCE=%{_prefix} HOSTCFLAGS="%{optflags}" OPTIMIZATION="%{optflags} -Os" GCC_BIN="%{_bindir}/gcc"
-popd
-
-# Utils don't build with regular GCC, we need to use the temporary
-# compiler above.
-pushd utils
-    perl -pi -e "s/Rules\.mak/Rules\.mak\nCC=\.\.\/extra\/tmpgcc\/%{_target_cpu}-uclibc-gcc/;" Makefile
-    perl -pi -e "s/-s \\\\/-s -static \\\\/g;" Makefile
-    perl -pi -e "s/R_PREFIX/RUNTIME_PREFIX/g;" Makefile
-    perl -pi -e "s|UCLIBC_RUNTIME_PREFIX \"|\"%{_prefix}/%{_target_cpu}-linux-uclibc/|g;" ../ldso/include/ld_elf.h
-    perl -pi -e "s|UCLIBC_RUNTIME_PREFIX \"|\"%{_prefix}/%{_target_cpu}-linux-uclibc/|g;" ldd.c
-    perl -pi -e "s|UCLIBC_RUNTIME_PREFIX \"|\"%{_prefix}/%{_target_cpu}-linux-uclibc/|g;" ldconfig.c
-    %make TARGET_ARCH="%{_arch}" TARGET_CPU="%{_target_cpu}" KERNEL_SOURCE=%{_prefix} HOSTCFLAGS="%{optflags}" OPTIMIZATION="%{optflags} -Os" GCC_BIN="%{_bindir}/gcc"
-    cp ldd %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/bin/%{_target_cpu}-uclibc-ldd
-    ln -sf ../../bin/%{_target_cpu}-uclibc-ldd %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc%{_bindir}/ldd
-    mkdir -p %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/sbin
-    cp ldconfig %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/sbin
-popd
-mkdir -p %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/etc
-
-# convenience function
-cat > %{buildroot}%{_bindir}/uclibc << EOF
+cat > %{buildroot}%{_bindir}/%{_target_cpu}-linux-uclibc-gcc << EOF
 #!/bin/sh
-export PATH=%{_prefix}/%{_target_cpu}-linux-uclibc%{_bindir}:\$PATH
-\$@
+gcc -B%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib -isystem /usr/x86_64-linux-uclibc/usr/include \$@
 EOF
-
+chmod +x %{buildroot}%{_bindir}/%{_target_cpu}-linux-uclibc-gcc
+ 
 %ifarch ppc ppc64
     ln -sf ppc-linux-uclibc %{buildroot}%{_prefix}/powerpc-linux-uclibc
 %endif
 
-# these links are *needed* (by stuff in bin/)
-#for f in %{buildroot}%{_prefix}/%{_arch}-linux-uclibc%{_bindir}/* ; do
-#    ln -sf ../../bin/%{_arch}-uclibc-`basename $f` $f
-#done
-
-#find %{buildroot}%{_prefix}/%{_arch}-linux-uclibc/include -name CVS | xargs rm -rf
-
-# OE: don't ship these?
-rm -rf %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/asm
-rm -rf %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/linux
-rm -rf %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/scsi
-
 #(peroyvind) rpm will make these symlinks relative
-ln -snf /usr/include/asm %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/asm
-ln -snf /usr/include/linux %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/linux
-ln -snf /usr/include/scsi %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/scsi
-
-# at least nuke this one...
-rm -rf %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/linux/modules
+ln -snf /usr/include/{asm,asm-generic,linux} %{buildroot}%{_prefix}/%{_target_cpu}-linux-uclibc/usr/include/
 
 %clean
 rm -rf %{buildroot}
 
 %files
-%defattr(644,root,root,755)
+%defattr(-,root,root)
 %doc README
 %dir %{_prefix}/%{_target_cpu}-linux-uclibc
-%ifnarch %{sunsparc}
+%ifnarch %{sparcx}
 %dir %{_prefix}/%{_target_cpu}-linux-uclibc/lib
-%dir %{_prefix}/%{_target_cpu}-linux-uclibc/etc
-%dir %{_prefix}/%{_target_cpu}-linux-uclibc/sbin
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/sbin/*
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/lib/ld-*
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/lib/lib*%{mainver}.so
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/lib/lib*.so.0
+%{_prefix}/%{_target_cpu}-linux-uclibc/lib/*-*%{version}.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/lib/*.so.0
 %endif
 %ifarch ppc ppc64
 %{_prefix}/powerpc-linux-uclibc
 %endif
 
 %files devel
-%defattr(644,root,root,755)
-%doc docs/* docs/uclibc.org/*.html COPYING.LIB Changelog TODO
-%dir %{_prefix}/%{_target_cpu}-linux-uclibc/usr/bin
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/bin/*
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/bin/*
-%attr(0755,root,root) %{_bindir}/uclibc
-#%{_prefix}/%{_target_cpu}-linux-uclibc/usr
-#%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/crt0.o
+%defattr(-,root,root)
+%doc docs/* COPYING.LIB Changelog TODO
+%{_bindir}/%{_target_cpu}-linux-uclibc-gcc
 %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/crt1.o
 %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/crti.o
 %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/crtn.o
-%ifnarch %{sunsparc}
+%ifnarch %{sparcx}
 %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/Scrt1.o
 %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/librt.so
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libnsl.so
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libpthread*.so*
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libc.so
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libcrypt.so
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libdl.so
-%attr(02755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libm.so
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libresolv.so
-%attr(0755,root,root) %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libutil.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libnsl.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libpthread.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libc.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libcrypt.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libdl.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libm.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libresolv.so
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/libutil.so
 %endif
 %{_prefix}/%{_target_cpu}-linux-uclibc/usr/include
 
 %files static-devel
-%defattr(644,root,root,755)
+%defattr(-,root,root)
 %{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/lib*.a
+%{_prefix}/%{_target_cpu}-linux-uclibc/usr/lib/uclibc_nonshared.a
 
 
