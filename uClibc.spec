@@ -18,8 +18,10 @@ Source1:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
 Source2:	uClibc-0.9.30.2-config
 Patch0:		uClibc-0.9.30.1-getline.patch
 Patch1:		uClibc-0.9.30.1-lib64.patch
+# http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
+Patch2:		uClibc-0.9.30.1-add-rpmatch-function.patch
 
-#Patches from uClibc buildroot:
+# backported patches from uClibc git:
 Patch100:	uClibc-0.9.30.1-64bit-strtouq.patch
 Patch101:	uClibc-0.9.30.1-arm-fix-linuxthreads-sysdep.patch
 Patch102:	uClibc-0.9.30.1-c99-ldbl-math.patch
@@ -86,6 +88,8 @@ Static uClibc libratries.
 %setup -q
 %patch0 -p1 -b .getline~
 %patch1 -p1 -b .lib64~
+%patch2 -p1 -b .rpmatch~
+
 %patch100 -p1 -b .64bit_strouq~
 %patch101 -p1 -b .arm_linuxthreads~
 %patch102 -p1 -b .c99_math~
