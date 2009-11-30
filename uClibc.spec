@@ -27,6 +27,8 @@ Patch101:	uClibc-0.9.30.1-arm-fix-linuxthreads-sysdep.patch
 Patch102:	uClibc-0.9.30.1-c99-ldbl-math.patch
 Patch103:	uClibc-0.9.30.1-dl-sysdep-inline.patch
 Patch104:	uClibc-0.9.30.1-fix-getaddrinfo.patch
+Patch105:	uClibc-0.9.30.1-enable-nanosecond-stat.patch
+Patch106:	uClibc-0.9.30.1-add-missing-utime-defs.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %define desc uclibc (pronounced yew-see-lib-see) is a c library for developing\
@@ -95,6 +97,8 @@ Static uClibc libratries.
 %patch102 -p1 -b .c99_math~
 %patch103 -p1 -b .dl_sysdep~
 %patch104 -p1 -b .getaddrinfo~
+%patch105 -p1 -b .ns_stat~
+%patch106 -p1 -b .utime_defs~
 
 %build
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
