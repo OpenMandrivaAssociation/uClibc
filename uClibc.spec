@@ -147,7 +147,7 @@ rm -rf %{buildroot}
 
 %files -n %{libdev}
 %defattr(-,root,root)
-%doc docs/* COPYING.LIB Changelog TODO
+%doc docs/* Changelog TODO
 %{_bindir}/uclibc-gcc
 %{uclibc_root}%{_includedir}
 %{uclibc_root}%{_libdir}/crt1.o
