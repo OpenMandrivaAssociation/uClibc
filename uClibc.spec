@@ -2,7 +2,7 @@
 %define debug_package		%{nil}
 
 # workaround some rpm bug
-%define _requires_exceptions statically\\|linked\\|devel(/lib/libNoVersion)\\|bash
+#define _requires_exceptions statically\\|linked\\|devel(/lib/libNoVersion)\\|bash
 
 # disable stack protector, build doesn't work with it
 %define _ssp_cflags %{nil}
