@@ -92,6 +92,8 @@ rm -f test/inet/tst-ethers*
 rm -rf %{buildroot}
 
 make PREFIX=%{buildroot} install
+# be sure that we don't package any backup files
+find %{buildroot} -name \*~|xargs rm -f
 
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{_arch}-linux-uclibc-gcc << EOF
