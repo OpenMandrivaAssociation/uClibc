@@ -5,6 +5,7 @@
 %define _ssp_cflags	%{nil}
 
 %define	uclibc_root	%{_prefix}/uclibc
+%define	uclibc_cc	uclibc-gcc
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
@@ -130,15 +131,17 @@ find %{buildroot} -name \*~|xargs rm -f
 install -d %{buildroot}%{_bindir}
 # using 'rpm --eval' here for multilib purposes..
 #TODO: figure out binutils --sysroot + multilib in binutils package?
-cat > %{buildroot}%{_bindir}/uclibc-gcc << EOF
+cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
-gcc -B\$(rpm --eval "%%{uclibc_root}%%{_libdir} -isystem %%{uclibc_root}%%{_includedir}") \$@ -fno-stack-protector
+gcc -B\$(rpm --eval "%%{uclibc_root}%%{_libdir} -isystem %%{uclibc_root}%%{_includedir}") \$@ \$(rpm --eval "%%uclibc_cflags")
 EOF
-chmod +x %{buildroot}%{_bindir}/uclibc-gcc
+chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
 install -d %{buildroot}%{_sysconfdir}/rpm/macros.d
 cat > %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros << EOF
 %%uclibc_root	%uclibc_root
+%%uclibc_cc	%uclibc_cc
+%%uclibc_cflags	-fno-stack-protector
 EOF
 
 #(peroyvind) rpm will make these symlinks relative
@@ -162,7 +165,7 @@ rm -rf %{buildroot}
 %files -n %{libdev}
 %defattr(-,root,root)
 %doc docs/* Changelog TODO
-%{_bindir}/uclibc-gcc
+%{_bindir}/%{uclibc_cc}
 %{_sysconfdir}/rpm/macros.d/uclibc.macros
 %{uclibc_root}%{_includedir}
 %{uclibc_root}%{_libdir}/crt1.o
