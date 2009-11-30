@@ -9,7 +9,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	0.9.30.1
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -132,10 +132,15 @@ install -d %{buildroot}%{_bindir}
 #TODO: figure out binutils --sysroot + multilib in binutils package?
 cat > %{buildroot}%{_bindir}/uclibc-gcc << EOF
 #!/bin/sh
-gcc -B\$(rpm --eval "%{uclibc_root}%%{_libdir} -isystem %{uclibc_root}%%{_includedir}") \$@ -fno-stack-protector
+gcc -B\$(rpm --eval "%%{uclibc_root}%%{_libdir} -isystem %%{uclibc_root}%%{_includedir}") \$@ -fno-stack-protector
 EOF
 chmod +x %{buildroot}%{_bindir}/uclibc-gcc
- 
+
+install -d %{buildroot}%{_sysconfdir}/rpm/macros.d
+cat > %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros << EOF
+%%uclibc_root	%uclibc_root
+EOF
+
 #(peroyvind) rpm will make these symlinks relative
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
@@ -158,6 +163,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc docs/* Changelog TODO
 %{_bindir}/uclibc-gcc
+%{_sysconfdir}/rpm/macros.d/uclibc.macros
 %{uclibc_root}%{_includedir}
 %{uclibc_root}%{_libdir}/crt1.o
 %{uclibc_root}%{_libdir}/crti.o
