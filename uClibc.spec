@@ -75,10 +75,10 @@ Static uClibc libratries.
 arch=$(echo %{_arch}=y | sed -e 's/ppc/powerpc/')
 echo "TARGET_$arch=y" >.config
 echo "TARGET_ARCH=\"$arch\"" >>.config
-cat %{SOURCE2} |sed -e 's|^.*UCLIBC_EXTRA_CFLAGS.*$|UCLIBC_EXTRA_CFLAGS="%{optflags} -Os"|g'>> .config
+cat %{SOURCE2} |sed -e 's|^.*UCLIBC_EXTRA_CFLAGS.*$|UCLIBC_EXTRA_CFLAGS="%{optflags} -Os"|g' >> .config
 yes "" | %make oldconfig V=1
 
-%make V=1 
+%make V=1 CPU_CFLAGS=""
 
 %check
 ln -snf %{_includedir}/{asm,asm-generic,linux} test
