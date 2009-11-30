@@ -128,7 +128,7 @@ install -d %{buildroot}%{_bindir}
 #TODO: figure out binutils --sysroot + multilib in binutils package?
 cat > %{buildroot}%{_bindir}/uclibc-gcc << EOF
 #!/bin/sh
-gcc -B\$(rpm --eval "%{uclibc_root}%%{_libdir} -isystem %{uclibc_root}%%{_includedir}") \$@
+gcc -B\$(rpm --eval "%{uclibc_root}%%{_libdir} -isystem %{uclibc_root}%%{_includedir}") \$@ -fno-stack-protector
 EOF
 chmod +x %{buildroot}%{_bindir}/uclibc-gcc
  
