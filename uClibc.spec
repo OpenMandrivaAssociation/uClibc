@@ -138,7 +138,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc README
 %dir %{uclibc_root}
-%dir %{uclibc_root}{_prefix}
+%dir %{uclibc_root}%{_prefix}
 %ifnarch %{sparcx}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
