@@ -7,10 +7,12 @@
 # disable stack protector, build doesn't work with it
 %define _ssp_cflags %{nil}
 
+#TODO: do multilib?
+
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	0.9.30.1
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -98,7 +100,7 @@ find %{buildroot} -name \*~|xargs rm -f
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{_arch}-linux-uclibc-gcc << EOF
 #!/bin/sh
-gcc -B%{_prefix}/%{_arch}-linux-uclibc/usr/lib -isystem /usr/x86_64-linux-uclibc/usr/include \$@
+gcc -B%{_prefix}/%{_arch}-linux-uclibc/usr/lib -isystem %{_prefix}/%{_arch}-linux-uclibc/usr/include \$@
 EOF
 chmod +x %{buildroot}%{_bindir}/%{_arch}-linux-uclibc-gcc
  
