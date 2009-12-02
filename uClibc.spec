@@ -133,7 +133,11 @@ install -d %{buildroot}%{_bindir}
 #TODO: figure out binutils --sysroot + multilib in binutils package?
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
-gcc -B\$(rpm --eval "%%{uclibc_root}%%{_libdir} -isystem %%{uclibc_root}%%{_includedir}") \$@ \$(rpm --eval "%%uclibc_cflags")
+export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)/include"
+export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
+export LIBRARY_PATH="\$LD_RUN_PATH"
+export GCC_EXEC_PREFIX="\$LD_RUN_PATH"
+gcc \$@ \$(rpm --eval "-Wl,--dynamic-linker,%%{uclibc_root}/%%{_lib}/%%{_lib}-uClibc.so.0 %%{uclibc_cflags}"|sed -e 's#lib-uClibc#ld-uClibc#g' -e 's#lib64-uClibc#ld64-uClibc#g')
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
