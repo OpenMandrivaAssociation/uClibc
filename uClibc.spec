@@ -10,7 +10,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	0.9.30.1
-Release:	%mkrel 5
+Release:	%mkrel 6
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -59,33 +59,27 @@ you plan to burn linux into the system's firmware...
 Summary:	%{summary}
 Group:		System/Libraries
 Provides:	%{name} = %{version}-%{release}
-Obsoletes:	%{name} <= 0.9.30.1-2
+Obsoletes:	%{name} <= %{version}-%{release}
 
 %description -n	%{libname}
 %{desc}
 
 %define	libdev	%mklibname %{name} -d
 %package -n	%{libdev}
-Summary:	Development files for uClibc
+Summary:	Development files & libraries for uClibc
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release}
-Obsoletes:	%{name}-devel <= 0.9.30.1-2
+Obsoletes:	%{name}-devel <= %{version}-%{release}
+%define	libstat	%mklibname %{name} -d -s
+Provides:	%{libstat} = %{version}-%{release}
+Obsoletes:	%{libstat} <= %{version}-%{release}
+Provides:	libc-static
+Provides:	%{name}-static-devel = %{version}-%{release}
+Obsoletes:	%{name}-static-devel <= %{version}-%{release}
 
 %description -n	%{libdev}
 Small libc for building embedded applications.
-
-%define	libstat	%mklibname %{name} -d -s
-%package -n	%{libstat}
-Summary:	Static uClibc libratries
-Group:		Development/C
-Requires:	%{libdev} = %{version}-%{release}
-Provides:	libc-static
-Provides:	%{name}-static-devel = %{version}-%{release}
-Obsoletes:	%{name}-static-devel <= 0.9.30.1-2
-
-%description -n	%{libstat}
-Static uClibc libratries.
 
 %prep
 %setup -q
@@ -187,8 +181,6 @@ rm -rf %{buildroot}
 %{uclibc_root}%{_libdir}/libresolv.so
 %{uclibc_root}%{_libdir}/libutil.so
 %endif
-
-%files -n %{libstat}
 %defattr(-,root,root)
 %{uclibc_root}%{_libdir}/lib*.a
 %{uclibc_root}%{_libdir}/uclibc_nonshared.a
