@@ -10,12 +10,14 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	0.9.30.1
-Release:	%mkrel 6
+Release:	%mkrel 7
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2
-Source1:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
+Source0:	http://uclibc.org/downloads/%{name}-%{?prerel}%{!?prerel:%{version}}.tar.bz2
+%{!?prerel:
+Source1:        http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
+}
 Source2:	uClibc-0.9.30.2-config
 Patch0:		uClibc-0.9.30.1-getline.patch
 Patch1:		uClibc-0.9.30.1-lib64.patch
@@ -30,6 +32,7 @@ Patch103:	uClibc-0.9.30.1-dl-sysdep-inline.patch
 Patch104:	uClibc-0.9.30.1-fix-getaddrinfo.patch
 Patch105:	uClibc-0.9.30.1-enable-nanosecond-stat.patch
 Patch106:	uClibc-0.9.30.1-add-missing-utime-defs.patch
+Patch107:	uClibc-0.9.30.1-add-strverscmp-and-versionsort-64.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %define desc uclibc (pronounced yew-see-lib-see) is a c library for developing\
@@ -82,7 +85,7 @@ Obsoletes:	%{name}-static-devel <= %{version}-%{release}
 Small libc for building embedded applications.
 
 %prep
-%setup -q
+%setup -q -n %{name}%{!?prerel:-%{version}}
 %patch0 -p1 -b .getline~
 %patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
@@ -94,6 +97,7 @@ Small libc for building embedded applications.
 %patch104 -p1 -b .getaddrinfo~
 %patch105 -p1 -b .ns_stat~
 %patch106 -p1 -b .utime_defs~
+%patch107 -p1 -b .versionsort~
 
 %build
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
