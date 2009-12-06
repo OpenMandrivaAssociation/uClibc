@@ -99,7 +99,6 @@ Small libc for building embedded applications.
 %patch106 -p1 -b .utime_defs~
 %patch107 -p1 -b .versionsort~
 
-%build
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
 	-e 's|@CFLAGS@|%{optflags} -Os|g' \
@@ -107,6 +106,8 @@ cat %{SOURCE2} |sed \
 	-e 's|@LIB@|%{_lib}|g' \
 	-e 's|@PREFIX@|%{uclibc_root}|g' \
 	>> .config
+
+%build
 yes "" | %make oldconfig V=1
 
 %make V=1 CPU_CFLAGS=""
