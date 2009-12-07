@@ -1,9 +1,3 @@
-%define _enable_debug_packages	%{nil}
-%define debug_package		%{nil}
-
-# disable stack protector
-%define _ssp_cflags	%{nil}
-
 %define	uclibc_root	%{_prefix}/uclibc
 %define	uclibc_cc	uclibc-gcc
 
