@@ -10,7 +10,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	0.9.30.1
-Release:	%mkrel 7
+Release:	%mkrel 8
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -61,12 +61,14 @@ you plan to burn linux into the system's firmware...
 %description
 %{desc}
 
-%define	libname	%mklibname %{name}
+%define	libname	%mklibname %{name} %{version}
 %package -n	%{libname}
 Summary:	%{summary}
 Group:		System/Libraries
 Provides:	%{name} = %{version}-%{release}
+Provides:	%mklibname %{name}
 Obsoletes:	%{name} <= %{version}-%{release}
+Obsoletes:      %{mklibname %{name}} <= %{version}-%{release}
 
 %description -n	%{libname}
 %{desc}
