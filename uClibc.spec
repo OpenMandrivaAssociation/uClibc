@@ -23,6 +23,8 @@ Patch0:		uClibc-0.9.30.1-getline.patch
 Patch1:		uClibc-0.9.30.1-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.30.1-add-rpmatch-function.patch
+# http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
+Patch3:		uClibc-0.9.30.1-add-scanf-a-flag.patch
 
 # backported patches from uClibc git:
 Patch100:	uClibc-0.9.30.1-64bit-strtouq.patch
@@ -89,6 +91,7 @@ Small libc for building embedded applications.
 %patch0 -p1 -b .getline~
 %patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
+%patch3 -p1 -b .a_flag~
 
 %patch100 -p1 -b .64bit_strouq~
 %patch101 -p1 -b .arm_linuxthreads~
