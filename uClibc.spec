@@ -36,6 +36,7 @@ Patch105:	uClibc-0.9.30.1-enable-nanosecond-stat.patch
 Patch106:	uClibc-0.9.30.1-add-missing-utime-defs.patch
 Patch107:	uClibc-0.9.30.1-add-strverscmp-and-versionsort-64.patch
 Patch108:	uClibc-0.9.30.1-libm-add-scalbf-gammaf-significandf-wrappers.patch
+Patch109:	uClibc-0.9.30.1-test-stat-fix-compiling-the-memcmp-stat-test-when-__.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %define desc uclibc (pronounced yew-see-lib-see) is a c library for developing\
@@ -103,6 +104,7 @@ Small libc for building embedded applications.
 %patch106 -p1 -b .utime_defs~
 %patch107 -p1 -b .versionsort~
 %patch108 -p1 -b .scalbf~
+%patch109 -p1 -b .stat_check~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
