@@ -1,16 +1,27 @@
 %define _enable_debug_packages	%{nil}
 %define debug_package		%{nil}
 
-# disable stack protector, build doesn't work with it
+# disable stack protector
 %define _ssp_cflags	%{nil}
 
 %define	uclibc_root	%{_prefix}/uclibc
 %define	uclibc_cc	uclibc-gcc
 
+%define	majorish	0.9.30
+%define	minorish	2
+
+%define snapshot	1
+%if snapshot
+%define	prerel		20091207
+%define	libver		%{majorish}-git
+%else
+%define	libver		%{majorish}.%{minorish}
+%endif
+
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	0.9.30.1
-Release:	%mkrel 8
+Version:	%{majorish}.%{minorish}
+Release:	%mkrel 0.%{prerel}.1
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -20,11 +31,11 @@ Source1:        http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
 }
 Source2:	uClibc-0.9.30.2-config
 Patch0:		uClibc-0.9.30.1-getline.patch
-Patch1:		uClibc-0.9.30.1-lib64.patch
+Patch1:		uClibc-0.9.30.2-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
-Patch2:		uClibc-0.9.30.1-add-rpmatch-function.patch
+Patch2:		uClibc-0.9.30.2-add-rpmatch-function.patch
 # http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
-Patch3:		uClibc-0.9.30.1-add-scanf-a-flag.patch
+Patch3:		uClibc-0.9.30.2-add-scanf-a-flag.patch
 
 # backported patches from uClibc git:
 Patch100:	uClibc-0.9.30.1-64bit-strtouq.patch
@@ -92,11 +103,12 @@ Small libc for building embedded applications.
 
 %prep
 %setup -q -n %{name}%{!?prerel:-%{version}}
-%patch0 -p1 -b .getline~
+#%%patch0 -p1 -b .getline~
 %patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 
+%if 0
 %patch100 -p1 -b .64bit_strouq~
 %patch101 -p1 -b .arm_linuxthreads~
 %patch102 -p1 -b .c99_math~
@@ -107,10 +119,11 @@ Small libc for building embedded applications.
 %patch107 -p1 -b .versionsort~
 %patch108 -p1 -b .scalbf~
 %patch109 -p1 -b .stat_check~
+%endif
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
-	-e 's|@CFLAGS@|%{optflags} -Os|g' \
+	-e "s|@CFLAGS@|-muclibc %{optflags}|g" \
 	-e 's|@ARCH@|%{arch}|g' \
 	-e 's|@LIB@|%{_lib}|g' \
 	-e 's|@PREFIX@|%{uclibc_root}|g' \
@@ -119,7 +132,7 @@ cat %{SOURCE2} |sed \
 %build
 yes "" | %make oldconfig V=1
 
-%make V=1 CPU_CFLAGS=""
+%make VERBOSE=1 CPU_CFLAGS=""
 
 %check
 ln -snf %{_includedir}/{asm,asm-generic,linux} test
@@ -127,7 +140,7 @@ ln -snf %{buildroot}%{uclibc_root} install_dir
 # This test relies on /etc/ethers being present to pass, so we'll skip it by
 # removing it
 rm -f test/inet/tst-ethers*
-%make check V=1 || /bin/true 
+%make check VERBOSE=1 || /bin/true 
 
 %install
 rm -rf %{buildroot}
@@ -170,7 +183,7 @@ rm -rf %{buildroot}
 %ifnarch %{sparcx}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
-%{uclibc_root}/%{_lib}/*-*%{version}.so
+%{uclibc_root}/%{_lib}/*-*%{libver}.so
 %{uclibc_root}/%{_lib}/*.so.0
 %endif
 
