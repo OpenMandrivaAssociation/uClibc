@@ -132,7 +132,7 @@ export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -pri
 export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 export LIBRARY_PATH="\$LD_RUN_PATH"
 export GCC_EXEC_PREFIX="\$LD_RUN_PATH"
-gcc -muclibc \$@ \$(rpm --eval "-Wl,--dynamic-linker,%%{uclibc_root}/%%{_lib}/%%{_lib}-uClibc.so.0"|sed -e 's#lib-uClibc#ld-uClibc#g' -e 's#lib64-uClibc#ld64-uClibc#g')
+gcc -muclibc \$@
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
