@@ -65,9 +65,7 @@ you plan to burn linux into the system's firmware...
 %package -n	%{libname}
 Summary:	%{summary}
 Group:		System/Libraries
-Provides:	%{name} = %{version}-%{release}
 Provides:	%mklibname %{name}
-Obsoletes:	%{name} <= %{version}-%{release}
 Obsoletes:      %{mklibname %{name}} <= %{version}-%{release}
 
 %description -n	%{libname}
@@ -120,7 +118,7 @@ cat %{SOURCE2} |sed \
 %build
 yes "" | %make oldconfig V=1
 
-%make VERBOSE=1 CPU_CFLAGS=""
+%make VERBOSE=1 CPU_CFLAGS="" all utils
 
 %check
 ln -snf %{_includedir}/{asm,asm-generic,linux} test
@@ -131,9 +129,13 @@ rm -f test/inet/tst-ethers*
 %make check VERBOSE=1 || /bin/true 
 
 %install
+# remove these explicitly as we create the directory without listing permission..
+rm -f %{buildroot}/lib/ld{,64}-uClibc.so.0
 rm -rf %{buildroot}
 
 %make VERBOSE=1 PREFIX=%{buildroot} install
+%make -C utils VERBOSE=1 PREFIX=%{buildroot} utils_install
+
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
 
@@ -160,14 +162,35 @@ EOF
 #(peroyvind) rpm will make these symlinks relative
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
+# creating directory without listing permission to prevent ldconfig from messing with it
+install -d -m300 %{buildroot}/lib
+ln -s %{uclibc_root}/lib/ld-uClibc-%{version}.so %{buildroot}/lib/ld-uClibc.so.0
+ln -s %{uclibc_root}/lib64/ld64-uClibc-%{version}.so %{buildroot}/lib/ld64-uClibc.so.0
+
+for dir in /bin /sbin %{_prefix} %{_bindir} %{_sbindir}; do
+	mkdir -p %{buildroot}%{uclibc_root}$dir
+done
+
 %clean
+rm -f %{buildroot}/lib/ld{,64}-uClibc.so.0
 rm -rf %{buildroot}
 
-%files -n %{libname}
+%files
 %defattr(-,root,root)
 %doc README
 %dir %{uclibc_root}
+%dir %{uclibc_root}/bin
+%dir %{uclibc_root}/sbin
 %dir %{uclibc_root}%{_prefix}
+%dir %{uclibc_root}%{_bindir}
+%dir %{uclibc_root}%{_sbindir}
+%{uclibc_root}%{_bindir}/ldd
+%{uclibc_root}/sbin/ldconfig
+/lib/ld-uClibc.so.0
+/lib/ld64-uClibc.so.0
+
+%files -n %{libname}
+%defattr(-,root,root)
 %ifnarch %{sparcx}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
