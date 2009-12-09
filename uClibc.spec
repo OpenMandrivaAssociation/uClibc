@@ -33,6 +33,8 @@ Patch1:		uClibc-0.9.30.2-lib64.patch
 Patch2:		uClibc-0.9.30.2-add-rpmatch-function.patch
 # http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
 Patch3:		uClibc-0.9.30.2-add-scanf-a-flag.patch
+# (proyvind): the ABI isn't stable, so set it to current version
+Patch4:		uClibc-0.9.30.2-unstable-abi.patch
 
 # backported patches from uClibc git:
 Patch100:	uClibc-0.9.30.1-64bit-strtouq.patch
@@ -69,7 +71,7 @@ you plan to burn linux into the system's firmware...
 %description
 %{desc}
 
-%define	libname	%mklibname %{name} %{version}
+%define	libname	%mklibname %{name} %{libver}
 %package -n	%{libname}
 Summary:	%{summary}
 Group:		System/Libraries
@@ -104,6 +106,7 @@ Small libc for building embedded applications.
 %patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
+%patch4 -p1 -b .abi_version~
 
 %if 0
 %patch100 -p1 -b .64bit_strouq~
@@ -131,6 +134,7 @@ yes "" | %make oldconfig V=1
 
 %make VERBOSE=1 CPU_CFLAGS=""
 
+%if 0
 %check
 ln -snf %{_includedir}/{asm,asm-generic,linux} test
 ln -snf %{buildroot}%{uclibc_root} install_dir
@@ -138,6 +142,7 @@ ln -snf %{buildroot}%{uclibc_root} install_dir
 # removing it
 rm -f test/inet/tst-ethers*
 %make check VERBOSE=1 || /bin/true 
+%endif
 
 %install
 rm -rf %{buildroot}
@@ -181,6 +186,7 @@ rm -rf %{buildroot}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
 %{uclibc_root}/%{_lib}/*-*%{libver}.so
+%{uclibc_root}/%{_lib}/*.so.%{libver}
 %endif
 
 %files -n %{libdev}
