@@ -36,17 +36,6 @@ Patch3:		uClibc-0.9.30.2-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.30.2-unstable-abi.patch
 
-# backported patches from uClibc git:
-Patch100:	uClibc-0.9.30.1-64bit-strtouq.patch
-Patch101:	uClibc-0.9.30.1-arm-fix-linuxthreads-sysdep.patch
-Patch102:	uClibc-0.9.30.1-c99-ldbl-math.patch
-Patch103:	uClibc-0.9.30.1-dl-sysdep-inline.patch
-Patch104:	uClibc-0.9.30.1-fix-getaddrinfo.patch
-Patch105:	uClibc-0.9.30.1-enable-nanosecond-stat.patch
-Patch106:	uClibc-0.9.30.1-add-missing-utime-defs.patch
-Patch107:	uClibc-0.9.30.1-add-strverscmp-and-versionsort-64.patch
-Patch108:	uClibc-0.9.30.1-libm-add-scalbf-gammaf-significandf-wrappers.patch
-Patch109:	uClibc-0.9.30.1-test-stat-fix-compiling-the-memcmp-stat-test-when-__.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %define desc uclibc (pronounced yew-see-lib-see) is a c library for developing\
@@ -108,19 +97,6 @@ Small libc for building embedded applications.
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi_version~
 
-%if 0
-%patch100 -p1 -b .64bit_strouq~
-%patch101 -p1 -b .arm_linuxthreads~
-%patch102 -p1 -b .c99_math~
-%patch103 -p1 -b .dl_sysdep~
-%patch104 -p1 -b .getaddrinfo~
-%patch105 -p1 -b .ns_stat~
-%patch106 -p1 -b .utime_defs~
-%patch107 -p1 -b .versionsort~
-%patch108 -p1 -b .scalbf~
-%patch109 -p1 -b .stat_check~
-%endif
-
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
 	-e "s|@CFLAGS@|-muclibc %{optflags}|g" \
@@ -134,7 +110,6 @@ yes "" | %make oldconfig V=1
 
 %make VERBOSE=1 CPU_CFLAGS=""
 
-%if 0
 %check
 ln -snf %{_includedir}/{asm,asm-generic,linux} test
 ln -snf %{buildroot}%{uclibc_root} install_dir
@@ -142,7 +117,6 @@ ln -snf %{buildroot}%{uclibc_root} install_dir
 # removing it
 rm -f test/inet/tst-ethers*
 %make check VERBOSE=1 || /bin/true 
-%endif
 
 %install
 rm -rf %{buildroot}
