@@ -27,7 +27,6 @@ Source0:	http://uclibc.org/downloads/%{name}-%{?prerel}%{!?prerel:%{version}}.ta
 Source1:        http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
 }
 Source2:	uClibc-0.9.30.2-config
-Patch0:		uClibc-0.9.30.1-getline.patch
 Patch1:		uClibc-0.9.30.2-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.30.2-add-rpmatch-function.patch
@@ -91,7 +90,6 @@ Small libc for building embedded applications.
 
 %prep
 %setup -q -n %{name}%{!?prerel:-%{version}}
-#%%patch0 -p1 -b .getline~
 %patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
