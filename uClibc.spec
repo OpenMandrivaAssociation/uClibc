@@ -1,3 +1,6 @@
+# disable stack protector, build doesn't work with it
+%define _ssp_cflags     %{nil}
+
 %define	uclibc_root	%{_prefix}/uclibc
 %define	uclibc_cc	uclibc-gcc
 
@@ -139,7 +142,7 @@ rm -f test/inet/tst-ethers*
 %install
 rm -rf %{buildroot}
 
-make PREFIX=%{buildroot} install
+%make VERBOSE=1 PREFIX=%{buildroot} install
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
 
@@ -178,7 +181,6 @@ rm -rf %{buildroot}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
 %{uclibc_root}/%{_lib}/*-*%{libver}.so
-%{uclibc_root}/%{_lib}/*.so.0
 %endif
 
 %files -n %{libdev}
