@@ -156,7 +156,7 @@ install -d %{buildroot}%{_sysconfdir}/rpm/macros.d
 cat > %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros << EOF
 %%uclibc_root	%uclibc_root
 %%uclibc_cc	%uclibc_cc
-%%uclibc_cflags	%%{optflags} -g0 -Os -fno-stack-protector
+%%uclibc_cflags	%%{optflags} -Os -fno-stack-protector
 EOF
 
 #(peroyvind) rpm will make these symlinks relative
