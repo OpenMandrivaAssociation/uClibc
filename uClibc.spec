@@ -67,6 +67,7 @@ Summary:	%{summary}
 Group:		System/Libraries
 Provides:	%mklibname %{name}
 Obsoletes:      %{mklibname %{name}} <= %{version}-%{release}
+Requires:	%{name}
 
 %description -n	%{libname}
 %{desc}
@@ -129,8 +130,7 @@ rm -f test/inet/tst-ethers*
 %make check VERBOSE=1 || /bin/true 
 
 %install
-# remove these explicitly as we create the directory without listing permission..
-rm -f %{buildroot}/lib/ld{,64}-uClibc.so.0
+[ -d "%{buildroot}" ] && chmod 777 -R %{buildroot}
 rm -rf %{buildroot}
 
 %make VERBOSE=1 PREFIX=%{buildroot} install
@@ -148,7 +148,7 @@ export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -pri
 export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 export LIBRARY_PATH="\$LD_RUN_PATH"
 export GCC_EXEC_PREFIX="\$LD_RUN_PATH"
-gcc -muclibc \$@
+gcc -muclibc \$(rpm --eval "-Wl,--dynamic-linker,%%{uclibc_root}/%%{_lib}/%%{_lib}-uClibc.so.0"|sed -e 's#lib-uClibc#ld-uClibc#g' -e 's#lib64-uClibc#ld64-uClibc#g') \$@
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
@@ -162,21 +162,26 @@ EOF
 #(peroyvind) rpm will make these symlinks relative
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
+%if "%{_lib}" == "lib64"
+ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib64/ld64-uClibc.so.0
+ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/lib64/libc.so.0
 # creating directory without listing permission to prevent ldconfig from messing with it
-install -d -m300 %{buildroot}/lib
-ln -s %{uclibc_root}/lib/ld-uClibc-%{version}.so %{buildroot}/lib/ld-uClibc.so.0
-ln -s %{uclibc_root}/lib64/ld64-uClibc-%{version}.so %{buildroot}/lib/ld64-uClibc.so.0
+install -d -m300 %{buildroot}%{uclibc_root}{/lib,/usr/lib}
+%endif
+
+ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
+ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/lib/libc.so.0
 
 for dir in /bin /sbin %{_prefix} %{_bindir} %{_sbindir}; do
 	mkdir -p %{buildroot}%{uclibc_root}$dir
 done
 
 %clean
-rm -f %{buildroot}/lib/ld{,64}-uClibc.so.0
+[ -d "%{buildroot}" ] && chmod 777 -R %{buildroot}
 rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root)
+%defattr(-,root,root,755)
 %doc README
 %dir %{uclibc_root}
 %dir %{uclibc_root}/bin
@@ -184,16 +189,22 @@ rm -rf %{buildroot}
 %dir %{uclibc_root}%{_prefix}
 %dir %{uclibc_root}%{_bindir}
 %dir %{uclibc_root}%{_sbindir}
+%dir %{uclibc_root}/lib
+%dir %{uclibc_root}%{_prefix}/lib
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
-/lib/ld-uClibc.so.0
-/lib/ld64-uClibc.so.0
+%{uclibc_root}/lib/ld-uClibc.so.0
+%{uclibc_root}/lib/libc.so.0
+%if "%{_lib}" == "lib64"
+%dir %{uclibc_root}/lib64
+%dir %{uclibc_root}%{_prefix}/lib
+%{uclibc_root}/lib64/libc.so.0
+%{uclibc_root}/lib64/ld64-uClibc.so.0
+%endif
 
 %files -n %{libname}
 %defattr(-,root,root)
 %ifnarch %{sparcx}
-%dir %{uclibc_root}/%{_lib}
-%dir %{uclibc_root}%{_libdir}
 %{uclibc_root}/%{_lib}/*-*%{version}.so
 %{uclibc_root}/%{_lib}/*.so.%{version}
 %endif
