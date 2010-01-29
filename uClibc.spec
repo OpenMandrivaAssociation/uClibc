@@ -9,7 +9,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	%mkrel 9
+Release:	%mkrel 10
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -184,7 +184,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 # (see http://wiki.mandriva.com/en/Rpm_filetriggers)
 install -d %{buildroot}%{_var}/lib/rpm/filetriggers
 cat > %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.filter << EOF
-^.(%{uclibc_root}/lib|%{_prefix}/lib)(64)?/[^/]*\.so\.
+^.(%{uclibc_root}/lib|%{uclibc_root}%{_prefix}/lib)(64)?/[^/]*\.so\.
 EOF
 cat > %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script << EOF
 #!/bin/sh
