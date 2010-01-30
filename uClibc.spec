@@ -9,7 +9,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	%mkrel 10
+Release:	%mkrel 11
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -188,7 +188,7 @@ cat > %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.filter << EOF
 EOF
 cat > %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script << EOF
 #!/bin/sh
-ldconfig -X
+%{uclibc_root}/sbin/ldconfig -X
 EOF
 chmod 755 %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script
 
