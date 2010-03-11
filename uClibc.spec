@@ -9,7 +9,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	%mkrel 11
+Release:	%mkrel 12
 License:	LGPL
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -145,7 +145,7 @@ install -d %{buildroot}%{_bindir}
 #TODO: figure out binutils --sysroot + multilib in binutils package?
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
-export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)/include"
+export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
 export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 export LIBRARY_PATH="\$LD_RUN_PATH"
 export GCC_EXEC_PREFIX="\$LD_RUN_PATH"
