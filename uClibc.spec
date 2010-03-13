@@ -164,14 +164,12 @@ EOF
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
 %if "%{_lib}" == "lib64"
-ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib64/ld64-uClibc.so.0
-ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/lib64/libc.so.0
-# creating directory without listing permission to prevent ldconfig from messing with it
-install -d -m300 %{buildroot}%{uclibc_root}{/lib,/usr/lib}
+ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
+%else
+ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
 
-ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
-ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/lib/libc.so.0
+ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/libc.so.0
 
 for dir in /bin /sbin %{_prefix} %{_bindir} %{_sbindir}; do
 	mkdir -p %{buildroot}%{uclibc_root}$dir
@@ -196,7 +194,6 @@ chmod 755 %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script
 %post -p %{uclibc_root}/sbin/ldconfig
 
 %clean
-[ -d "%{buildroot}" ] && chmod 777 -R %{buildroot}
 rm -rf %{buildroot}
 
 %files
@@ -208,20 +205,14 @@ rm -rf %{buildroot}
 %dir %{uclibc_root}%{_prefix}
 %dir %{uclibc_root}%{_bindir}
 %dir %{uclibc_root}%{_sbindir}
-%dir %{uclibc_root}/lib
-%dir %{uclibc_root}%{_prefix}/lib
+%dir %{uclibc_root}/%{_lib}
+%dir %{uclibc_root}%{_libdir}
 %verify(not md5 size mtime) %config(noreplace) %{uclibc_root}%{_sysconfdir}/ld.so.conf
 %ghost %{uclibc_root}%{_sysconfdir}/ld.so.cache
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
-%{uclibc_root}/lib/ld-uClibc.so.0
-%{uclibc_root}/lib/libc.so.0
-%if "%{_lib}" == "lib64"
-%dir %{uclibc_root}/lib64
-%dir %{uclibc_root}%{_prefix}/lib
-%{uclibc_root}/lib64/libc.so.0
-%{uclibc_root}/lib64/ld64-uClibc.so.0
-%endif
+%{uclibc_root}/%{_lib}/ld-uClibc.so.0
+%{uclibc_root}/%{_lib}/libc.so.0
 %{_var}/lib/rpm/filetriggers/uclibc.ldconfig.filter
 %{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script
 
