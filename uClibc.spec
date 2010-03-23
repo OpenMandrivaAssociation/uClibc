@@ -211,8 +211,14 @@ rm -rf %{buildroot}
 %ghost %{uclibc_root}%{_sysconfdir}/ld.so.cache
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
-%{uclibc_root}/%{_lib}/ld-uClibc.so.0
-%{uclibc_root}/%{_lib}/libc.so.0
+%if "%{_lib}" == "lib64"	 
+%dir %{uclibc_root}/lib64	 
+%{uclibc_root}/lib64/libc.so.0	 
+%{uclibc_root}/lib64/ld64-uClibc.so.0	 
+%else
+%{uclibc_root}/lib/ld-uClibc.so.0
+%{uclibc_root}/lib/libc.so.0
+%endif
 %{_var}/lib/rpm/filetriggers/uclibc.ldconfig.filter
 %{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script
 
