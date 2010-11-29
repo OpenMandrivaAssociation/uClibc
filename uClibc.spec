@@ -9,7 +9,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -135,8 +135,7 @@ cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
 export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 export LIBRARY_PATH="\$LD_RUN_PATH"
-export GCC_EXEC_PREFIX="\$LD_RUN_PATH"
-gcc -muclibc \$(rpm --eval "-Wl,--dynamic-linker,%%{uclibc_root}/%%{_lib}/%%{_lib}-uClibc.so.0"|sed -e 's#lib-uClibc#ld-uClibc#g' -e 's#lib64-uClibc#ld64-uClibc#g') \$@
+exec gcc -B"\$LD_RUN_PATH" -muclibc \$(rpm --eval "-Wl,--dynamic-linker,%%{uclibc_root}/%%{_lib}/%%{_lib}-uClibc.so.0"|sed -e 's#lib-uClibc#ld-uClibc#g' -e 's#lib64-uClibc#ld64-uClibc#g') \$@
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
