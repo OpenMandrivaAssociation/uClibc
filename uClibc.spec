@@ -193,6 +193,7 @@ rm -rf %{buildroot}
 %dir %{uclibc_root}%{_sbindir}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
+%dir %{uclibc_root}%{_sysconfdir}
 %verify(not md5 size mtime) %config(noreplace) %{uclibc_root}%{_sysconfdir}/ld.so.conf
 %ghost %{uclibc_root}%{_sysconfdir}/ld.so.cache
 %{uclibc_root}%{_bindir}/ldd
