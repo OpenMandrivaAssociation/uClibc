@@ -4,19 +4,18 @@
 %define	uclibc_root	%{_prefix}/uclibc
 %define	uclibc_cc	uclibc-gcc
 
-%define	majorish	0.9.30.1
+%define	majorish	0.9.30.3
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	%mkrel 13
+Release:	%mkrel 1
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.bz2
-Source1:        http://uclibc.org/downloads/%{name}-%{version}.tar.bz2.sign
+Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
+Source1:        http://uclibc.org/downloads/%{name}-%{version}.tar.xz.sign
 Source2:	uClibc-0.9.30.2-config
-Patch0:		uClibc-0.9.30.1-getline.patch
 Patch1:		uClibc-0.9.30.1-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.30.2-add-rpmatch-function.patch
@@ -28,11 +27,6 @@ Patch4:		uClibc-0.9.30.2-unstable-abi.patch
 # backported patches from uClibc git:
 Patch100:	uClibc-0.9.30.1-64bit-strtouq.patch
 Patch101:	uClibc-0.9.30.1-arm-fix-linuxthreads-sysdep.patch
-Patch102:	uClibc-0.9.30.1-c99-ldbl-math.patch
-Patch103:	uClibc-0.9.30.1-dl-sysdep-inline.patch
-Patch104:	uClibc-0.9.30.1-fix-getaddrinfo.patch
-Patch105:	uClibc-0.9.30.1-enable-nanosecond-stat.patch
-Patch106:	uClibc-0.9.30.1-add-missing-utime-defs.patch
 Patch107:	uClibc-0.9.30.1-add-strverscmp-and-versionsort-64.patch
 Patch108:	uClibc-0.9.30.1-libm-add-scalbf-gammaf-significandf-wrappers.patch
 Patch109:	uClibc-0.9.30.1-test-stat-fix-compiling-the-memcmp-stat-test-when-__.patch
@@ -91,19 +85,12 @@ Small libc for building embedded applications.
 
 %prep
 %setup -q
-%patch0 -p1 -b .getline~
 %patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi_version~
 
-%patch100 -p1 -b .64bit_strouq~
 %patch101 -p1 -b .arm_linuxthreads~
-%patch102 -p1 -b .c99_math~
-%patch103 -p1 -b .dl_sysdep~
-%patch104 -p1 -b .getaddrinfo~
-%patch105 -p1 -b .ns_stat~
-%patch106 -p1 -b .utime_defs~
 %patch107 -p1 -b .versionsort~
 %patch108 -p1 -b .scalbf~
 %patch109 -p1 -b .stat_check~
