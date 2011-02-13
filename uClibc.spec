@@ -9,7 +9,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -164,20 +164,10 @@ done
 mkdir -p %{buildroot}%{uclibc_root}%{_sysconfdir}
 touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 
-# automatic ldconfig cache update on rpm installs/removals
-# (see http://wiki.mandriva.com/en/Rpm_filetriggers)
-install -d %{buildroot}%{_var}/lib/rpm/filetriggers
-cat > %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.filter << EOF
-^.(%{uclibc_root}/lib|%{uclibc_root}%{_prefix}/lib)(64)?/[^/]*\.so\.
-EOF
-cat > %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script << EOF
-#!/bin/sh
-%{uclibc_root}/sbin/ldconfig -X
-EOF
-chmod 755 %{buildroot}%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script
-
-
 %post -p %{uclibc_root}/sbin/ldconfig
+
+%triggerin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
+%{uclibc_root}/sbin/ldconfig -X
 
 %clean
 rm -rf %{buildroot}
@@ -206,8 +196,6 @@ rm -rf %{buildroot}
 %{uclibc_root}/lib/ld-uClibc.so.0
 %{uclibc_root}/lib/libc.so.0
 %endif
-%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.filter
-%{_var}/lib/rpm/filetriggers/uclibc.ldconfig.script
 
 %files -n %{libname}
 %defattr(-,root,root)
