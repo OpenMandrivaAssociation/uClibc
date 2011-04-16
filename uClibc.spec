@@ -4,33 +4,26 @@
 %define	uclibc_root	%{_prefix}/uclibc
 %define	uclibc_cc	uclibc-gcc
 
-%define	majorish	0.9.30.3
+%define	majorish	0.9.32
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	%mkrel 3
+%define	pre	rc3
+Release:	0.%{pre}.1
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
-Source1:        http://uclibc.org/downloads/%{name}-%{version}.tar.xz.sign
-Source2:	uClibc-0.9.30.2-config
+Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?pre:-%{pre}}.tar.xz
+Source1:        http://uclibc.org/downloads/%{name}-%{version}%{?pre:-%{pre}}.tar.xz.sign
+Source2:	uClibc-0.9.31-config
 Patch1:		uClibc-0.9.30.1-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
-Patch2:		uClibc-0.9.30.2-add-rpmatch-function.patch
+Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 # http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
-Patch3:		uClibc-0.9.30.1-add-scanf-a-flag.patch
+Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
-Patch4:		uClibc-0.9.30.2-unstable-abi.patch
-
-# backported patches from uClibc git:
-Patch100:	uClibc-0.9.30.1-64bit-strtouq.patch
-Patch101:	uClibc-0.9.30.1-arm-fix-linuxthreads-sysdep.patch
-Patch107:	uClibc-0.9.30.1-add-strverscmp-and-versionsort-64.patch
-Patch108:	uClibc-0.9.30.1-libm-add-scalbf-gammaf-significandf-wrappers.patch
-Patch109:	uClibc-0.9.30.1-test-stat-fix-compiling-the-memcmp-stat-test-when-__.patch
-
+Patch4:		uClibc-0.9.32-rc3-unstable-abi.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %define desc uclibc (pronounced yew-see-lib-see) is a c library for developing\
@@ -84,20 +77,16 @@ Obsoletes:	%{name}-static-devel <= %{version}-%{release}
 Small libc for building embedded applications.
 
 %prep
-%setup -q
-%patch1 -p1 -b .lib64~
+%setup -q -n %{name}-%{version}%{?pre:-%{pre}}
+#%%patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
-%patch4 -p1 -b .abi_version~
+%patch4 -p1 -b .abi~
 
-%patch101 -p1 -b .arm_linuxthreads~
-%patch107 -p1 -b .versionsort~
-%patch108 -p1 -b .scalbf~
-%patch109 -p1 -b .stat_check~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
-	-e "s|@CFLAGS@|%{optflags}|g" \
+	-e "s|@CFLAGS@|%{optflags} -muclibc|g" \
 	-e 's|@ARCH@|%{arch}|g' \
 	-e 's|@LIB@|%{_lib}|g' \
 	-e 's|@PREFIX@|%{uclibc_root}|g' \
@@ -106,7 +95,8 @@ cat %{SOURCE2} |sed \
 %build
 yes "" | %make oldconfig V=1
 
-%make VERBOSE=1 CPU_CFLAGS="" all utils
+# parallel build breaks..
+make VERBOSE=1 CPU_CFLAGS="" all utils
 
 %check
 exit 0
@@ -118,9 +108,10 @@ rm -f test/inet/tst-ethers*
 %make check VERBOSE=1 || /bin/true 
 
 %install
-[ -d "%{buildroot}" ] && chmod 777 -R %{buildroot}
 rm -rf %{buildroot}
 
+#(proyvind): to prevent possible interference...
+export LD_LIBRARY_PATH=
 %make VERBOSE=1 PREFIX=%{buildroot} install
 %make -C utils VERBOSE=1 PREFIX=%{buildroot} utils_install
 
@@ -149,13 +140,15 @@ EOF
 #(peroyvind) rpm will make these symlinks relative
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
+%if 0
 %if "%{_lib}" == "lib64"
 ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
 %else
 ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
+%endif
 
-ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/libc.so.0
+#ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/libc.so.0
 
 for dir in /bin /sbin %{_prefix} %{_bindir} %{_sbindir}; do
 	mkdir -p %{buildroot}%{uclibc_root}$dir
@@ -169,9 +162,6 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %triggerin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
 %{uclibc_root}/sbin/ldconfig -X
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(-,root,root,755)
 %doc README
@@ -181,26 +171,19 @@ rm -rf %{buildroot}
 %dir %{uclibc_root}%{_prefix}
 %dir %{uclibc_root}%{_bindir}
 %dir %{uclibc_root}%{_sbindir}
-%dir %{uclibc_root}/%{_lib}
-%dir %{uclibc_root}%{_libdir}
 %dir %{uclibc_root}%{_sysconfdir}
 %verify(not md5 size mtime) %config(noreplace) %{uclibc_root}%{_sysconfdir}/ld.so.conf
 %ghost %{uclibc_root}%{_sysconfdir}/ld.so.cache
+%{uclibc_root}%{_bindir}/getconf
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
-%if "%{_lib}" == "lib64"	 
-%dir %{uclibc_root}/lib64	 
-%{uclibc_root}/lib64/libc.so.0	 
-%{uclibc_root}/lib64/ld64-uClibc.so.0	 
-%else
-%{uclibc_root}/lib/ld-uClibc.so.0
-%{uclibc_root}/lib/libc.so.0
-%endif
 
 %files -n %{libname}
 %defattr(-,root,root)
+%dir %{uclibc_root}/%{_lib}
+%dir %{uclibc_root}%{_libdir}
 %ifnarch %{sparcx}
-%{uclibc_root}/%{_lib}/*-*%{version}.so
+%{uclibc_root}/%{_lib}/*-*%{version}%{?pre:-%{pre}}.so
 %{uclibc_root}/%{_lib}/*.so.%{version}
 %endif
 
