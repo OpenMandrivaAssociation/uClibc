@@ -24,39 +24,30 @@ Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.32-rc3-unstable-abi.patch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
-
-%define desc uclibc (pronounced yew-see-lib-see) is a c library for developing\
-embedded linux systems. it is much smaller than the gnu c library,\
-but nearly all applications supported by glibc also work perfectly\
-with uclibc. porting applications from glibc to uclibc typically\
-involves just recompiling the source code. uclibc even supports\
-shared libraries and threading. it currently runs on standard\
-linux and  mmu-less (also known as uclinux) systems with support\
-for alpha, arm, cris, i386, i960, h8300, m68k, mips/mipsel,\
-powerpc, sh, sparc, and v850 processors.\
-\
-if you are building an embedded linux system and you find that\
-glibc is eating up too much space, you should consider using\
-uclibc. if you are building a huge fileserver with 12 terabytes of\
-storage, then using glibc may make more sense. unless, for\
-example, that 12 terabytes will be network attached storage and\
-you plan to burn linux into the system's firmware...
-
-#' <- this is just to "close" to work around vim highlighting :p
 
 %description
-%{desc}
+uClibc (pronounced yew-see-lib-see) is a c library for developing
+embedded linux systems. it is much smaller than the gnu c library,
+but nearly all applications supported by glibc also work perfectly
+with uclibc. porting applications from glibc to uclibc typically
+involves just recompiling the source code. uclibc even supports
+shared libraries and threading. it currently runs on standard
+linux and  mmu-less (also known as uclinux) systems with support
+for alpha, arm, cris, i386, i960, h8300, m68k, mips/mipsel,
+powerpc, sh, sparc, and v850 processors.
+
+if you are building an embedded linux system and you find that
+glibc is eating up too much space, you should consider using
+uclibc. if you are building a huge fileserver with 12 terabytes of
+storage, then using glibc may make more sense. unless, for
+example, that 12 terabytes will be network attached storage and
+you plan to burn linux into the system's firmware...
 
 %define	libname	%mklibname %{name} %{version}
 %package -n	%{libname}
-Summary:	%{summary}
 Group:		System/Libraries
 %define	oldname	%mklibname %{name}
 %rename		%{oldname}
-
-%description -n	%{libname}
-%{desc}
 
 %define	libdev	%mklibname %{name} -d
 %package -n	%{libdev}
