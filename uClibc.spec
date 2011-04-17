@@ -112,8 +112,8 @@ rm -rf %{buildroot}
 
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-%make VERBOSE=1 PREFIX=%{buildroot} install
-%make -C utils VERBOSE=1 PREFIX=%{buildroot} utils_install
+make VERBOSE=1 PREFIX=%{buildroot} install
+make -C utils VERBOSE=1 PREFIX=%{buildroot} utils_install
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
