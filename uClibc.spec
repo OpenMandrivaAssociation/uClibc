@@ -16,7 +16,7 @@ Group:		System/Libraries
 URL:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?pre:-%{pre}}.tar.xz
 Source1:        http://uclibc.org/downloads/%{name}-%{version}%{?pre:-%{pre}}.tar.xz.sign
-Source2:	uClibc-0.9.31-config
+Source2:	uClibc-0.9.32-rc3-config
 Patch1:		uClibc-0.9.30.1-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
@@ -83,17 +83,16 @@ Small libc for building embedded applications.
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
 
-
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
-	-e "s|@CFLAGS@|%{optflags} -muclibc|g" \
+	-e "s|@CFLAGS@|%{optflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}|g" \
 	-e 's|@ARCH@|%{arch}|g' \
 	-e 's|@LIB@|%{_lib}|g' \
 	-e 's|@PREFIX@|%{uclibc_root}|g' \
 	>> .config
 
 %build
-yes "" | %make oldconfig V=1
+yes "" | make oldconfig V=1
 
 # parallel build breaks..
 make VERBOSE=1 CPU_CFLAGS="" all utils
@@ -140,12 +139,10 @@ EOF
 #(peroyvind) rpm will make these symlinks relative
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
-%if 0
 %if "%{_lib}" == "lib64"
 ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
 %else
 ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
-%endif
 %endif
 
 #ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/libc.so.0
@@ -177,6 +174,11 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %{uclibc_root}%{_bindir}/getconf
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
+%if "%{_lib}" == "lib64"
+%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
+%else
+%{uclibc_root}/lib/ld-uClibc.so.0
+%endif
 
 %files -n %{libname}
 %defattr(-,root,root)
