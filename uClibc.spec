@@ -52,8 +52,8 @@ you plan to burn linux into the system's firmware...
 %package -n	%{libname}
 Summary:	%{summary}
 Group:		System/Libraries
-Provides:	%mklibname %{name}
-Obsoletes:      %{mklibname %{name}} <= %{version}-%{release}
+%define	oldname	%mklibname %{name}
+%rename		%{oldname}
 
 %description -n	%{libname}
 %{desc}
@@ -62,15 +62,12 @@ Obsoletes:      %{mklibname %{name}} <= %{version}-%{release}
 %package -n	%{libdev}
 Summary:	Development files & libraries for uClibc
 Group:		Development/C
-Requires:	%{libname} = %{version}-%{release}
-Provides:	%{name}-devel = %{version}-%{release}
-Obsoletes:	%{name}-devel <= %{version}-%{release}
+Requires:	%{libname} = %{EVRD}
+%rename		%{name}-devel
 %define	libstat	%mklibname %{name} -d -s
-Provides:	%{libstat} = %{version}-%{release}
-Obsoletes:	%{libstat} <= %{version}-%{release}
+%rename		%{libstat}
+%rename		%{name}-static-devel
 Provides:	libc-static
-Provides:	%{name}-static-devel = %{version}-%{release}
-Obsoletes:	%{name}-static-devel <= %{version}-%{release}
 
 %description -n	%{libdev}
 Small libc for building embedded applications.
