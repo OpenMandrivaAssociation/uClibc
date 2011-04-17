@@ -94,8 +94,6 @@ rm -f test/inet/tst-ethers*
 %make check VERBOSE=1 || /bin/true 
 
 %install
-rm -rf %{buildroot}
-
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
 make VERBOSE=1 PREFIX=%{buildroot} install
@@ -147,7 +145,6 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %{uclibc_root}/sbin/ldconfig -X
 
 %files
-%defattr(-,root,root,755)
 %doc README
 %dir %{uclibc_root}/bin
 %dir %{uclibc_root}/sbin
@@ -166,7 +163,6 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %endif
 
 %files -n %{libname}
-%defattr(-,root,root)
 %dir %{uclibc_root}
 %dir %{uclibc_root}%{_prefix}
 %dir %{uclibc_root}/%{_lib}
@@ -177,7 +173,6 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %endif
 
 %files -n %{libdev}
-%defattr(-,root,root)
 %doc docs/* Changelog TODO
 %{_bindir}/%{uclibc_cc}
 %{_sysconfdir}/rpm/macros.d/uclibc.macros
@@ -197,6 +192,5 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %{uclibc_root}%{_libdir}/libresolv.so
 %{uclibc_root}%{_libdir}/libutil.so
 %endif
-%defattr(-,root,root)
 %{uclibc_root}%{_libdir}/lib*.a
 %{uclibc_root}%{_libdir}/uclibc_nonshared.a
