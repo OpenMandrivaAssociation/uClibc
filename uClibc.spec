@@ -54,7 +54,6 @@ Summary:	%{summary}
 Group:		System/Libraries
 Provides:	%mklibname %{name}
 Obsoletes:      %{mklibname %{name}} <= %{version}-%{release}
-Requires:	%{name}
 
 %description -n	%{libname}
 %{desc}
@@ -162,10 +161,8 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %files
 %defattr(-,root,root,755)
 %doc README
-%dir %{uclibc_root}
 %dir %{uclibc_root}/bin
 %dir %{uclibc_root}/sbin
-%dir %{uclibc_root}%{_prefix}
 %dir %{uclibc_root}%{_bindir}
 %dir %{uclibc_root}%{_sbindir}
 %dir %{uclibc_root}%{_sysconfdir}
@@ -182,6 +179,8 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 
 %files -n %{libname}
 %defattr(-,root,root)
+%dir %{uclibc_root}
+%dir %{uclibc_root}%{_prefix}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
 %ifnarch %{sparcx}
