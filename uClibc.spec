@@ -85,7 +85,7 @@ Small libc for building embedded applications.
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
-	-e "s|@CFLAGS@|%{optflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}|g" \
+	-e "s|@CFLAGS@|%{optflags} %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}|g" \
 	-e 's|@ARCH@|%{arch}|g' \
 	-e 's|@LIB@|%{_lib}|g' \
 	-e 's|@PREFIX@|%{uclibc_root}|g' \
