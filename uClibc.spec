@@ -45,6 +45,7 @@ you plan to burn linux into the system's firmware...
 
 %define	libname	%mklibname %{name} %{version}
 %package -n	%{libname}
+Summary:	%{summary}
 Group:		System/Libraries
 %define	oldname	%mklibname %{name}
 %rename		%{oldname}
