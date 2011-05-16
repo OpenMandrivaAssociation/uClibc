@@ -9,21 +9,20 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-%define	pre	rc3
-Release:	0.%{pre}.2
+%define	pre	rc3.git
+Release:	1.%{pre}.0
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?pre:-%{pre}}.tar.xz
-Source1:        http://uclibc.org/downloads/%{name}-%{version}%{?pre:-%{pre}}.tar.xz.sign
-Source2:	uClibc-0.9.32-rc3-config
+Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?pre:-rc3-git}.tar.xz
+Source2:	uClibc-0.9.32-rc3-git-config
 Patch1:		uClibc-0.9.30.1-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 # http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
 Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
-Patch4:		uClibc-0.9.32-rc3-unstable-abi.patch
+Patch4:		uClibc-0.9.32-rc3-git-unstable-abi.patch
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -83,7 +82,7 @@ Provides:	libc-static
 Small libc for building embedded applications.
 
 %prep
-%setup -q -n %{name}-%{version}%{?pre:-%{pre}}
+%setup -q -n %{name}-%{version}%{?pre:-rc3-git}
 #%%patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
@@ -129,7 +128,7 @@ cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
 export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 export LIBRARY_PATH="\$LD_RUN_PATH"
-exec gcc -B"\$LD_RUN_PATH" -muclibc \$@
+exec gcc -muclibc \$@
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
@@ -143,13 +142,15 @@ EOF
 #(peroyvind) rpm will make these symlinks relative
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
+# crack hack to get uclibc working with chroot within uclibc root..
+mkdir -p %{buildroot}%{uclibc_root}%{uclibc_root}
+ln -s ../../%{_lib} %{buildroot}%{uclibc_root}%{uclibc_root}/%{_lib}
+
 %if "%{_lib}" == "lib64"
 ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
 %else
 ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
-
-#ln -s libc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/libc.so.0
 
 for dir in /bin /sbin %{_prefix} %{_bindir} %{_sbindir}; do
 	mkdir -p %{buildroot}%{uclibc_root}$dir
@@ -175,10 +176,15 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %{uclibc_root}%{_bindir}/getconf
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
+%dir %{uclibc_root}%{uclibc_root}
+%dir %{uclibc_root}%{uclibc_root}/%{_lib}
 %if "%{_lib}" == "lib64"
 %{uclibc_root}/%{_lib}/ld64-uClibc.so.0
+%{uclibc_root}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
 %else
 %{uclibc_root}/lib/ld-uClibc.so.0
+%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
+
 %endif
 
 %files -n %{libname}
@@ -187,7 +193,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
 %ifnarch %{sparcx}
-%{uclibc_root}/%{_lib}/*-*%{version}%{?pre:-%{pre}}.so
+%{uclibc_root}/%{_lib}/*-*%{version}%{?pre:-%(echo %{pre}|sed -e 's#\.#-#')}.so
 %{uclibc_root}/%{_lib}/*.so.%{version}
 %endif
 
