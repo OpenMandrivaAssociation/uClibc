@@ -23,6 +23,7 @@ Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.32-rc3-git-unstable-abi.patch
+Patch5:		uClibc-0.9.32-rc3-git-epoll-commit-breaks-x86.patch
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -87,6 +88,9 @@ Small libc for building embedded applications.
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
+%ifarch %{ix86}
+%patch5 -p1 -R -b .epoll~
+%endif
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
 cat %{SOURCE2} |sed \
