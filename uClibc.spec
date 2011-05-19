@@ -10,7 +10,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
 %define	pre	rc3.git
-Release:	1.%{pre}.0
+Release:	1.%{pre}.1
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -147,8 +147,8 @@ EOF
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
 
 # crack hack to get uclibc working with chroot within uclibc root..
-mkdir -p %{buildroot}%{uclibc_root}%{uclibc_root}
-ln -s ../../%{_lib} %{buildroot}%{uclibc_root}%{uclibc_root}/%{_lib}
+#mkdir -p %{buildroot}%{uclibc_root}%{uclibc_root}
+#ln -s ../../%{_lib} %{buildroot}%{uclibc_root}%{uclibc_root}/%{_lib}
 
 %if "%{_lib}" == "lib64"
 ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
@@ -180,15 +180,14 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %{uclibc_root}%{_bindir}/getconf
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
-%dir %{uclibc_root}%{uclibc_root}
-%dir %{uclibc_root}%{uclibc_root}/%{_lib}
+#%dir %{uclibc_root}%{uclibc_root}
+#%dir %{uclibc_root}%{uclibc_root}/%{_lib}
 %if "%{_lib}" == "lib64"
 %{uclibc_root}/%{_lib}/ld64-uClibc.so.0
-%{uclibc_root}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
+#%{uclibc_root}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
 %else
 %{uclibc_root}/lib/ld-uClibc.so.0
-%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
-
+#%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
 
 %files -n %{libname}
