@@ -10,7 +10,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
 %define	pre	rc3.git
-Release:	1.%{pre}.1
+Release:	1.%{pre}.2
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -47,6 +47,7 @@ you plan to burn linux into the system's firmware...
 %package -n	%{libname}
 Summary:	%{summary}
 Group:		System/Libraries
+Requires:	uClibc
 %define	oldname	%mklibname %{name}
 %rename		%{oldname}
 
