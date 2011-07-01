@@ -24,8 +24,6 @@ Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.32-rc3-git-unstable-abi.patch
 Patch5:		uClibc-0.9.32-rc3-git-epoll-commit-breaks-x86.patch
-# (mdawkins): found fix for arm build error here http://manulix.wikidot.com/build-howto
-Patch6:		uClibc-0.9.32-rc3__init__fini_does_no_evaluate_to_a_constant.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
 # so was trying to link together glibc&uClibc...)
 Patch7:		uClibc-arm_hack_unwind.patch
@@ -98,7 +96,6 @@ Small libc for building embedded applications.
 %ifarch %{ix86}
 %patch5 -p1 -R -b .epoll~
 %endif
-%patch6 -p1
 %patch7 -p1 -b .unwind
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
