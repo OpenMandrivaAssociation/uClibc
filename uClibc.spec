@@ -24,6 +24,12 @@ Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.32-rc3-git-unstable-abi.patch
 Patch5:		uClibc-0.9.32-rc3-git-epoll-commit-breaks-x86.patch
+# (mdawkins): found fix for arm build error here http://manulix.wikidot.com/build-howto
+Patch6:		uClibc-0.9.32-rc3__init__fini_does_no_evaluate_to_a_constant.patch
+# from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
+# so was trying to link together glibc&uClibc...)
+Patch7:		uClibc-arm_hack_unwind.patch
+
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -92,13 +98,22 @@ Small libc for building embedded applications.
 %ifarch %{ix86}
 %patch5 -p1 -R -b .epoll~
 %endif
+%patch6 -p1
+%patch7 -p1 -b .unwind
 
-%define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/')
+%define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
+%ifarch %arm
+echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTLE_ENDIAN=y\n" >> .config
+cat %{SOURCE2} |sed \
+	-e "s!UCLIBC_HAS_FPU=y!# UCLIBC_HAS_FPU is not set!g" \
+	-e "s|@CFLAGS@|%{optflags}|g" \
+%else
 cat %{SOURCE2} |sed \
 	-e "s|@CFLAGS@|%{optflags} %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}|g" \
-	-e 's|@ARCH@|%{arch}|g' \
-	-e 's|@LIB@|%{_lib}|g' \
-	-e 's|@PREFIX@|%{uclibc_root}|g' \
+%endif
+	-e "s|@ARCH@|%{arch}|g" \
+	-e "s|@LIB@|%{_lib}|g" \
+	-e "s|@PREFIX@|%{uclibc_root}|g" \
 	>> .config
 
 %build
@@ -133,7 +148,13 @@ cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
 export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 export LIBRARY_PATH="\$LD_RUN_PATH"
-exec gcc -muclibc \$@
+%ifarch %arm
+# avoid getting troubles. without it, linker is called with -lgcc -lgss_s and then
+# pulls glibc. Typical example are the unwind symbols.
+# It's a really nasty hack :(
+UNWIND_HACK=-static-libgcc
+%endif
+exec gcc -muclibc \$UNWIND_HACK \$@
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
