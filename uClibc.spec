@@ -9,12 +9,11 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-%define	pre	rc3.git
-Release:	1.%{pre}.2
+Release:	2
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?pre:-rc3-git}.tar.xz
+Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
 Source2:	uClibc-0.9.32-rc3-git-config
 Patch1:		uClibc-0.9.30.1-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
@@ -22,8 +21,7 @@ Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 # http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
 Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
-Patch4:		uClibc-0.9.32-rc3-git-unstable-abi.patch
-Patch5:		uClibc-0.9.32-rc3-git-epoll-commit-breaks-x86.patch
+Patch4:		uClibc-0.9.32-unstable-abi.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
 # so was trying to link together glibc&uClibc...)
 Patch7:		uClibc-arm_hack_unwind.patch
@@ -88,14 +86,11 @@ Provides:	libc-static
 Small libc for building embedded applications.
 
 %prep
-%setup -q -n %{name}-%{version}%{?pre:-rc3-git}
+%setup -q
 #%%patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
-%ifarch %{ix86}
-%patch5 -p1 -R -b .epoll~
-%endif
 %patch7 -p1 -b .unwind
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
@@ -215,7 +210,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
 %ifnarch %{sparcx}
-%{uclibc_root}/%{_lib}/*-*%{version}%{?pre:-%(echo %{pre}|sed -e 's#\.#-#')}.so
+%{uclibc_root}/%{_lib}/*-*%{version}.so
 %{uclibc_root}/%{_lib}/*.so.%{version}
 %endif
 
