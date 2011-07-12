@@ -22,6 +22,7 @@ Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.32-unstable-abi.patch
+Patch5:		uClibc-0.9.32-fix-nptl-build-on-x86.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
 # so was trying to link together glibc&uClibc...)
 Patch7:		uClibc-arm_hack_unwind.patch
@@ -91,6 +92,7 @@ Small libc for building embedded applications.
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
+%patch5 -p1 -b .epoll~
 %patch7 -p1 -b .unwind
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
