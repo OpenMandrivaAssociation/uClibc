@@ -14,7 +14,7 @@ License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
-Source2:	uClibc-0.9.32-rc3-git-config
+Source2:	uClibc-0.9.32-config
 Patch1:		uClibc-0.9.30.1-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
