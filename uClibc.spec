@@ -166,6 +166,7 @@ ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_incl
 
 %if "%{_lib}" == "lib64"
 ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
+install -d %{buildroot}%{uclibc_root}{/lib,%{_prefix}/lib}
 %else
 ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
@@ -207,6 +208,10 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %files -n %{libname}
 %dir %{uclibc_root}
 %dir %{uclibc_root}%{_prefix}
+%if "%{_lib}" == "lib64"
+%dir %{uclibc_root}/lib
+%dir %{uclibc_root}%{_prefix}/lib
+%endif
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
 %ifnarch %{sparcx}
