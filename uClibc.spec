@@ -9,7 +9,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	2
+Release:	3
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -148,7 +148,7 @@ export LIBRARY_PATH="\$LD_RUN_PATH"
 # It's a really nasty hack :(
 UNWIND_HACK=-static-libgcc
 %endif
-exec gcc -muclibc \$UNWIND_HACK \$@
+exec gcc -muclibc \$UNWIND_HACK "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
