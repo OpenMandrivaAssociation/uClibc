@@ -5,6 +5,8 @@
 %define	uclibc_cc	uclibc-gcc
 
 %define	majorish	0.9.32
+%define	libname	%mklibname %{name} %{version}
+%define	libdev	%mklibname %{name} -d
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
@@ -46,13 +48,11 @@ storage, then using glibc may make more sense. unless, for
 example, that 12 terabytes will be network attached storage and
 you plan to burn linux into the system's firmware...
 
-%define	libname	%mklibname %{name} %{version}
 %package -n	%{libname}
 Summary:	%{summary}
 Group:		System/Libraries
 Requires:	uClibc
-%define	oldname	%mklibname %{name}
-%rename		%{oldname}
+%rename	%{_lib}uClibc
 
 %description -n	%{libname}
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -72,14 +72,12 @@ storage, then using glibc may make more sense. unless, for
 example, that 12 terabytes will be network attached storage and
 you plan to burn linux into the system's firmware...
 
-%define	libdev	%mklibname %{name} -d
 %package -n	%{libdev}
 Summary:	Development files & libraries for uClibc
 Group:		Development/C
 Requires:	%{libname} = %{EVRD}
 %rename		%{name}-devel
-%define	libstat	%mklibname %{name} -d -s
-%rename		%{libstat}
+%rename		%{_lib}uClibc-static-devel
 %rename		%{name}-static-devel
 Provides:	libc-static
 
