@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}
-Release:	3
+Release:	4
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -53,7 +53,7 @@ you plan to burn linux into the system's firmware...
 Summary:	%{summary}
 Group:		System/Libraries
 Requires:	uClibc
-%rename	%{_lib}uClibc
+%rename		%{_lib}uClibc
 
 %description -n	%{libname}
 uClibc (pronounced yew-see-lib-see) is a c library for developing
