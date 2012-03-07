@@ -28,6 +28,7 @@ Patch5:		uClibc-0.9.32-fix-nptl-build-on-x86.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
 # so was trying to link together glibc&uClibc...)
 Patch7:		uClibc-arm_hack_unwind.patch
+Patch8:		uClibc-0.9.32-no-gstabs.patch
 
 
 %description
@@ -91,7 +92,8 @@ Small libc for building embedded applications.
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
 %patch5 -p1 -b .epoll~
-%patch7 -p1 -b .unwind
+%patch7 -p1 -b .unwind~
+%patch8 -p1 -b .gstabs~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 %ifarch %arm
