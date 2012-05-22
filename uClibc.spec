@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	1
+Release:	2
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -165,10 +165,10 @@ ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_incl
 #ln -s ../../%{_lib} %{buildroot}%{uclibc_root}%{uclibc_root}/%{_lib}
 
 %if "%{_lib}" == "lib64"
-ln -s ld64-uClibc.so.%{version} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
+ln -s ld64-uClibc.so.%{majorish} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
 install -d %{buildroot}%{uclibc_root}{/lib,%{_prefix}/lib}
 %else
-ln -s ld-uClibc.so.%{version} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
+ln -s ld-uClibc.so.%{majorish} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
 
 for dir in /bin /sbin %{_prefix} %{_bindir} %{_sbindir}; do
