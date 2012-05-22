@@ -4,14 +4,14 @@
 %define	uclibc_root	%{_prefix}/uclibc
 %define	uclibc_cc	uclibc-gcc
 
-%define	majorish	0.9.32
-%define	libname	%mklibname %{name} %{version}
+%define	majorish	0.9.33
+%define	libname	%mklibname %{name} %{majorish}
 %define	libdev	%mklibname %{name} -d
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	%{majorish}
-Release:	5
+Version:	%{majorish}.2
+Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -23,8 +23,7 @@ Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 # http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
 Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
-Patch4:		uClibc-0.9.32-unstable-abi.patch
-Patch5:		uClibc-0.9.32-fix-nptl-build-on-x86.patch
+Patch4:		uClibc-0.9.33.2-unstable-abi.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
 # so was trying to link together glibc&uClibc...)
 Patch7:		uClibc-arm_hack_unwind.patch
@@ -91,7 +90,6 @@ Small libc for building embedded applications.
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
-%patch5 -p1 -b .epoll~
 %patch7 -p1 -b .unwind~
 %patch8 -p1 -b .gstabs~
 
@@ -218,7 +216,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %dir %{uclibc_root}%{_libdir}
 %ifnarch %{sparcx}
 %{uclibc_root}/%{_lib}/*-*%{version}.so
-%{uclibc_root}/%{_lib}/*.so.%{version}
+%{uclibc_root}/%{_lib}/*.so.%{majorish}
 %endif
 
 %files -n %{libdev}
