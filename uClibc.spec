@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	4
+Release:	5
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -154,7 +154,7 @@ install -d %{buildroot}%{_sysconfdir}/rpm/macros.d
 cat > %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros << EOF
 %%uclibc_root	%{uclibc_root}
 %%uclibc_cc	%{uclibc_cc}
-%%uclibc_cflags	%%{optflags} -fno-stack-protector
+%%uclibc_cflags	%%{optflags} -fno-stack-protector -Os
 EOF
 
 #(peroyvind) rpm will make these symlinks relative
