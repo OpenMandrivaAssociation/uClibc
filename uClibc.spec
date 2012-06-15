@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	5
+Release:	6
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -138,15 +138,17 @@ install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
 export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
+#XXX: this should add rpath, but for some reason it no longer happens and we
+# have to pass the -rpath option to the linker as well
 export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 export LIBRARY_PATH="\$LD_RUN_PATH"
-%ifarch %arm
+%ifarch %{arm}
 # avoid getting troubles. without it, linker is called with -lgcc -lgss_s and then
 # pulls glibc. Typical example are the unwind symbols.
 # It's a really nasty hack :(
 UNWIND_HACK=-static-libgcc
 %endif
-exec gcc -muclibc \$UNWIND_HACK "\$@"
+exec gcc -muclibc \$UNWIND_HACK -Wl,-rpath="\$LD_RUN_PATH" "\$@" 
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
