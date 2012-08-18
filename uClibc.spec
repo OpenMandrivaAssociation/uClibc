@@ -110,9 +110,9 @@ cat %{SOURCE2} |sed \
 	>> .config
 
 %build
-yes "" | %make oldconfig V=1
+yes "" | %make oldconfig VERBOSE=2
 
-%make VERBOSE=1 CPU_CFLAGS="" all utils
+%make VERBOSE=2 CPU_CFLAGS="" all utils
 
 %check
 exit 0
@@ -121,13 +121,13 @@ ln -snf %{buildroot}%{uclibc_root} install_dir
 # This test relies on /etc/ethers being present to pass, so we'll skip it by
 # removing it
 rm -f test/inet/tst-ethers*
-%make check VERBOSE=1 || /bin/true 
+%make check VERBOSE=2 || /bin/true 
 
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-make VERBOSE=1 PREFIX=%{buildroot} install
-make -C utils VERBOSE=1 PREFIX=%{buildroot} utils_install
+make VERBOSE=2 PREFIX=%{buildroot} install
+make -C utils VERBOSE=2 PREFIX=%{buildroot} utils_install
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
