@@ -31,6 +31,7 @@ Patch8:		uClibc-0.9.32-no-gstabs.patch
 # http://lists.busybox.net/pipermail/uclibc/2011-March/045003.html
 Patch9:		uClibc-0.9.33.2-origin.patch
 Patch10:	uClibc-0.9.33-posix_fallocate.patch
+Patch11:	uClibc-0.9.33-dup3.patch
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -96,9 +97,10 @@ Small libc for building embedded applications.
 %patch8 -p1 -b .gstabs~
 %patch9 -p1 -b .origin~
 %patch10 -p1 -b .fallocate~
+%patch11 -p1 -b .dup3~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
-%ifarch %arm
+%ifarch %{arm}
 echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTLE_ENDIAN=y\n" >> .config
 cat %{SOURCE2} |sed \
 	-e "s!UCLIBC_HAS_FPU=y!# UCLIBC_HAS_FPU is not set!g" \
