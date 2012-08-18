@@ -118,7 +118,7 @@ cat %{SOURCE2} |sed \
 %build
 yes "" | %make oldconfig VERBOSE=2
 
-%make VERBOSE=2 CPU_CFLAGS="" all utils
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
 
 %check
 exit 0
