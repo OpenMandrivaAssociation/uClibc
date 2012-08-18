@@ -132,8 +132,8 @@ rm -f test/inet/tst-ethers*
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-make VERBOSE=2 PREFIX=%{buildroot} install
-make -C utils VERBOSE=2 PREFIX=%{buildroot} utils_install
+make CC="gcc -fuse-ld=bfd" VERBOSE=2 PREFIX=%{buildroot} install
+make CC="gcc -fuse-ld=bfd" -C utils VERBOSE=2 PREFIX=%{buildroot} utils_install
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
