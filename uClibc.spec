@@ -100,8 +100,9 @@ cat %{SOURCE2} |sed \
 	-e "s!UCLIBC_HAS_FPU=y!# UCLIBC_HAS_FPU is not set!g" \
 	-e "s|@CFLAGS@|%{optflags}|g" \
 %else
+# -std=gnu99 is needed for libcrypt sha256 & sha512 support
 cat %{SOURCE2} |sed \
-	-e "s|@CFLAGS@|%{optflags} %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}|g" \
+	-e "s|@CFLAGS@|%{optflags} -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}|g" \
 %endif
 	-e "s|@ARCH@|%{arch}|g" \
 	-e "s|@LIB@|%{_lib}|g" \
