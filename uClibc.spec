@@ -110,10 +110,9 @@ cat %{SOURCE2} |sed \
 	>> .config
 
 %build
-yes "" | make oldconfig V=1
+yes "" | %make oldconfig V=1
 
-# parallel build breaks..
-make VERBOSE=1 CPU_CFLAGS="" all utils
+%make VERBOSE=1 CPU_CFLAGS="" all utils
 
 %check
 exit 0
