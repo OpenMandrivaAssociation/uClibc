@@ -30,7 +30,7 @@ Patch7:		uClibc-arm_hack_unwind.patch
 Patch8:		uClibc-0.9.32-no-gstabs.patch
 # http://lists.busybox.net/pipermail/uclibc/2011-March/045003.html
 Patch9:		uClibc-0.9.33.2-origin.patch
-
+Patch10:	uClibc-0.9.33-posix_fallocate.patch
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -95,6 +95,7 @@ Small libc for building embedded applications.
 %patch7 -p1 -b .unwind~
 %patch8 -p1 -b .gstabs~
 %patch9 -p1 -b .origin~
+%patch10 -p1 -b .fallocate~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 %ifarch %arm
