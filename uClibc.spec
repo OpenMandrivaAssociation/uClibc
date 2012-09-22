@@ -11,13 +11,13 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	8
+Release:	9
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
 Source2:	uClibc-0.9.33.2-config
-Patch1:		uClibc-0.9.30.1-lib64.patch
+Patch1:		uClibc-0.9.33.2-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 # http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
@@ -90,7 +90,7 @@ Small libc for building embedded applications.
 
 %prep
 %setup -q
-#%%patch1 -p1 -b .lib64~
+%patch1 -p1 -b .lib64~
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
