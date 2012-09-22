@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	7
+Release:	8
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -32,6 +32,7 @@ Patch8:		uClibc-0.9.32-no-gstabs.patch
 Patch9:		uClibc-0.9.33.2-origin.patch
 Patch10:	uClibc-0.9.33-posix_fallocate.patch
 Patch11:	uClibc-0.9.33-dup3.patch
+Patch12:	uClibc-0.9.33.2-add-missing-make-rule-on-locale-header.patch
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -98,6 +99,7 @@ Small libc for building embedded applications.
 %patch9 -p1 -b .origin~
 %patch10 -p1 -b .fallocate~
 %patch11 -p1 -b .dup3~
+%patch12 -p1 -b .locale~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
