@@ -200,6 +200,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %dir %{uclibc_root}/bin
 %dir %{uclibc_root}/sbin
 %dir %{uclibc_root}%{_bindir}
+%{uclibc_root}%{_bindir}/iconv
 %dir %{uclibc_root}%{_sbindir}
 %dir %{uclibc_root}%{_sysconfdir}
 %verify(not md5 size mtime) %config(noreplace) %{uclibc_root}%{_sysconfdir}/ld.so.conf
@@ -249,6 +250,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %{uclibc_root}%{_libdir}/libdl.so
 %{uclibc_root}%{_libdir}/libm.so
 %{uclibc_root}%{_libdir}/libresolv.so
+%{uclibc_root}%{_libdir}/libubacktrace.so
 %{uclibc_root}%{_libdir}/libutil.so
 %endif
 %{uclibc_root}%{_libdir}/lib*.a
