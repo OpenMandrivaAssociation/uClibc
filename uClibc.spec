@@ -100,25 +100,29 @@ Small libc for building embedded applications.
 %patch11 -p1 -b .dup3~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
+
+%global	cflags	%{optflags} -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} 
+
+sed %{SOURCE2} \
+%ifarch %{arm}
+	-e 's|.*\(UCLIBC_HAS_FPU\).*|# \1 is not set|g' \
+%endif
+	-e 's|^\(TARGET_[a-z].*\).*|# \1 is not set|g' \
+	-e 's|.*\(TARGET_%{arch}\).*|\1=y|g' \
+	-e 's|.*\(TARGET_ARCH\).*|\1=%{arch}|g' \
+	-e 's|.*\(RUNTIME_PREFIX\).*|\1="%{uclibc_root}"|g' \
+	-e 's|.*\(DEVEL_PREFIX\).*|\1="%{uclibc_root}%{_prefix}"|g' \
+	-e 's|.*\(MULTILIB_DIR\).*|\1="%{_lib}"|g' \
+	-e 's|.*\(UCLIBC_EXTRA_CFLAGS\)=.*|\1="%{cflags}"|g' \
+	> .config
 %ifarch %{arm}
 echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTLE_ENDIAN=y\n" >> .config
-cat %{SOURCE2} |sed \
-	-e "s!UCLIBC_HAS_FPU=y!# UCLIBC_HAS_FPU is not set!g" \
-	-e "s|@CFLAGS@|%{optflags}|g" \
-%else
-# -std=gnu99 is needed for libcrypt sha256 & sha512 support
-cat %{SOURCE2} |sed \
-	-e "s|@CFLAGS@|%{optflags} -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}|g" \
 %endif
-	-e "s|@ARCH@|%{arch}|g" \
-	-e "s|@LIB@|%{_lib}|g" \
-	-e "s|@PREFIX@|%{uclibc_root}|g" \
-	>> .config
 
 %build
 yes "" | %make oldconfig VERBOSE=2
 
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}"
 
 %check
 exit 0
