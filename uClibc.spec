@@ -242,6 +242,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %ifnarch %{sparcx}
 %{uclibc_root}/%{_lib}/*-*%{version}.so
 %{uclibc_root}/%{_lib}/*.so.%{majorish}
+%{uclibc_root}/%{_lib}/libuargp.so.0
 %endif
 
 %files -n %{libdev}
@@ -262,6 +263,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %{uclibc_root}%{_libdir}/libdl.so
 %{uclibc_root}%{_libdir}/libm.so
 %{uclibc_root}%{_libdir}/libresolv.so
+%{uclibc_root}%{_libdir}/libuargp.so
 %{uclibc_root}%{_libdir}/libubacktrace.so
 %{uclibc_root}%{_libdir}/libutil.so
 %endif
