@@ -34,6 +34,7 @@ Patch10:	uClibc-0.9.33-posix_fallocate.patch
 Patch11:	uClibc-0.9.33-dup3.patch
 Patch12:	uClibc-0.9.33.2-add-missing-make-rule-on-locale-header.patch
 Patch13:	uClibc-0.9.33.2-sync-mount.h-with-glibc.patch
+Patch14:	uClibc-0.9.33-add-execvpe.patch
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -102,6 +103,7 @@ Small libc for building embedded applications.
 %patch11 -p1 -b .dup3~
 %patch12 -p1 -b .locale~
 %patch13 -p1 -b .mount~
+%patch14 -p1 -b .execvpe~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
