@@ -38,6 +38,7 @@ Patch14:	uClibc-0.9.33-add-execvpe.patch
 Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
+BuildRequires:	locales-en
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -134,7 +135,7 @@ echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTL
 %build
 yes "" | %make oldconfig VERBOSE=2
 
-make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}"
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}"
 
 %check
 exit 0
@@ -143,7 +144,7 @@ ln -snf %{buildroot}%{uclibc_root} install_dir
 # This test relies on /etc/ethers being present to pass, so we'll skip it by
 # removing it
 rm -f test/inet/tst-ethers*
-make check VERBOSE=2 || /bin/true 
+%make check VERBOSE=2 || /bin/true 
 
 %install
 #(proyvind): to prevent possible interference...
