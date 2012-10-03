@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	11
+Release:	12
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -243,7 +243,6 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 %ifnarch %{sparcx}
 %{uclibc_root}/%{_lib}/*-*%{version}.so
 %{uclibc_root}/%{_lib}/*.so.%{majorish}
-%{uclibc_root}/%{_lib}/libuargp.so.0
 %endif
 
 %files -n %{libdev}
