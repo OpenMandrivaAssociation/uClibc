@@ -205,6 +205,8 @@ done
 mkdir -p %{buildroot}%{uclibc_root}%{_sysconfdir}
 touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 
+echo 'GROUP ( AS_NEEDED ( %{uclibc_root}%{_libdir}/libintl.so ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
+
 %post -p %{uclibc_root}/sbin/ldconfig
 
 %triggerin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
