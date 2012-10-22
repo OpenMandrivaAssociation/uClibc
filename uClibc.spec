@@ -16,6 +16,7 @@ License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
+Source1:	uclibc.macros
 Source2:	uClibc-0.9.33.2-config
 Patch1:		uClibc-0.9.33.2-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
@@ -189,26 +190,7 @@ exec gcc -muclibc \$UNWIND_HACK -Wl,-rpath="\$LD_RUN_PATH" -Wl,-nostdlib "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
-install -d %{buildroot}%{_sysconfdir}/rpm/macros.d
-cat > %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros << EOF
-%%uclibc_root	%{uclibc_root}
-%%uclibc_cc	%{uclibc_cc}
-%%uclibc_cxx	uclibc-g++
-%%uclibc_cflags	%%{optflags} -fno-stack-protector -Os
-%%uclibc_cxxflags %%{uclibc_cflags}
-%%uclibc_configure %%configure2_5x \\\\\\
-	--libdir=%%{uclibc_root}%%{_libdir} \\\\\\
-	--libexecdir=%%{uclibc_root}%%{_libdir} \\\\\\
-	--prefix=%%{uclibc_root}%%{_prefix} \\\\\\
-	--exec-prefix=%%{uclibc_root}%%{_prefix} \\\\\\
-	--bindir=%%{uclibc_root}%%{_bindir} \\\\\\
-	--sbindir=%%{uclibc_root}%%{_sbindir} \\\\\\
-	--disable-silent-rules \\\\\\
-	CC="%%{uclibc_cc}" \\\\\\
-	CXX="%%{uclibc_cxx}" \\\\\\
-	CFLAGS="%%{uclibc_cflags}" \\\\\\
-	CXXFLAGS="%%{uclibc_cxxflags}"
-EOF
+install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros
 
 #(peroyvind) rpm will make these symlinks relative
 ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_includedir}
