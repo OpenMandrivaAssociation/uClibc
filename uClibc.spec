@@ -42,9 +42,10 @@ Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.pa
 # from origin/0.9.33 branch
 Patch100:	0001-librt-re-add-SIGCANCEL-to-the-list-of-blocked-signal.patch
 Patch101:	0001-nptl-sh-fix-race-condition-in-lll_wait_tid.patch
-# from git master branch
+# from origin/HEAD branch
 Patch200:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
+Patch202:	0001-Remove-pragma-weak-for-undeclared-symbol.patch
 BuildRequires:	locales-en
 
 %description
@@ -123,6 +124,7 @@ Small libc for building embedded applications.
 %patch101 -p1 -b .race_cond~
 %patch200 -p1 -b .immediate_vals~
 %patch201 -p1 -b .bits_time~
+%patch202 -p1 -b .weak~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
