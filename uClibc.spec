@@ -198,6 +198,12 @@ cat > %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros << EOF
 %%uclibc_cxxflags %%{uclibc_cflags}
 %%uclibc_configure %%configure2_5x \\\\\\
 	--libdir=%%{uclibc_root}%{_libdir} \\\\\\
+	--libexecdir=%%{uclibc_root}%{_libdir} \\\\\\
+	--prefix=%{uclibc_root}%{_prefix} \\\\\\
+	--exec-prefix=%{uclibc_root}%{_prefix} \\\\\\
+	--bindir=%{uclibc_root}%{_bindir} \\\\\\
+	--sbindir=%{uclibcb_root}%{_sbindir} \\\\\\
+	--disable-silent-rules \\\\\\
 	CC="%%{uclibc_cc}" \\\\\\
 	CXX="%%{uclibc_cxx}" \\\\\\
 	CFLAGS="%%{uclibc_cflags}" \\\\\\
