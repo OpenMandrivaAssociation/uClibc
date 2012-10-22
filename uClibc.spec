@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	12
+Release:	13
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -38,6 +38,7 @@ Patch14:	uClibc-0.9.33-add-execvpe.patch
 Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
+Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
 BuildRequires:	locales-en
 
 %description
@@ -111,6 +112,7 @@ Small libc for building embedded applications.
 %patch15 -p1 -b .cloexec~
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
+%patch18 -p1 -b .trim_slashes~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
