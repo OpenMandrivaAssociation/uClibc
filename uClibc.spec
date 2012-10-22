@@ -41,6 +41,7 @@ Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
 # from git master branch
 Patch19:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
+Patch20:	0001-bits-time.h-sync-with-glibc-2.16.patch
 BuildRequires:	locales-en
 
 %description
@@ -115,7 +116,8 @@ Small libc for building embedded applications.
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
 %patch18 -p1 -b .trim_slashes~
-%patch18 -p1 -b .immediate_vals~
+%patch19 -p1 -b .immediate_vals~
+%patch20 -p1 -b .bits_time~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
