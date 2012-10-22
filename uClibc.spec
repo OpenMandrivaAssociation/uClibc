@@ -193,7 +193,15 @@ install -d %{buildroot}%{_sysconfdir}/rpm/macros.d
 cat > %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros << EOF
 %%uclibc_root	%{uclibc_root}
 %%uclibc_cc	%{uclibc_cc}
+%%uclibc_cxx	uclibc-g++
 %%uclibc_cflags	%%{optflags} -fno-stack-protector -Os
+%%uclibc_cxxflags %%{uclibc_cflags}
+%%uclibc_configure %%configure2_5x \\\\\\
+	--libdir=%%{uclibc_root}%{_libdir} \\\\\\
+	CC="%%{uclibc_cc}" \\\\\\
+	CXX="%%{uclibc_cxx}" \\\\\\
+	CFLAGS="%%{uclibc_cflags}" \\\\\\
+	CXXFLAGS="%%{uclibc_cxxflags}"
 EOF
 
 #(peroyvind) rpm will make these symlinks relative
