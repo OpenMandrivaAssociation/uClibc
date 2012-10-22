@@ -39,6 +39,8 @@ Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
+# from git master branch
+Patch19:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
 BuildRequires:	locales-en
 
 %description
@@ -113,6 +115,7 @@ Small libc for building embedded applications.
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
 %patch18 -p1 -b .trim_slashes~
+%patch18 -p1 -b .immediate_vals~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
