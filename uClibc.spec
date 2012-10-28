@@ -101,7 +101,7 @@ Requires:	%{libname} = %{EVRD}
 # XXX: should dependency generator pick up dependencies from linker scripts?
 BuildRequires:	gettext-devel
 # get around build system issue..
-%if "%{distepoch}" >= "2012.0"
+%if "%(rpm -q --qf '%%{name}' gettext-devel)" == "gettext-devel"
 %define	libintl	%(objdump -p %{uclibc_root}%{_libdir}/libintl.so|grep -e SONAME|sed -e 's#.*\\\(lib.*\\\)\$#\\\1#g')
 Requires:	%(%{_rpmhome}/bin/rpmdeps --provides `readlink -f %{uclibc_root}/%{_lib}/%{libintl}`|grep %{libintl})
 %endif
