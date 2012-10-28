@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	17
+Release:	18
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -50,6 +50,7 @@ Patch200:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
 Patch202:	0001-Remove-pragma-weak-for-undeclared-symbol.patch
 BuildRequires:	locales-en
+ExclusiveArch:	%{ix86}
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
