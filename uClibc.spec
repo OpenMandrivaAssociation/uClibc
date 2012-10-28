@@ -8,12 +8,12 @@
 %define	libname	%mklibname %{name} %{majorish}
 %define	libdev	%mklibname %{name} -d
 
-%bcond_without	bootstrap
+%bcond_with	bootstrap
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	15
+Release:	16
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -102,7 +102,7 @@ Requires:	%{libname} = %{EVRD}
 # in glibc, we need to add a dependency on it
 # XXX: should dependency generator pick up dependencies from linker scripts?
 %if !%{with bootstrap}
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-devel >= 0.18.1.1-9
 # get around build system issue..
 %if "%(rpm -q --qf '%%{name}' gettext-devel)" == "gettext-devel"
 %define	libintl	%(objdump -p %{uclibc_root}%{_libdir}/libintl.so|grep -e SONAME|sed -e 's#.*\\\(lib.*\\\)\$#\\\1#g')
