@@ -11,7 +11,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	14
+Release:	15
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -95,6 +95,13 @@ you plan to burn linux into the system's firmware...
 Summary:	Development files & libraries for uClibc
 Group:		Development/C
 Requires:	%{libname} = %{EVRD}
+# as the libc.so linker scripts adds a AS_NEEDED dependency on libintl.so to
+# workaround issue with packages that expects to find some of it's functionality
+# in glibc, we need to add a dependency on it
+# XXX: should dependency generator pick up dependencies from linker scripts?
+BuildRequires:	gettext-devel
+%define	libintl	%(objdump -p %{uclibc_root}%{_libdir}/libintl.so|grep -e SONAME|sed -e 's#.*\\\(lib.*\\\)\$#\\\1#g')
+Requires:	%(%{_rpmhome}/bin/rpmdeps --provides `readlink -f %{uclibc_root}/%{_lib}/%{libintl}`|grep %{libintl})
 %rename		%{name}-devel
 %rename		%{_lib}uClibc-static-devel
 %rename		%{name}-static-devel
@@ -213,7 +220,7 @@ done
 mkdir -p %{buildroot}%{uclibc_root}%{_sysconfdir}
 touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 
-echo 'GROUP ( AS_NEEDED ( %{uclibc_root}%{_libdir}/libintl.so ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
+echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
 
 %post -p %{uclibc_root}/sbin/ldconfig
 
