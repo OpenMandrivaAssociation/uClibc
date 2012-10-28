@@ -100,8 +100,11 @@ Requires:	%{libname} = %{EVRD}
 # in glibc, we need to add a dependency on it
 # XXX: should dependency generator pick up dependencies from linker scripts?
 BuildRequires:	gettext-devel
+# get around build system issue..
+%if "%{distepoch}" >= "2012.0"
 %define	libintl	%(objdump -p %{uclibc_root}%{_libdir}/libintl.so|grep -e SONAME|sed -e 's#.*\\\(lib.*\\\)\$#\\\1#g')
 Requires:	%(%{_rpmhome}/bin/rpmdeps --provides `readlink -f %{uclibc_root}/%{_lib}/%{libintl}`|grep %{libintl})
+%endif
 %rename		%{name}-devel
 %rename		%{_lib}uClibc-static-devel
 %rename		%{name}-static-devel
