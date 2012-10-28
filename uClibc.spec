@@ -8,6 +8,8 @@
 %define	libname	%mklibname %{name} %{majorish}
 %define	libdev	%mklibname %{name} -d
 
+%bcond_without	bootstrap
+
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
@@ -99,11 +101,13 @@ Requires:	%{libname} = %{EVRD}
 # workaround issue with packages that expects to find some of it's functionality
 # in glibc, we need to add a dependency on it
 # XXX: should dependency generator pick up dependencies from linker scripts?
+%if !%{with bootstrap}
 BuildRequires:	gettext-devel
 # get around build system issue..
 %if "%(rpm -q --qf '%%{name}' gettext-devel)" == "gettext-devel"
 %define	libintl	%(objdump -p %{uclibc_root}%{_libdir}/libintl.so|grep -e SONAME|sed -e 's#.*\\\(lib.*\\\)\$#\\\1#g')
 Requires:	%(%{_rpmhome}/bin/rpmdeps --provides `readlink -f %{uclibc_root}/%{_lib}/%{libintl}`|grep %{libintl})
+%endif
 %endif
 %rename		%{name}-devel
 %rename		%{_lib}uClibc-static-devel
@@ -223,7 +227,9 @@ done
 mkdir -p %{buildroot}%{uclibc_root}%{_sysconfdir}
 touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 
+%if !%{with bootstrap}
 echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
+%endif
 
 %post -p %{uclibc_root}/sbin/ldconfig
 
