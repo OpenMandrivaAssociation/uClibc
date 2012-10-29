@@ -50,7 +50,6 @@ Patch200:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
 Patch202:	0001-Remove-pragma-weak-for-undeclared-symbol.patch
 BuildRequires:	locales-en
-ExclusiveArch:	%{ix86}
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
