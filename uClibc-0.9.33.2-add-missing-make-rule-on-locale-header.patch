@@ -1,0 +1,11 @@
+--- uClibc-0.9.33.2/libpthread/nptl/sysdeps/pthread/Makefile.in.locale~	2012-09-22 11:44:37.694470099 +0200
++++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/pthread/Makefile.in	2012-09-22 11:44:40.002497253 +0200
+@@ -80,7 +80,7 @@ $(libpthread_pthread_OUT)/pt-crti.o: $(l
+ $(libpthread_pthread_OUT)/pt-crtn.o: $(libpthread_pthread_OUT)/pt-crtn.S
+ 	$(compile.S)
+ 
+-$(libpthread_pthread_OUT)/pt-initfini.s: $(PTHREAD_INITFINI) | $(top_builddir)include/bits/uClibc_config.h
++$(libpthread_pthread_OUT)/pt-initfini.s: $(PTHREAD_INITFINI) | $(top_srcdir)/extra/locale/uClibc_locale_data.h $(top_builddir)include/bits/uClibc_config.h
+ 	$(compile.c)
+ $(libpthread_pthread_OUT)/defs.h: $(PTHREAD_INITFINI)
+ 	$(do_sed) -n -e '/@TESTS_BEGIN/,/@TESTS_END/p' $< | \

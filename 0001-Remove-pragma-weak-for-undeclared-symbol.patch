@@ -1,0 +1,36 @@
+From 3411a732eccb355e0301cb71a176bf5ce00940b1 Mon Sep 17 00:00:00 2001
+From: Bernd Schmidt <bernds@codesourcery.com>
+Date: Tue, 24 Jul 2012 15:39:48 +0200
+Subject: [PATCH] Remove pragma weak for undeclared symbol
+
+pthread_initialize is a static function and should not be mentioned in a
+header.  The #pragma weak for it appears to confuse gcc-4.7.
+
+Signed-off-by: Bernd Schmidt <bernds@codesourcery.com
+---
+ libpthread/linuxthreads.old/sysdeps/pthread/bits/libc-lock.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/libpthread/linuxthreads.old/sysdeps/pthread/bits/libc-lock.h b/libpthread/linuxthreads.old/sysdeps/pthread/bits/libc-lock.h
+index de85f99..776b0b5 100644
+--- a/libpthread/linuxthreads.old/sysdeps/pthread/bits/libc-lock.h
++++ b/libpthread/linuxthreads.old/sysdeps/pthread/bits/libc-lock.h
+@@ -377,7 +377,6 @@ weak_extern (BP_SYM (__pthread_key_create))
+ weak_extern (BP_SYM (__pthread_setspecific))
+ weak_extern (BP_SYM (__pthread_getspecific))
+ weak_extern (BP_SYM (__pthread_once))
+-weak_extern (__pthread_initialize)
+ weak_extern (__pthread_atfork)
+ weak_extern (BP_SYM (_pthread_cleanup_push))
+ weak_extern (BP_SYM (_pthread_cleanup_pop))
+@@ -402,7 +401,6 @@ weak_extern (BP_SYM (_pthread_cleanup_pop_restore))
+ #  pragma weak __pthread_setspecific
+ #  pragma weak __pthread_getspecific
+ #  pragma weak __pthread_once
+-#  pragma weak __pthread_initialize
+ #  pragma weak __pthread_atfork
+ #  pragma weak _pthread_cleanup_push_defer
+ #  pragma weak _pthread_cleanup_pop_restore
+-- 
+1.7.11.3
+

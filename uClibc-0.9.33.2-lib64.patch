@@ -1,0 +1,11 @@
+--- uClibc-0.9.33.2/Rules.mak.lib64~	2012-09-22 12:06:57.744762860 +0200
++++ uClibc-0.9.33.2/Rules.mak	2012-09-22 12:06:59.640796552 +0200
+@@ -577,7 +577,7 @@ ifndef ASNEEDED
+ export ASNEEDED:=$(shell $(LD) --help 2>/dev/null | grep -q -- --as-needed && echo "AS_NEEDED ( $(UCLIBC_LDSO) )" || echo "$(UCLIBC_LDSO)")
+ ifeq ($(UCLIBC_HAS_BACKTRACE),y)
+ # Only used in installed libc.so linker script
+-UBACKTRACE_FULL_NAME := $(RUNTIME_PREFIX)lib/$(UBACKTRACE_DSO)
++UBACKTRACE_FULL_NAME := $(RUNTIME_PREFIX)$(MULTILIB_DIR)/$(UBACKTRACE_DSO)
+ export UBACKTRACE_ASNEEDED:=$(shell $(LD) --help 2>/dev/null | grep -q -- --as-needed && echo "AS_NEEDED ( $(UBACKTRACE_FULL_NAME) )" || echo "$(UBACKTRACE_FULL_NAME)")
+ else
+ export UBACKTRACE_ASNEEDED:=""

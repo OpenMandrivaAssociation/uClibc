@@ -1,0 +1,22 @@
+--- uClibc-0.9.32-rc3-git/libc/sysdeps/linux/arm/aeabi_unwind_cpp_pr1.c~	2011-05-13 16:31:06.000000000 -0600
++++ uClibc-0.9.32-rc3-git/libc/sysdeps/linux/arm/aeabi_unwind_cpp_pr1.c	2011-07-01 11:34:24.412754292 -0600
+@@ -25,16 +25,16 @@
+ #include <stdlib.h>
+ 
+ attribute_hidden void __aeabi_unwind_cpp_pr0 (void);
+-attribute_hidden void __aeabi_unwind_cpp_pr0 (void)
++void __aeabi_unwind_cpp_pr0 (void)
+ {
+ }
+ 
+ attribute_hidden void __aeabi_unwind_cpp_pr1 (void);
+-attribute_hidden void __aeabi_unwind_cpp_pr1 (void)
++void __aeabi_unwind_cpp_pr1 (void)
+ {
+ }
+ 
+ attribute_hidden void __aeabi_unwind_cpp_pr2 (void);
+-attribute_hidden void __aeabi_unwind_cpp_pr2 (void)
++void __aeabi_unwind_cpp_pr2 (void)
+ {
+ }
