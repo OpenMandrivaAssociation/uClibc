@@ -1,0 +1,16 @@
+%uclibc_root	/usr/uclibc
+%uclibc_cc	uclibc-gcc
+%uclibc_cxx	uclibc-g++
+%uclibc_cflags	%{optflags} -fno-stack-protector -Os
+%uclibc_cxxflags %{uclibc_cflags}
+%uclibc_configure %configure2_5x \\\
+	--libdir=%{uclibc_root}%{_libdir} \\\
+	--prefix=%{uclibc_root}%{_prefix} \\\
+	--exec-prefix=%{uclibc_root}%{_prefix} \\\
+	--bindir=%{uclibc_root}%{_bindir} \\\
+	--sbindir=%{uclibc_root}%{_sbindir} \\\
+	--disable-silent-rules \\\
+	CC="%{uclibc_cc}" \\\
+	CXX="%{uclibc_cxx}" \\\
+	CFLAGS="%{uclibc_cflags}" \\\
+	CXXFLAGS="%{uclibc_cxxflags}"
