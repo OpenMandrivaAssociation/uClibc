@@ -300,7 +300,7 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 
 %changelog
 * Tue Dec 11 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-18
-- rebuild on ABF
+- bootstrap rebuild on ABF
 
 * Sun Oct 28 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-17
 + Revision: 820214
