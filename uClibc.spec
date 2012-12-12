@@ -8,12 +8,12 @@
 %define	libname	%mklibname %{name} %{majorish}
 %define	libdev	%mklibname %{name} -d
 
-%bcond_without	bootstrap
+%bcond_with	bootstrap
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	18
+Release:	19
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -299,6 +299,9 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 %{uclibc_root}%{_libdir}/uclibc_nonshared.a
 
 %changelog
+* Tue Dec 12 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-19
+- non-bootstrap rebuild
+
 * Tue Dec 11 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-18
 - bootstrap rebuild on ABF
 
