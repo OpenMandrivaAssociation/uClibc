@@ -8,7 +8,7 @@
 %define	libname	%mklibname %{name} %{majorish}
 %define	libdev	%mklibname %{name} -d
 
-%bcond_with	bootstrap
+%bcond_without	bootstrap
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
@@ -27,6 +27,8 @@ Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
 Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.33.2-unstable-abi.patch
+# (bero): Don't mix asm instructions into C code... Put them where they belong
+Patch5:		uClibc-0.9.33.2-arm-compile.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
 # so was trying to link together glibc&uClibc...)
 Patch7:		uClibc-arm_hack_unwind.patch
@@ -123,6 +125,7 @@ Small libc for building embedded applications.
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
+%patch5 -p1 -b .armasm~
 %patch7 -p1 -b .unwind~
 %patch8 -p1 -b .gstabs~
 %patch9 -p1 -b .origin~
@@ -143,7 +146,7 @@ Small libc for building embedded applications.
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
-%global	cflags	%{optflags} -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} 
+%global	cflags	%{optflags} -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd
 
 sed %{SOURCE2} \
 %ifarch %{arm}

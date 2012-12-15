@@ -1,0 +1,45 @@
+--- uClibc-0.9.33.2/libc/sysdeps/linux/arm/bits/arm_asm.h.bero	2012-12-15 21:22:42.695295005 +0000
++++ uClibc-0.9.33.2/libc/sysdeps/linux/arm/bits/arm_asm.h	2012-12-15 21:22:59.705295162 +0000
+@@ -3,8 +3,6 @@
+ #define _ARM_ASM_H
+ 
+ #ifdef __thumb2__
+-.thumb
+-.syntax unified
+ #define IT(t, cond) i##t cond
+ #else
+ /* XXX: This can be removed if/when we require an assembler that supports
+--- uClibc-0.9.33.2/libc/string/arm/_memcpy.S.bero	2012-12-15 22:28:29.515295733 +0000
++++ uClibc-0.9.33.2/libc/string/arm/_memcpy.S	2012-12-15 22:28:45.735295476 +0000
+@@ -41,6 +41,9 @@
+ #include <endian.h>
+ #include <bits/arm_asm.h>
+ 
++.thumb
++.syntax unified
++
+ #if !defined(THUMB1_ONLY)
+ /*
+  * This is one fun bit of code ...
+--- uClibc-0.9.33.2/libc/string/arm/memset.S.bero	2012-12-15 22:29:10.985295508 +0000
++++ uClibc-0.9.33.2/libc/string/arm/memset.S	2012-12-15 22:29:18.155295469 +0000
+@@ -21,6 +21,8 @@
+ #include <sys/syscall.h>
+ #include <bits/arm_asm.h>
+ 
++.thumb
++.syntax unified
+ .text
+ .global memset
+ .type memset,%function
+--- uClibc-0.9.33.2/libubacktrace/arm/backtrace.c.bero	2012-12-15 22:33:51.545295517 +0000
++++ uClibc-0.9.33.2/libubacktrace/arm/backtrace.c	2012-12-15 22:35:00.295295528 +0000
+@@ -62,7 +62,7 @@ backtrace_helper (struct _Unwind_Context
+ {
+ 	struct trace_arg *arg = a;
+ 
+-	assert (unwind_getip != NULL);
++	assert (unwind_getgr != NULL);
+ 
+ 	/* We are first called with address in the __backtrace function. Skip it. */
+ 	if (arg->cnt != -1)
