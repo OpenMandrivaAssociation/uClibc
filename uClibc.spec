@@ -125,7 +125,10 @@ Small libc for building embedded applications.
 %patch2 -p1 -b .rpmatch~
 %patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
+# breaks build if enabled on x86_64 at least...
+%ifarch %{arm}
 %patch5 -p1 -b .armasm~
+%endif
 %patch7 -p1 -b .unwind~
 %patch8 -p1 -b .gstabs~
 %patch9 -p1 -b .origin~
@@ -308,6 +311,7 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 
 %changelog
 * Wed Dec 26 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-20
+- disable arm patch on non-arm as it breaks build on at least x86_64..
 - non-bootstrap rebuild
 
 * Mon Dec 17 2012 Bernhard Rosenkraenzer <bero@bero.eu> 0.9.33.2-19
