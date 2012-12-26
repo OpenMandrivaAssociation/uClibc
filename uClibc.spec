@@ -1,5 +1,5 @@
 # disable stack protector, build doesn't work with it
-%define _ssp_cflags     %{nil}
+%define	_ssp_cflags	%{nil}
 
 %define	uclibc_root	%{_prefix}/uclibc
 %define	uclibc_cc	uclibc-gcc
@@ -380,19 +380,18 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 - fix multilib dir for libubacktrace.so (P13)
 - add missing make rule on missing uClibc_locale_data.h header (P12)
 - enable:
-  	FORCE_SHAREABLE_TEXT_SEGMENTS
-  	UCLIBC_HAS_LOCALE
-  	UCLIBC_BUILD_ALL_LOCALE
-  	UCLIBC_HAS_XLOCALE
-  	UCLIBC_HAS_GLIBC_DIGIT_GROUPING
-  	UCLIBC_HAS_SCANF_LENIENT_DIGIT_GROUPING
-  	DOASSERTS
-  	UCLIBC_HAS_BACKTRACE
+	FORCE_SHAREABLE_TEXT_SEGMENTS
+	UCLIBC_HAS_LOCALE
+	UCLIBC_BUILD_ALL_LOCALE
+	UCLIBC_HAS_XLOCALE
+	UCLIBC_HAS_GLIBC_DIGIT_GROUPING
+	UCLIBC_HAS_SCANF_LENIENT_DIGIT_GROUPING
+	DOASSERTS
+	UCLIBC_HAS_BACKTRACE
 - disable:
-  	UCLIBC_HAS_SSP
+	UCLIBC_HAS_SSP
 - automatically update .config from an existing one, changing any set/unset
   variables to the desired ones
-
 
 * Wed Sep 05 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-7
 + Revision: 816384
@@ -449,8 +448,8 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 - provide a proper fix from upstream for the epoll/nptl build issue on x86 (P5)
 - create 32 bit lib dirs on lib64 to prevent ldconfig errors when missing
 - update config file:
-  	o enable rpmatch()
-  	o enable checking of ctype argument
+	o enable rpmatch()
+	o enable checking of ctype argument
 - update to 0.9.32 final (where NPTL should be fully working on all archs)
 
   + Matthew Dawkins <mattydaw@mandriva.org>
