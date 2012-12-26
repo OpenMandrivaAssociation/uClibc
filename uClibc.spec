@@ -337,7 +337,7 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 
 * Tue Oct 23 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-14
 + Revision: 819613
-- %uclibc_configure should be fixed now..
+- %%uclibc_configure should be fixed now..
 - don't generate uclibc.macros during build, keep it as a separate file to
   install in stead
 - pass --disable-silent-rules together with some various other configure options
