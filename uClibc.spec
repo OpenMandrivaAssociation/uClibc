@@ -154,7 +154,7 @@ Small libc for building embedded applications.
 %else
 %define arch_cflags %nil
 %endif
-%global	cflags	%{optflags} -std=gnu99 %{ldflags} -muclibc -fuse-ld=bfd %{arch_cflags}
+%global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -fuse-ld=bfd %{arch_cflags}
 
 sed %{SOURCE2} \
 %ifarch %{arm}
