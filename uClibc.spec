@@ -154,7 +154,7 @@ Small libc for building embedded applications.
 %else
 %define arch_cflags %nil
 %endif
-%global	cflags	%{optflags} -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{arch_cflags}
+%global	cflags	%{optflags} -std=gnu99 %{ldflags} -muclibc -fuse-ld=bfd %{arch_cflags}
 
 sed %{SOURCE2} \
 %ifarch %{arm}
@@ -201,17 +201,14 @@ install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
 export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
-#XXX: this should add rpath, but for some reason it no longer happens and we
-# have to pass the -rpath option to the linker as well
-export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
-export LIBRARY_PATH="\$LD_RUN_PATH"
+export LIBRARY_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
 %ifarch %{arm}
 # avoid getting troubles. without it, linker is called with -lgcc -lgss_s and then
 # pulls glibc. Typical example are the unwind symbols.
 # It's a really nasty hack :(
 UNWIND_HACK=-static-libgcc
 %endif
-exec gcc -muclibc \$UNWIND_HACK -Wl,-rpath="\$LD_RUN_PATH" -Wl,-nostdlib "\$@" 
+exec gcc -muclibc \$UNWIND_HACK -Wl,-nostdlib "\$@" 
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
@@ -311,6 +308,8 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 
 %changelog
 * Mon Jan  7 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-21
+- drop explicitly adding rpath now that library search paths in interpreter
+  has been fixed
 - fix multilib patch so that interpreter & utils searches MULTILIB_DIR
 
 * Wed Dec 26 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-20
