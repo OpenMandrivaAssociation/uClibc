@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	20
+Release:	21
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -310,6 +310,9 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 %{uclibc_root}%{_libdir}/uclibc_nonshared.a
 
 %changelog
+* Mon Jan  7 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-21
+- fix multilib patch so that interpreter & utils searches MULTILIB_DIR
+
 * Wed Dec 26 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-20
 - disable arm patch on non-arm as it breaks build on at least x86_64..
 - non-bootstrap rebuild

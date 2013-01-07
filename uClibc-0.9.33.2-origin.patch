@@ -1,5 +1,5 @@
---- uClibc-0.9.33.2/ldso/ldso/dl-elf.c.origin~	2012-05-15 09:20:09.000000000 +0200
-+++ uClibc-0.9.33.2/ldso/ldso/dl-elf.c	2012-08-18 03:48:49.583281633 +0200
+--- uClibc-0.9.33.2/ldso/ldso/dl-elf.c.origin~	2013-01-07 01:41:19.415752864 +0100
++++ uClibc-0.9.33.2/ldso/ldso/dl-elf.c	2013-01-07 01:41:54.372662768 +0100
 @@ -133,53 +133,60 @@ _dl_protect_relro (struct elf_resolve *l
   * in uClibc/ldso/util/ldd.c */
  static struct elf_resolve *
@@ -133,7 +133,7 @@
  #endif
 @@ -301,7 +310,7 @@ struct elf_resolve *_dl_load_shared_libr
  #ifndef __LDSO_CACHE_SUPPORT__
- 					":" UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib"
+ 					":" UCLIBC_RUNTIME_PREFIX "usr/X11R6/" UCLIBC_MULTILIB_DIR
  #endif
 -					, rpnt);
 +					, rpnt, NULL);
@@ -141,7 +141,7 @@
  		return tpnt1;
  
 --- uClibc-0.9.33.2/ldso/ldso/ldso.c.origin~	2012-05-15 09:20:09.000000000 +0200
-+++ uClibc-0.9.33.2/ldso/ldso/ldso.c	2012-08-18 03:48:49.584281648 +0200
++++ uClibc-0.9.33.2/ldso/ldso/ldso.c	2013-01-07 01:41:19.461754074 +0100
 @@ -409,6 +409,20 @@ static ptrdiff_t _dl_build_local_scope (
  	return p - list;
  }
