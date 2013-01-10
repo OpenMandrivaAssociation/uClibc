@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	21
+Release:	22
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -75,6 +75,7 @@ you plan to burn linux into the system's firmware...
 Summary:	%{summary}
 Group:		System/Libraries
 Requires:	uClibc >= %{EVRD}
+Provides:	%mklibname %{name} %{majorish}
 %rename		%{_lib}uClibc
 
 %description -n	%{libname}
