@@ -241,9 +241,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
 %endif
 
-%post -p %{uclibc_root}/sbin/ldconfig
-
-%triggerin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
+%triggerposttransin-- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
 %{uclibc_root}/sbin/ldconfig -X
 
 %files
@@ -310,6 +308,7 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 
 %changelog
 * Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-24
+- convert %%triggerin to %%triggerposttransin
 - inline %%{arch_cflags} conditional
 
 * Mon Jan  7 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-21
