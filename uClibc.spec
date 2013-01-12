@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	23
+Release:	24
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -152,10 +152,8 @@ Small libc for building embedded applications.
 
 %ifarch %{arm}
 %define arch_cflags -marm -Wa,-mimplicit-it=thumb -D__thumb2__
-%else
-%define arch_cflags %nil
 %endif
-%global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{arch_cflags}
+%global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
 
 sed %{SOURCE2} \
 %ifarch %{arm}
@@ -311,6 +309,9 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 %{uclibc_root}%{_libdir}/uclibc_nonshared.a
 
 %changelog
+* Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-24
+- inline %%{arch_cflags} conditional
+
 * Mon Jan  7 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-21
 - fix multilib patch so that interpreter & utils searches MULTILIB_DIR
 
