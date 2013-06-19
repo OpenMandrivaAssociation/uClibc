@@ -156,8 +156,11 @@ Small libc for building embedded applications.
 %global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
 
 sed %{SOURCE2} \
-%ifarch %{arm}
+%ifarch armv7l
 	-e 's|.*\(UCLIBC_HAS_FPU\).*|# \1 is not set|g' \
+%endif
+%ifarch armv7hl
+	-e 's|.*\(UCLIBC_HAS_FPU\).*|\1=y|g' \
 %endif
 	-e 's|^\(TARGET_[a-z].*\).*|# \1 is not set|g' \
 	-e 's|.*\(TARGET_%{arch}\).*|\1=y|g' \
