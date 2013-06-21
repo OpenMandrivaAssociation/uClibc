@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	26
+Release:	27
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -44,6 +44,7 @@ Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
+Patch19:	uClibc-0.9.33.2-explicitly-link-against-static-libgcc.patch
 # from origin/0.9.33 branch
 Patch100:	0001-librt-re-add-SIGCANCEL-to-the-list-of-blocked-signal.patch
 Patch101:	0001-nptl-sh-fix-race-condition-in-lll_wait_tid.patch
@@ -148,6 +149,11 @@ Small libc for building embedded applications.
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .weak~
 
+# remove once fixed
+%ifarch %{ix86}
+%patch19 -p1 -b .busted~
+%endif
+
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
 %ifarch %{arm}
@@ -177,7 +183,18 @@ echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTL
 %build
 yes "" | %make oldconfig VERBOSE=2
 
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}"
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
+
+%ifarch %{ix86}
+# busted compiler? compile with -Os and dynamically linked binaries gets busted,
+# while statically linked works, compile with -O0 and you get the opposite..
+# let's do a build for each in order for it all to not break at least :p
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 PREFIX="$PWD/static" install_dev
+cp utils/ldconfig static
+make clean CLEAN_utils
+sed -e 's|.*\(UCLIBC_EXTRA_CFLAGS\)=.*|\1="%{cflags} -O0"|g' -i .config
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
+%endif
 
 %check
 exit 0
@@ -191,8 +208,12 @@ rm -f test/inet/tst-ethers*
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-make CC="gcc -fuse-ld=bfd" VERBOSE=2 PREFIX=%{buildroot} install
-make CC="gcc -fuse-ld=bfd" -C utils VERBOSE=2 PREFIX=%{buildroot} utils_install
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 PREFIX=%{buildroot} install install_utils
+
+%ifarch %{ix86}
+cp -af static%{uclibc_root}%{_libdir}/*.a %{buildroot}%{uclibc_root}%{_libdir}
+install -m755 static/ldconfig -D %{buildroot}%{uclibc_root}/sbin/ldconfig
+%endif
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
