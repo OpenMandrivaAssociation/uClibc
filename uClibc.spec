@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	25
+Release:	26
 License:	LGPLv2.1
 Group:		System/Libraries
 URL:		http://uclibc.org/
@@ -156,8 +156,11 @@ Small libc for building embedded applications.
 %global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
 
 sed %{SOURCE2} \
-%ifarch %{arm}
+%ifarch armv7l
 	-e 's|.*\(UCLIBC_HAS_FPU\).*|# \1 is not set|g' \
+%endif
+%ifarch armv7hl
+	-e 's|.*\(UCLIBC_HAS_FPU\).*|\1=y|g' \
 %endif
 	-e 's|^\(TARGET_[a-z].*\).*|# \1 is not set|g' \
 	-e 's|.*\(TARGET_%{arch}\).*|\1=y|g' \
@@ -241,9 +244,16 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
 %endif
 
-for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/wchar.h bits/wordsize.h fpu_control.h sys/debugreg.h sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
-	%{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
+%ifarch %arm
+for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/wchar.h bits/wordsize.h fpu_control.h sys/io.h sys/procfs.h sys/ucontext.h sys/user.h; do
+        %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
+%else
+for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/wchar.h bits/wordsize.h fpu_control.h sys/debugreg.h sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
+        %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
+done
+%endif
+
 
 %triggerposttransin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
 %{uclibc_root}/sbin/ldconfig -X
