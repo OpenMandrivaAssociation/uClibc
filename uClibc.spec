@@ -6,7 +6,7 @@
 
 %define	majorish	0.9.33
 %define	libname	%mklibname %{name} %{majorish}
-%define	libdev	%mklibname %{name} -d
+%define	devname	%mklibname %{name} -d
 
 %bcond_with	bootstrap
 
@@ -16,7 +16,7 @@ Version:	%{majorish}.2
 Release:	27
 License:	LGPLv2.1
 Group:		System/Libraries
-URL:		http://uclibc.org/
+Url:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
 Source1:	uclibc.macros
 Source2:	uClibc-0.9.33.2-config
@@ -97,7 +97,7 @@ storage, then using glibc may make more sense. unless, for
 example, that 12 terabytes will be network attached storage and
 you plan to burn linux into the system's firmware...
 
-%package -n	%{libdev}
+%package -n	%{devname}
 Summary:	Development files & libraries for uClibc
 Group:		Development/C
 Requires:	%{libname} = %{EVRD}
@@ -118,7 +118,7 @@ Requires:	%(%{_rpmhome}/bin/rpmdeps --provides `readlink -f %{uclibc_root}/%{_li
 %rename		%{name}-static-devel
 Provides:	libc-static
 
-%description -n	%{libdev}
+%description -n	%{devname}
 Small libc for building embedded applications.
 
 %prep
@@ -316,7 +316,7 @@ done
 %{uclibc_root}/%{_lib}/*.so.%{majorish}
 %endif
 
-%files -n %{libdev}
+%files -n %{devname}
 %doc docs/* Changelog TODO
 %{_bindir}/%{uclibc_cc}
 %{_sysconfdir}/rpm/macros.d/uclibc.macros
@@ -340,352 +340,4 @@ done
 %endif
 %{uclibc_root}%{_libdir}/lib*.a
 %{uclibc_root}%{_libdir}/uclibc_nonshared.a
-
-%changelog
-* Sat Jan 12 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-24
-- convert %%triggerin to %%triggerposttransin
-- inline %%{arch_cflags} conditional
-
-* Mon Jan  7 2013 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-21
-- fix multilib patch so that interpreter & utils searches MULTILIB_DIR
-
-* Wed Dec 26 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-20
-- disable arm patch on non-arm as it breaks build on at least x86_64..
-- non-bootstrap rebuild
-
-* Mon Dec 17 2012 Bernhard Rosenkraenzer <bero@bero.eu> 0.9.33.2-19
-- Fix crash on startup on ARM
-- Fix bogus arm_asm.h header and other compile issues on ARM
-
-* Tue Dec 11 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-18
-- bootstrap rebuild on ABF
-
-* Sun Oct 28 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-17
-+ Revision: 820214
-- previous release got lost on i586..
-
-* Sun Oct 28 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-16
-+ Revision: 820139
-- add back libintl to libc.so linker script
-
-* Sun Oct 28 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-15
-+ Revision: 820071
-- disable libintl hack for bootstrapping as uclibc build of gettext isn't repos
-  yet
-- fix libintl linker script hack
-
-* Tue Oct 23 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-14
-+ Revision: 819613
-- %%uclibc_configure should be fixed now..
-- don't generate uclibc.macros during build, keep it as a separate file to
-  install in stead
-- pass --disable-silent-rules together with some various other configure options
-  for setting paths to %%uclibc_configure
-
-* Mon Oct 22 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-13
-+ Revision: 819199
-- create a %%uclibc_configure macro to make life a bit simpler
-- Remove pragma weak for undeclared symbol (P202, backported from upstream)
-- renumber patches from upstream git
-- nptl: sh: fix race condition in lll_wait_tid (P22, from upstream)
-- librt: re-add SIGCANCEL to the list of blocked signal in helper thread (P21,
-  backported from upstream)
-- sync bits/time.h with glibc 2.16, introducing CLOCK_MONOTONIC_RAW,
-  CLOCK_REALTIME_COARSE & CLOCK_MONOTONIC_COARSE (P20 bakported from upstream)
-- allow immediate values as 6th syscall arg (P19, backported from upstream)
-- fix libuargp.so not getting added to libc.so linker script
-- add libintl to libc.so linker script so that we'll automatically link it in
-  when needed for stuff building with gettext, as most apps expect these
-  functions to be available from the libc and we that way won't have to screw
-  around with each and every package using gettext building against uclibc
-- trim away double slashes to libubacktrace path in libc.so linker script (P18)
-
-* Wed Oct 03 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-12
-+ Revision: 818344
-- fix filename & symlinks for libuargp
-
-* Wed Oct 03 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-11
-+ Revision: 818307
-- pass -nostdlib to linker to prevent standard libraries getting linked
-
-* Fri Sep 28 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-10
-+ Revision: 817853
-- add buildrequires on locale, otherwise build will break with locale enabled
-- add argp interface (P16 & P17, from OE)
-- add definition of MSG_WAITFORONE and MSG_CMSG_CLOEXEC (P15)
-- add execvpe() (P14, from OE)
-- sync mount.h with glibc (P13)
-- enable nftw()
-- fix multilib dir for libubacktrace.so (P13)
-- add missing make rule on missing uClibc_locale_data.h header (P12)
-- enable:
-	FORCE_SHAREABLE_TEXT_SEGMENTS
-	UCLIBC_HAS_LOCALE
-	UCLIBC_BUILD_ALL_LOCALE
-	UCLIBC_HAS_XLOCALE
-	UCLIBC_HAS_GLIBC_DIGIT_GROUPING
-	UCLIBC_HAS_SCANF_LENIENT_DIGIT_GROUPING
-	DOASSERTS
-	UCLIBC_HAS_BACKTRACE
-- disable:
-	UCLIBC_HAS_SSP
-- automatically update .config from an existing one, changing any set/unset
-  variables to the desired ones
-
-* Wed Sep 05 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-7
-+ Revision: 816384
-- enable:
-  UCLIBC_BUILD_NOW
-  UCLIBC_HAS_ARC4RANDOM
-  UCLIBC_HAS_FULL_RPC
-- use bfd linker for now as gold has issues compiling uClibc if prelink support
-  support is enabled
-- add support for dup3() (P11)
-- add support for posix_fallocate() (P10)
-- add support for $ORIGIN (P9)
-- increase verbosiveness
-- enable UCLIBC_HAS_FOPEN_CLOSEEXEC_MODE
-- parallel builds seems to be working just fine again :)
-- enable sha256 & sha512 support
-
-* Sat Jun 16 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-6
-+ Revision: 805946
-- for some reason rpath no longer gets added even if LD_RUN_PATH is set, so let's
-  pass -rpath to the linker as well to ensure that it actually gets set
-
-* Tue Jun 05 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-5
-+ Revision: 802795
-- add back '-Os' to %%{uclibc_cflags}
-
-* Tue May 22 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-4
-+ Revision: 800144
-- make dependency on uClibc for devel package versioned
-
-* Tue May 22 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-3
-+ Revision: 800069
-- enable prelink support (LDSO_PRELINK_SUPPORT)
-- drop support for linux 2.4 modules
-- enable dns resolver functions (UCLIBC_HAS_RESOLVER_SUPPORT)
-- update config
-
-* Tue May 22 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.33.2-2
-+ Revision: 800040
-- fix broken symlink to elf interpreter
-- new version
-
-* Fri Mar 09 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.32-5
-+ Revision: 783468
-- rebuild for fixed uClibc() deps
-
-* Wed Mar 07 2012 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.32-4
-+ Revision: 782574
-- get rid of gstabs symbols on ix86 (P8)
-- fix bug in uclibc-gcc wrapper that gave problems with escaping
-
-* Tue Jul 12 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.32-2
-+ Revision: 689715
-- provide a proper fix from upstream for the epoll/nptl build issue on x86 (P5)
-- create 32 bit lib dirs on lib64 to prevent ldconfig errors when missing
-- update config file:
-	o enable rpmatch()
-	o enable checking of ctype argument
-- update to 0.9.32 final (where NPTL should be fully working on all archs)
-
-  + Matthew Dawkins <mattydaw@mandriva.org>
-    - p6 upstreamed
-      rediffed p7
-    - added arm support
-    -p6 to fix build error with gcc 4.6.x
-    -p7 taken from (rtp) mga and adapted spec changes
-
-* Wed May 25 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.32-1.rc3.git.2
-+ Revision: 679031
-- add dependency on uClibc for library package to ensure interpreter symlink
-  being present
-
-* Thu May 19 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.32-1.rc3.git.1
-+ Revision: 676135
-- ditch symlink uclibc root hack
-
-* Mon May 16 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.32-1.rc3.git.0
-+ Revision: 675063
-- revert epoll.c commits breaking build on %%{ix86}
-- update to latest code from git to get it working with current binutils
-- add some hackiness to get uClibc stuff working within chroot'ed uclibc root
-
-* Fri Apr 29 2011 Funda Wang <fwang@mandriva.org> 0.9.32-0.rc3.2
-+ Revision: 660668
-- rebuild
-
-* Thu Apr 21 2011 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.32-0.rc3.1
-+ Revision: 656531
-- clean out old junk
-- inherit %%description & %%summary from main package
-- use %%rename macro
-- fix dependency loop
-- don't pass '-Wl,--dynamic-linker' to gcc in uclibc-gcc anymore, gcc sets it now
-- link with %%{ldflags}
-- update config
-- use rpath
-- add back ld*-uClibc.so.0 symlink
-- don't do parallel build in %%install either..
-- update to 0.9.32-rc3
-
-* Sun Feb 13 2011 Funda Wang <fwang@mandriva.org> 0.9.30.3-3
-+ Revision: 637548
-- convert to rpm5 standard trigger
-
-* Mon Nov 29 2010 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.3-2mdv2011.0
-+ Revision: 603066
-- be sure to own orphan /usr/uclibc/etc directory
-- fix uclibc-gcc wrapper script exec prefix
-
-* Mon Nov 29 2010 Oden Eriksson <oeriksson@mandriva.com> 0.9.30.3-1mdv2011.0
-+ Revision: 603019
-- 0.9.30.3
-- dropped upstream added patches
-- rediffed the lib64 patch
-
-* Tue Aug 31 2010 Tomasz Pawel Gajc <tpg@mandriva.org> 0.9.30.1-13mdv2011.0
-+ Revision: 574955
-- rebuild against gcc 4.5.1
-
-* Tue Mar 23 2010 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-12mdv2010.1
-+ Revision: 526921
-- fix %%files list
-- ditch feeble multilib hack...
-- fix license
-- fix double '/' in include path for uclibc-gcc wrapper, resulting in debugedit
-  erroring out with "canonicalization unexpectedly shrank by one character"
-
-* Sat Jan 30 2010 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-11mdv2010.1
-+ Revision: 498464
-- call correct ldconfig (#56934)
-
-* Fri Jan 29 2010 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-10mdv2010.1
-+ Revision: 498316
-- fix ldconfig filetrigger filter match (#56934)
-
-* Fri Dec 11 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-9mdv2010.1
-+ Revision: 476575
-- add /etc/ld.so.{cache,conf} & corresponding filetrigger script/filter
-- add back -W,--dynamic-linker to wrapper for now
-- move around symlinks created and fix ownership of directories
-- ditch -Os from %%{uclibc_cflags} as __OPTIMIZE_SIZE__ which implies the same is
-  already defined in %%{uclibc_root}%%{_includedir}/features.h
-- don't disable debugging symbols in uclibc-gcc wrapper
-- create a uClibc package required by library which contains ldconfig, ldd &
-  symlink to elf interpreter at the location gcc has hardcoded with -muclibc
-- git snapshot gave too many new issues to deal with.. cowardly revert.. :/
-- don't pass -Wl,--dynamic-linker to gcc in the wrapper anymore
-- drop o0ld patches
-- ABI isn't stable, so change ABI major to version (P4)
-- don't build with -fstack-protector, seems to break even though it shouldn't..:/
-- trim double slashes
-- enable debug packages
-- enable ssp
-  update to git snapshot to save a lot of trouble with wrappers etc..
-- revert LDSO_BASE_FILENAME back to 'ld.so', as we're installing uclibc to a
-  different chroot anyways...
-- fix another typo in lib64 patch
-- fix typo
-
-* Mon Dec 07 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-8mdv2010.1
-+ Revision: 474298
-- add version to package name as cases where dynamic linking is preferred seems
-  to exist :)
-- fix build of memcmp-stat stet (P109, from git)
-- add scalbf(), gammaf(), significandf() wrappers (P108, from git)
-- add support for scanf %%a modifier (P3)
-- enable some more glibc stdio compatibility
-- fetch .config in %%prep rather than %%build
-- enable LDSO_PRELOAD_FILE_SUPPORT
-- set LDSO_BASE_FILENAME to "ld-uClibc.so"
-- add -muclibc flag to uclic-gcc wrapper
-
-* Sat Dec 05 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-7mdv2010.1
-+ Revision: 473694
-- add -g0 to %%{uclibc_cflags}
-- enable wide character support
-- add strverscmp() and versionsort[64]() (P107, backport from git)
-
-* Thu Dec 03 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-6mdv2010.1
-+ Revision: 472779
-- merge static-devel & devel package
-
-* Thu Dec 03 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-5mdv2010.1
-+ Revision: 472773
-- enable MALLOC_GLIBC_COMPAT
-- make %%{uclibc_cflags} into a macro to be passed rather than part of wrapper
-- set gcc options through environment variables where possible for wrapper script
-- fix dynamic linking in wrapper script
-
-* Tue Dec 01 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-4mdv2010.1
-+ Revision: 472156
-- add %%{uclibc_cc} & %%{uclibc_cflags} macros
-- create a uclibc.macros
-- backport nanosecond stat support from git
-- force disabling of stack protector in uclibc-gcc wrapper
-- add rpmatch() (P2, needed to build plymouth against uclibc)
-
-* Mon Nov 30 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-3mdv2010.1
-+ Revision: 471728
-- be sure to own %%{uclibc_root}%%{_prefix}
-- ditch COPYING.LIB, it (LGPL) comes with common-licenses already
-- libify package (P1)
-- remove _requires_exception, it's fixed in /usr/lib/rpm/find-requires now
-
-* Mon Nov 30 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-2mdv2010.1
-+ Revision: 471625
-- don't hardcode 'x86_64' in wrapper
-- be sure that we don't include any backup files
-- set CPU_CFLAGS to "" so that it won't override -march=cpu from our %%optflags
-
-* Sun Nov 29 2009 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.30.1-1mdv2010.1
-+ Revision: 471031
-- pick up patches from buildroot project to solve various issues..
-- fix architecture prefix for paths
-- fix confic
-  file SPECS/uClibc.spec modified
-  file SOURCES/uClibc-0.9.30.1-arm-fix-linuxthreads-sysdep.patch added
-  file SOURCES/uClibc-0.9.30.1-dl-sysdep-inline.patch added
-  file SOURCES/uClibc-0.9.30.1-c99-ldbl-math.patch added
-  file SOURCES/uClibc-0.9.30.1-config removed
-  file SOURCES/uClibc-0.9.30.1-64bit-strtouq.patch added
-  file SOURCES/uClibc-0.9.30.2-config added
-  file SOURCES/uClibc-0.9.30.1-fix-getaddrinfo.patch added
-- new release: 0.9.31
-- replace the old & deprecated gcc wrapper with a simpler shell script
-- run test suite
-- clean up quite a bit
-
-  + Funda Wang <fwang@mandriva.org>
-    - rediff toolchain wrapper patch
-    - rediff mdkconf patch
-
-  + Antoine Ginies <aginies@mandriva.com>
-    - rebuild
-
-* Wed Jun 18 2008 Thierry Vignaud <tv@mandriva.org> 0.9.28.1-5mdv2009.0
-+ Revision: 225895
-- rebuild
-
-* Mon Mar 24 2008 Per Øyvind Karlsen <peroyvind@mandriva.org> 0.9.28.1-4mdv2008.1
-+ Revision: 189752
-- rebuild against gcc 4.2.3
-- s/-mtune=pentiumpro/-mtune=generic/
-
-* Tue Mar 04 2008 Oden Eriksson <oeriksson@mandriva.com> 0.9.28.1-3mdv2008.1
-+ Revision: 178883
-- rebuild
-
-  + Olivier Blin <blino@mandriva.org>
-    - restore BuildRoot
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - kill re-definition of %%buildroot on Pixel's request
-
-* Wed Aug 22 2007 Herton Ronaldo Krzesinski <herton@mandriva.com.br> 0.9.28.1-2mdv2008.0
-+ Revision: 68745
-- Rebuild, and disable _ssp_cflags as build doesn't work with it.
 
