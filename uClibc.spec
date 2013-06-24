@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	27
+Release:	28
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -153,6 +153,10 @@ Small libc for building embedded applications.
 %ifarch %{arm}
 %define arch_cflags -marm -Wa,-mimplicit-it=thumb -D__thumb2__
 %endif
+%ifarch %{ix86}
+# -fvar-tracking-assignments creates sections uClibc's ld.so can't parse
+%define arch_cflags -fno-var-tracking-assignments
+%endif
 %global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
 
 sed %{SOURCE2} \
@@ -191,8 +195,8 @@ rm -f test/inet/tst-ethers*
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-make CC="gcc -fuse-ld=bfd" VERBOSE=2 PREFIX=%{buildroot} install
-make CC="gcc -fuse-ld=bfd" -C utils VERBOSE=2 PREFIX=%{buildroot} utils_install
+make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}" PREFIX=%{buildroot} install
+make CC="gcc -fuse-ld=bfd" -C utils VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}" PREFIX=%{buildroot} utils_install
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
