@@ -44,7 +44,6 @@ Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
-Patch19:	uClibc-0.9.33.2-explicitly-link-against-static-libgcc.patch
 # from origin/0.9.33 branch
 Patch100:	0001-librt-re-add-SIGCANCEL-to-the-list-of-blocked-signal.patch
 Patch101:	0001-nptl-sh-fix-race-condition-in-lll_wait_tid.patch
@@ -148,11 +147,6 @@ Small libc for building embedded applications.
 %patch200 -p1 -b .immediate_vals~
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .weak~
-
-# remove once fixed
-%ifarch %{ix86}
-%patch19 -p1 -b .busted~
-%endif
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
