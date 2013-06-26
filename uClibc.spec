@@ -159,6 +159,10 @@ Small libc for building embedded applications.
 %ifarch %{arm}
 %define arch_cflags -marm -Wa,-mimplicit-it=thumb -D__thumb2__
 %endif
+%ifarch %{ix86}
+# -fvar-tracking-assignments creates sections uClibc's ld.so can't parse
+%define arch_cflags -fno-var-tracking-assignments
+%endif
 %global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
 
 sed %{SOURCE2} \
@@ -185,17 +189,6 @@ yes "" | %make oldconfig VERBOSE=2
 
 %make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
 
-%ifarch %{ix86}
-# busted compiler? compile with -Os and dynamically linked binaries gets busted,
-# while statically linked works, compile with -O0 and you get the opposite..
-# let's do a build for each in order for it all to not break at least :p
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 PREFIX="$PWD/static" install_dev
-cp utils/ldconfig static
-make clean CLEAN_utils
-sed -e 's|.*\(UCLIBC_EXTRA_CFLAGS\)=.*|\1="%{cflags} -O0"|g' -i .config
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
-%endif
-
 %check
 exit 0
 ln -snf %{_includedir}/{asm,asm-generic,linux} test
@@ -208,12 +201,7 @@ rm -f test/inet/tst-ethers*
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 PREFIX=%{buildroot} install install_utils
-
-%ifarch %{ix86}
-cp -af static%{uclibc_root}%{_libdir}/*.a %{buildroot}%{uclibc_root}%{_libdir}
-install -m755 static/ldconfig -D %{buildroot}%{uclibc_root}/sbin/ldconfig
-%endif
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" PREFIX=%{buildroot} install install_utils
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
