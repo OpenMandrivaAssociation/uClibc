@@ -206,10 +206,13 @@ find %{buildroot} -name \*~|xargs rm -f
 %define gcc_path %(realpath %(gcc -print-search-dirs|grep install:|cut -d' '  -f2)/..)
 %if "%{_lib}" == "lib64"
 %define multilib %%{!m32:64}
+%else
+%define multilib %{nil}
+
 %endif
 
 install -d %{buildroot}%{uclibc_root}%{_datadir}
-sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{!m32:64}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
+sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
 
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
