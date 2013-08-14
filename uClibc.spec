@@ -13,13 +13,14 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	29
+Release:	30
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
 Source1:	uclibc.macros
 Source2:	uClibc-0.9.33.2-config
+Source3:	gcc-spec-uclibc
 Patch1:		uClibc-0.9.33.2-lib64.patch
 # http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
 Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
@@ -181,7 +182,8 @@ echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTL
 %build
 yes "" | %make oldconfig VERBOSE=2
 
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils || %make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils || make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
+
 
 %check
 exit 0
@@ -200,23 +202,18 @@ export LD_LIBRARY_PATH=
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
 
-install -d %{buildroot}%{_bindir}
-# using 'rpm --eval' here for multilib purposes..
-#TODO: figure out binutils --sysroot + multilib in binutils package?
-cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
-#!/bin/sh
-export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
-#XXX: this should add rpath, but for some reason it no longer happens and we
-# have to pass the -rpath option to the linker as well
-export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
-export LIBRARY_PATH="\$LD_RUN_PATH"
-%ifarch %{arm}
-# avoid getting troubles. without it, linker is called with -lgcc -lgss_s and then
-# pulls glibc. Typical example are the unwind symbols.
-# It's a really nasty hack :(
-UNWIND_HACK=-static-libgcc
+
+%define gcc_path %(realpath %(gcc -print-search-dirs|grep install:|cut -d' '  -f2)/..)
+%if "%{_lib}" == "lib64"
+%define multilib %%{!m32:64}
 %endif
-exec gcc -muclibc \$UNWIND_HACK -Wl,-rpath="\$LD_RUN_PATH" -Wl,-nostdlib "\$@" 
+
+install -d %{buildroot}%{uclibc_root}%{_datadir}
+sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{!m32:64}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
+
+install -d %{buildroot}%{_bindir}
+cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
+exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@" 
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
@@ -283,6 +280,8 @@ done
 %{uclibc_root}/lib/ld-uClibc.so.0
 #%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
+%dir %{uclibc_root}%{_datadir}
+%{uclibc_root}%{_datadir}/gcc-spec-uclibc
 
 %files -n %{libname}
 %dir %{uclibc_root}
