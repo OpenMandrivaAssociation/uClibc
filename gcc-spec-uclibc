@@ -2,7 +2,7 @@
 %{static|static-libgcc:-lgcc -lgcc_eh}%{!static:%{!static-libgcc:%{!shared-libgcc:-lgcc --as-needed %{!muclibc:-lgcc_s}%{muclibc:-lgcc_eh} --no-as-needed}%{shared-libgcc:%{!muclibc:-lgcc_s}%{muclibc:-lgcc_eh}%{!shared: -lgcc}}}}
 
 *cpp_unique_options:
-%{!Q:-quiet} %{nostdinc*} %{!nostdinc:-isystem @UCLIBC_ROOT@@PREFIX@/include} %{C} %{CC} %{v} %{I*&F*} %{P} %I %{MD:-MD %{!o:%b.d}%{o*:%.d%*}} %{MMD:-MMD %{!o:%b.d}%{o*:%.d%*}} %{M} %{MM} %{MF*} %{MG} %{MP} %{MQ*} %{MT*} %{!E:%{!M:%{!MM:%{!MT:%{!MQ:%{MD|MMD:%{o*:-MQ %*}}}}}}} %{remap} %{g3|ggdb3|gstabs3|gcoff3|gxcoff3|gvms3:-dD} %{!iplugindir*:%{fplugin*:%:find-plugindir()}} %{H} %C %{D*&U*&A*} %{i*} %Z %i %{fmudflap:-D_MUDFLAP -include mf-runtime.h} %{fmudflapth:-D_MUDFLAP -D_MUDFLAPTH -include mf-runtime.h} %{E|M|MM:%W{o*}} -fno-stack-protector
+%{!Q:-quiet} %{nostdinc*} %{muclibc:%{!nostdinc:-isystem @UCLIBC_ROOT@@PREFIX@/include}} %{C} %{CC} %{v} %{I*&F*} %{P} %I %{MD:-MD %{!o:%b.d}%{o*:%.d%*}} %{MMD:-MMD %{!o:%b.d}%{o*:%.d%*}} %{M} %{MM} %{MF*} %{MG} %{MP} %{MQ*} %{MT*} %{!E:%{!M:%{!MM:%{!MT:%{!MQ:%{MD|MMD:%{o*:-MQ %*}}}}}}} %{remap} %{g3|ggdb3|gstabs3|gcoff3|gxcoff3|gvms3:-dD} %{!iplugindir*:%{fplugin*:%:find-plugindir()}} %{H} %C %{D*&U*&A*} %{i*} %Z %i %{fmudflap:-D_MUDFLAP -include mf-runtime.h} %{fmudflapth:-D_MUDFLAP -D_MUDFLAPTH -include mf-runtime.h} %{E|M|MM:%W{o*}} -fno-stack-protector
 
 *startfile:
 %{!shared: %{pg|p|profile:gcrt1.o%s;pie:%{muclibc:@UCLIBC_ROOT@@PREFIX@/lib@MULTILIB@/}Scrt1.o%s;:%{muclibc:@UCLIBC_ROOT@@PREFIX@/lib@MULTILIB@/}crt1.o%s}}    %{muclibc:@UCLIBC_ROOT@@PREFIX@/lib@MULTILIB@/}crti.o%s %{static:crtbeginT.o%s;shared|pie:crtbeginS.o%s;:crtbegin.o%s}
