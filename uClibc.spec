@@ -45,6 +45,8 @@ Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
+# http://git.mirror.nanl.de/?p=openwrt/trunk.git;a=blob_plain;f=toolchain/uClibc/patches-0.9.33.2/970-add___kernel_long_and___kernel_ulong.patch;hb=HEAD
+Patch19:	970-add___kernel_long_and___kernel_ulong.patch
 # from origin/0.9.33 branch
 Patch100:	0001-librt-re-add-SIGCANCEL-to-the-list-of-blocked-signal.patch
 Patch101:	0001-nptl-sh-fix-race-condition-in-lll_wait_tid.patch
@@ -143,6 +145,7 @@ Small libc for building embedded applications.
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
 %patch18 -p1 -b .trim_slashes~
+%patch19 -p1 -b .linux310̃~
 %patch100 -p1 -b .sigcancel~
 %patch101 -p1 -b .race_cond~
 %patch200 -p1 -b .immediate_vals~
