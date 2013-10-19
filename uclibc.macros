@@ -9,11 +9,7 @@
 	--exec-prefix=%{uclibc_root}%{_prefix} \\\
 	--bindir=%{uclibc_root}%{_bindir} \\\
 	--sbindir=%{uclibc_root}%{_sbindir} \\\
-<<<<<<< HEAD
 	--localedir=%{_localedir} \\\
-=======
-    --localedir=%{_localedir} \\\
->>>>>>> 5d6336c386c8e2de33c36b7578dd40803cf1db02
 	CC="%{uclibc_cc}" \\\
 	CXX="%{uclibc_cxx}" \\\
 	CFLAGS="%{uclibc_cflags}" \\\
