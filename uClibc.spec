@@ -1,19 +1,19 @@
 # disable stack protector, build doesn't work with it
-%define	_ssp_cflags	%{nil}
+%define _ssp_cflags %{nil}
 
-%define	uclibc_root	%{_prefix}/uclibc
-%define	uclibc_cc	uclibc-gcc
+%define uclibc_root %{_prefix}/uclibc
+%define uclibc_cc uclibc-gcc
 
-%define	majorish	0.9.33
-%define	libname	%mklibname %{name} %{majorish}
-%define	devname	%mklibname %{name} -d
+%define majorish 0.9.33
+%define libname %mklibname %{name} %{majorish}
+%define devname %mklibname %{name} -d
 
-%bcond_with	bootstrap
+%bcond_with bootstrap
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	30.2
+Release:	31
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -53,7 +53,10 @@ Patch101:	0001-nptl-sh-fix-race-condition-in-lll_wait_tid.patch
 # from origin/HEAD branch
 Patch200:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
+# (tpg) fix build with kernel 3.10
+# http://git.mirror.nanl.de/?p=openwrt.git;a=blob;f=toolchain/uClibc/patches-0.9.33.2/970-add___kernel_long_and___kernel_ulong.patch
 Patch202:	0001-Remove-pragma-weak-for-undeclared-symbol.patch
+Patch203:	970-add___kernel_long_and___kernel_ulong-2.patch
 BuildRequires:	locales-en
 
 %description
@@ -74,7 +77,7 @@ storage, then using glibc may make more sense. unless, for
 example, that 12 terabytes will be network attached storage and
 you plan to burn linux into the system's firmware...
 
-%package -n	%{libname}
+%package -n %{libname}
 Summary:	%{summary}
 Group:		System/Libraries
 Requires:	uClibc >= %{EVRD}
@@ -99,7 +102,7 @@ storage, then using glibc may make more sense. unless, for
 example, that 12 terabytes will be network attached storage and
 you plan to burn linux into the system's firmware...
 
-%package -n	%{devname}
+%package -n %{devname}
 Summary:	Development files & libraries for uClibc
 Group:		Development/C
 Requires:	%{libname} = %{EVRD}
@@ -151,6 +154,7 @@ Small libc for building embedded applications.
 %patch200 -p1 -b .immediate_vals~
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .weak~
+%patch203 -p1 -b .ulong
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
@@ -161,7 +165,7 @@ Small libc for building embedded applications.
 # -fvar-tracking-assignments creates sections uClibc's ld.so can't parse
 %define arch_cflags -fno-var-tracking-assignments
 %endif
-%global	cflags	%{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
+%global	cflags %{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
 
 sed %{SOURCE2} \
 %ifarch armv7l
@@ -195,7 +199,7 @@ ln -snf %{buildroot}%{uclibc_root} install_dir
 # This test relies on /etc/ethers being present to pass, so we'll skip it by
 # removing it
 rm -f test/inet/tst-ethers*
-%make check VERBOSE=2 || /bin/true 
+%make check VERBOSE=2 || /bin/true
 
 %install
 #(proyvind): to prevent possible interference...
@@ -219,6 +223,7 @@ sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GC
 
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
+#!/bin/sh
 exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@" 
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
@@ -259,7 +264,6 @@ for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bi
         %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
 %endif
-
 
 %triggerposttransin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
 %{uclibc_root}/sbin/ldconfig -X
