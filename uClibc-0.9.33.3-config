@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# Version: 0.9.33.2
-# Mon Sep 24 11:40:17 2012
+# Version: 0.9.33.3-git
+# Thu Dec  5 05:52:52 2013
 #
 # TARGET_alpha is not set
 # TARGET_arm is not set
@@ -176,7 +176,6 @@ UCLIBC_HAS_GLIBC_DIGIT_GROUPING=y
 UCLIBC_HAS_SCANF_LENIENT_DIGIT_GROUPING=y
 UCLIBC_HAS_GLIBC_CUSTOM_PRINTF=y
 UCLIBC_PRINTF_SCANF_POSITIONAL_ARGS=9
-UCLIBC_HAS_SCANF_GLIBC_A_FLAG=y
 # UCLIBC_HAS_STDIO_BUFSIZ_NONE is not set
 # UCLIBC_HAS_STDIO_BUFSIZ_256 is not set
 # UCLIBC_HAS_STDIO_BUFSIZ_512 is not set
@@ -242,7 +241,7 @@ UCLIBC_BUILD_NOEXECSTACK=y
 # Development/debugging options
 #
 CROSS_COMPILER_PREFIX=""
-UCLIBC_EXTRA_CFLAGS="-O2 -Wa,--compress-debug-sections -gdwarf-4 -fvar-tracking-assignments -frecord-gcc-switches -Wstrict-aliasing=2 -pipe -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2  -fPIC -std=gnu99  -Wl,--as-needed -Wl,--no-undefined -Wl,-z,relro -Wl,-O1 -Wl,--build-id -Wl,--enable-new-dtags -Wl,--hash-style=gnu -muclibc -Wl,-rpath=/usr/uclibc/lib64 -Wl,-rpath=/usr/uclibc/usr/lib64"
+UCLIBC_EXTRA_CFLAGS=""
 # DODEBUG is not set
 # DOSTRIP is not set
 DOASSERTS=y

@@ -12,22 +12,19 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	%{majorish}.2
-Release:	31
+Version:	%{majorish}.3
+%define	gitdate	20130527
+Release:	0.%{gitdate}.1
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
+Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?gitdate:-%{gitdate}}.tar.xz
 Source1:	uclibc.macros
-Source2:	uClibc-0.9.33.2-config
+Source2:	uClibc-0.9.33.3-config
 Source3:	gcc-spec-uclibc
 Patch1:		uClibc-0.9.33.2-lib64.patch
-# http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
-Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
-# http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
-Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
-Patch4:		uClibc-0.9.33.2-unstable-abi.patch
+Patch4:		uClibc-0.9.33.3-git-unstable-abi.patch
 # (bero): Don't mix asm instructions into C code... Put them where they belong
 Patch5:		uClibc-0.9.33.2-arm-compile.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
@@ -36,26 +33,12 @@ Patch7:		uClibc-arm_hack_unwind.patch
 Patch8:		uClibc-0.9.32-no-gstabs.patch
 # http://lists.busybox.net/pipermail/uclibc/2011-March/045003.html
 Patch9:		uClibc-0.9.33.2-origin.patch
-Patch10:	uClibc-0.9.33-posix_fallocate.patch
-Patch11:	uClibc-0.9.33-dup3.patch
 Patch12:	uClibc-0.9.33.2-add-missing-make-rule-on-locale-header.patch
-Patch13:	uClibc-0.9.33.2-sync-mount.h-with-glibc.patch
-Patch14:	uClibc-0.9.33-add-execvpe.patch
-Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
-# http://git.mirror.nanl.de/?p=openwrt/trunk.git;a=blob_plain;f=toolchain/uClibc/patches-0.9.33.2/970-add___kernel_long_and___kernel_ulong.patch;hb=HEAD
-Patch19:	970-add___kernel_long_and___kernel_ulong.patch
-# from origin/0.9.33 branch
-Patch100:	0001-librt-re-add-SIGCANCEL-to-the-list-of-blocked-signal.patch
-Patch101:	0001-nptl-sh-fix-race-condition-in-lll_wait_tid.patch
 # from origin/HEAD branch
-Patch200:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
-# (tpg) fix build with kernel 3.10
-# http://git.mirror.nanl.de/?p=openwrt.git;a=blob;f=toolchain/uClibc/patches-0.9.33.2/970-add___kernel_long_and___kernel_ulong.patch
-Patch202:	0001-Remove-pragma-weak-for-undeclared-symbol.patch
 BuildRequires:	locales-en
 
 %description
@@ -128,8 +111,6 @@ Small libc for building embedded applications.
 %prep
 %setup -q
 %patch1 -p1 -b .lib64~
-%patch2 -p1 -b .rpmatch~
-%patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
 # breaks build if enabled on x86_64 at least...
 %ifarch %{arm}
@@ -138,21 +119,11 @@ Small libc for building embedded applications.
 %patch7 -p1 -b .unwind~
 %patch8 -p1 -b .gstabs~
 %patch9 -p1 -b .origin~
-%patch10 -p1 -b .fallocate~
-%patch11 -p1 -b .dup3~
 %patch12 -p1 -b .locale~
-%patch13 -p1 -b .mount~
-%patch14 -p1 -b .execvpe~
-%patch15 -p1 -b .cloexec~
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
 %patch18 -p1 -b .trim_slashes~
-%patch19 -p1 -b .linux310̃~
-%patch100 -p1 -b .sigcancel~
-%patch101 -p1 -b .race_cond~
-%patch200 -p1 -b .immediate_vals~
 %patch201 -p1 -b .bits_time~
-%patch202 -p1 -b .weak~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
