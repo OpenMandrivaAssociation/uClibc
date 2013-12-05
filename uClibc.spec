@@ -56,7 +56,6 @@ Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
 # (tpg) fix build with kernel 3.10
 # http://git.mirror.nanl.de/?p=openwrt.git;a=blob;f=toolchain/uClibc/patches-0.9.33.2/970-add___kernel_long_and___kernel_ulong.patch
 Patch202:	0001-Remove-pragma-weak-for-undeclared-symbol.patch
-Patch203:	970-add___kernel_long_and___kernel_ulong-2.patch
 BuildRequires:	locales-en
 
 %description
@@ -154,7 +153,6 @@ Small libc for building embedded applications.
 %patch200 -p1 -b .immediate_vals~
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .weak~
-%patch203 -p1 -b .ulong
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
