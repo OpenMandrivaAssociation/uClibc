@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	30
+Release:	31
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
