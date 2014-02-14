@@ -12,7 +12,7 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	%{majorish}.3
+Version:	%{majorish}.4
 %define	gitdate	20130527
 Release:	0.%{gitdate}.1
 Group:		System/Libraries
