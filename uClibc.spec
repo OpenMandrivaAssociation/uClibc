@@ -15,6 +15,7 @@ Name:		uClibc
 Version:	%{majorish}.4
 %define	gitdate	20130527
 Release:	0.%{gitdate}.1
+License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?gitdate:-%{gitdate}}.tar.xz
