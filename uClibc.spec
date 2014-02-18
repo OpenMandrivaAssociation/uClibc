@@ -40,6 +40,9 @@ Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.pa
 # from origin/HEAD branch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
 
+# from origin/0.9.33
+Patch301.	0001-time.c-make-ll_tzname-static-again.patch
+
 BuildRequires:	locales-en kernel-headers
 
 %description
@@ -124,7 +127,10 @@ Small libc for building embedded applications.
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
 %patch18 -p1 -b .trim_slashes~
+
 %patch201 -p1 -b .bits_time~
+
+%patch301 -p1 -b .time~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 

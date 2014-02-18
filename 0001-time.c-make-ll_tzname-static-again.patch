@@ -1,7 +1,7 @@
 From 7706cd4737ddb89e9b4937936e614d87d1abbd49 Mon Sep 17 00:00:00 2001
 From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
 Date: Tue, 5 Nov 2013 20:57:23 +0100
-Subject: [PATCH] time.c: make ll_tzname* static again
+Subject: [PATCH 1/4] time.c: make ll_tzname* static again
 
 Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
 (cherry picked from commit f6f47324115bed3049543d4473530841151da2e3)
