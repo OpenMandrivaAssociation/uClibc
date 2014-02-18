@@ -249,7 +249,7 @@ for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bi
 %ifnarch %{arm}
 sys/debugreg.h sys/perm.h sys/reg.h \
 %endif
-sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
+sys/io.h sys/procfs.h sys/ucontext.h sys/user.h; do
         %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
 
