@@ -39,6 +39,7 @@ Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
 # from origin/HEAD branch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
+Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
 
 # from origin/0.9.33
 Patch301:	0001-time.c-make-ll_tzname-static-again.patch
@@ -132,6 +133,7 @@ Small libc for building embedded applications.
 %patch18 -p1 -b .trim_slashes~
 
 %patch201 -p1 -b .bits_time~
+%patch202 -p1 -b .bfd_link~
 
 %patch301 -p1 -b .time~
 %patch302 -p1 -b .rename_truncate64~
@@ -147,7 +149,7 @@ Small libc for building embedded applications.
 # -fvar-tracking-assignments creates sections uClibc's ld.so can't parse
 %define arch_cflags -fno-var-tracking-assignments
 %endif
-%global	cflags %{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
+%global	cflags %{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}  %{?arch_cflags}
 
 sed %{SOURCE2} \
 %ifarch armv7l
@@ -171,7 +173,7 @@ echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTL
 %build
 yes "" | %make oldconfig VERBOSE=2
 
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils || %make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils || make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" all utils
+%make VERBOSE=2 CPU_CFLAGS="" all utils || %make VERBOSE=2 CPU_CFLAGS="" all utils || make VERBOSE=2 CPU_CFLAGS="" all utils
 
 
 %check
@@ -186,7 +188,7 @@ rm -f test/inet/tst-ethers*
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" PREFIX=%{buildroot} install install_utils
+%make VERBOSE=2 CPU_CFLAGS="" PREFIX=%{buildroot} install install_utils
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
@@ -210,7 +212,7 @@ exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
-cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/auxv.h
+cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/auxv.h << EOF
 #error no auxv.h in uClibc yet!
 EOF
 
