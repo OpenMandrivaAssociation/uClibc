@@ -210,7 +210,7 @@ exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
-cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/
+cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/auxv.h
 #error no auxv.h in uClibc yet!
 EOF
 
