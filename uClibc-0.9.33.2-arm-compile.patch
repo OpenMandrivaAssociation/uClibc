@@ -1,5 +1,15 @@
---- uClibc-0.9.33.2/libc/string/arm/_memcpy.S.armasm~	2012-05-15 07:20:09.000000000 +0000
-+++ uClibc-0.9.33.2/libc/string/arm/_memcpy.S	2012-12-17 11:49:07.925311500 +0000
+--- uClibc-0.9.33.3/ldso/ldso/arm/aeabi_read_tp.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/ldso/ldso/arm/aeabi_read_tp.S	2014-02-18 19:50:23.130576936 +0100
+@@ -38,6 +38,7 @@
+ #ifdef __UCLIBC_HAS_THREADS_NATIVE__
+ 
+ #include <sysdep.h>
++.arm
+ 
+ /* GCC will emit calls to this routine under -mtp=soft.  Linux has an
+    equivalent helper function (which clobbers fewer registers than
+--- uClibc-0.9.33.3/libc/string/arm/_memcpy.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libc/string/arm/_memcpy.S	2014-02-18 19:50:23.129576936 +0100
 @@ -41,6 +41,9 @@
  #include <endian.h>
  #include <bits/arm_asm.h>
@@ -10,8 +20,8 @@
  #if !defined(THUMB1_ONLY)
  /*
   * This is one fun bit of code ...
---- uClibc-0.9.33.2/libc/string/arm/memset.S.armasm~	2012-05-15 07:20:09.000000000 +0000
-+++ uClibc-0.9.33.2/libc/string/arm/memset.S	2012-12-17 11:49:07.925311500 +0000
+--- uClibc-0.9.33.3/libc/string/arm/memset.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libc/string/arm/memset.S	2014-02-18 19:50:23.130576936 +0100
 @@ -21,6 +21,8 @@
  #include <sys/syscall.h>
  #include <bits/arm_asm.h>
@@ -21,8 +31,8 @@
  .text
  .global memset
  .type memset,%function
---- uClibc-0.9.33.2/libc/sysdeps/linux/arm/bits/arm_asm.h.armasm~	2012-05-15 07:20:09.000000000 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/arm/bits/arm_asm.h	2012-12-17 11:49:52.455311502 +0000
+--- uClibc-0.9.33.3/libc/sysdeps/linux/arm/bits/arm_asm.h.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libc/sysdeps/linux/arm/bits/arm_asm.h	2014-02-18 19:50:23.130576936 +0100
 @@ -3,8 +3,10 @@
  #define _ARM_ASM_H
  
@@ -34,39 +44,28 @@
  #define IT(t, cond) i##t cond
  #else
  /* XXX: This can be removed if/when we require an assembler that supports
---- uClibc-0.9.33.2/libc/sysdeps/linux/arm/clone.S.armasm~	2012-12-17 11:50:03.365311510 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/arm/clone.S	2012-12-17 11:50:26.465311514 +0000
-@@ -112,6 +112,7 @@ __clone:
+--- uClibc-0.9.33.3/libc/sysdeps/linux/arm/clone.S.armasm~	2014-02-18 19:50:23.130576936 +0100
++++ uClibc-0.9.33.3/libc/sysdeps/linux/arm/clone.S	2014-02-18 19:51:44.679573597 +0100
+@@ -111,6 +111,7 @@ __clone:
+ 	ldr	r4, [sp, #12]
  	DO_CALL (clone)
  	movs	a1, a1
- 	blt	__error
 +	IT(t, ne)
  	ldmnefd	sp!, {r4}
+ 	blt	__error
  	IT(t, ne)
- #if defined(__USE_BX__)
---- uClibc-0.9.33.2/libubacktrace/arm/backtrace.c.armasm~	2012-05-15 07:20:09.000000000 +0000
-+++ uClibc-0.9.33.2/libubacktrace/arm/backtrace.c	2012-12-17 11:49:07.925311500 +0000
-@@ -62,7 +62,7 @@ backtrace_helper (struct _Unwind_Context
- {
- 	struct trace_arg *arg = a;
+--- uClibc-0.9.33.3/libc/sysdeps/linux/arm/sysdep.h.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libc/sysdeps/linux/arm/sysdep.h	2014-02-18 19:50:23.130576936 +0100
+@@ -113,6 +113,7 @@
  
--	assert (unwind_getip != NULL);
-+	assert (unwind_getgr != NULL);
- 
- 	/* We are first called with address in the __backtrace function. Skip it. */
- 	if (arg->cnt != -1)
---- uClibc-0.9.33.2/ldso/ldso/arm/aeabi_read_tp.S.bero	2012-12-17 13:11:03.485312087 +0000
-+++ uClibc-0.9.33.2/ldso/ldso/arm/aeabi_read_tp.S	2012-12-17 13:13:47.155312105 +0000
-@@ -38,6 +38,7 @@
- #ifdef __UCLIBC_HAS_THREADS_NATIVE__
- 
- #include <sysdep.h>
-+.arm
- 
- /* GCC will emit calls to this routine under -mtp=soft.  Linux has an
-    equivalent helper function (which clobbers fewer registers than
---- uClibc-0.9.33.2/libc/sysdeps/linux/arm/vfork.S.bero	2012-12-17 13:23:02.795312173 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/arm/vfork.S	2012-12-17 13:23:28.895312172 +0000
+ #undef	PSEUDO
+ #define	PSEUDO(name, syscall_name, args)				\
++  .arm;									\
+   .text;								\
+   ENTRY (name);								\
+     DO_CALL (syscall_name, args);					\
+--- uClibc-0.9.33.3/libc/sysdeps/linux/arm/vfork.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libc/sysdeps/linux/arm/vfork.S	2014-02-18 19:50:23.130576936 +0100
 @@ -12,6 +12,8 @@
  #include <bits/errno.h>
  #include <sys/syscall.h>
@@ -76,38 +75,8 @@
  #ifndef SAVE_PID
  #define SAVE_PID
  #endif
---- uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/close.S.bero	2012-12-17 13:48:40.465312355 +0000
-+++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/close.S	2012-12-17 13:48:45.035312357 +0000
-@@ -1,5 +1,7 @@
- #include <sysdep-cancel.h>
- 
-+.arm
-+
- /*
- extern int __close_nocancel (int) attribute_hidden;
- */
---- uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/open.S.bero	2012-12-17 13:48:14.265312353 +0000
-+++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/open.S	2012-12-17 13:48:36.455312355 +0000
-@@ -1,5 +1,7 @@
- #include <sysdep-cancel.h>
- 
-+.arm
-+
- /*
- extern int __open_nocancel (const char *, int, ...) attribute_hidden;
- */
---- uClibc-0.9.33.2/libc/sysdeps/linux/arm/sysdep.h.bero	2012-12-17 14:00:22.975312439 +0000
-+++ uClibc-0.9.33.2/libc/sysdeps/linux/arm/sysdep.h	2012-12-17 14:00:38.355312441 +0000
-@@ -113,6 +113,7 @@
- 
- #undef	PSEUDO
- #define	PSEUDO(name, syscall_name, args)				\
-+  .arm;									\
-   .text;								\
-   ENTRY (name);								\
-     DO_CALL (syscall_name, args);					\
---- uClibc-0.9.33.2/libpthread/nptl/sysdeps/arm/pthread_spin_lock.S.bero	2012-12-17 16:52:18.635313668 +0000
-+++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/arm/pthread_spin_lock.S	2012-12-17 16:52:28.165313670 +0000
+--- uClibc-0.9.33.3/libpthread/nptl/sysdeps/arm/pthread_spin_lock.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libpthread/nptl/sysdeps/arm/pthread_spin_lock.S	2014-02-18 19:50:23.131576936 +0100
 @@ -20,6 +20,7 @@
  
  	.text
@@ -116,8 +85,8 @@
  
  ENTRY (pthread_spin_lock)
  	mov	r1, #1
---- uClibc-0.9.33.2/libpthread/nptl/sysdeps/arm/pthread_spin_trylock.S.bero	2012-12-17 16:53:03.915313674 +0000
-+++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/arm/pthread_spin_trylock.S	2012-12-17 16:53:09.425313674 +0000
+--- uClibc-0.9.33.3/libpthread/nptl/sysdeps/arm/pthread_spin_trylock.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libpthread/nptl/sysdeps/arm/pthread_spin_trylock.S	2014-02-18 19:50:23.131576936 +0100
 @@ -21,6 +21,7 @@
  
  #include <sysdep.h>
@@ -126,8 +95,8 @@
  	.text
  	.align	4
  
---- uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep-cancel.h.bero	2012-12-17 16:48:16.345313641 +0000
-+++ uClibc-0.9.33.2/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep-cancel.h	2012-12-17 16:48:28.435313641 +0000
+--- uClibc-0.9.33.3/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep-cancel.h.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libpthread/nptl/sysdeps/unix/sysv/linux/arm/sysdep-cancel.h	2014-02-18 19:50:23.131576936 +0100
 @@ -31,6 +31,7 @@
  
  # undef PSEUDO
@@ -136,3 +105,38 @@
    .section ".text";							\
      PSEUDO_PROLOGUE;							\
    .type __##syscall_name##_nocancel,%function;				\
+--- uClibc-0.9.33.3/libpthread/nptl/sysdeps/unix/sysv/linux/close.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libpthread/nptl/sysdeps/unix/sysv/linux/close.S	2014-02-18 19:50:23.130576936 +0100
+@@ -1,5 +1,9 @@
+ #include <sysdep-cancel.h>
+ 
++#ifdef __arm__
++.arm
++#endif
++
+ /*
+ extern int __close_nocancel (int) attribute_hidden;
+ */
+--- uClibc-0.9.33.3/libpthread/nptl/sysdeps/unix/sysv/linux/open.S.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libpthread/nptl/sysdeps/unix/sysv/linux/open.S	2014-02-18 19:50:23.130576936 +0100
+@@ -1,5 +1,9 @@
+ #include <sysdep-cancel.h>
+ 
++#ifdef __arm__
++.arm
++#endif
++
+ /*
+ extern int __open_nocancel (const char *, int, ...) attribute_hidden;
+ */
+--- uClibc-0.9.33.3/libubacktrace/arm/backtrace.c.armasm~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libubacktrace/arm/backtrace.c	2014-02-18 19:50:23.130576936 +0100
+@@ -67,7 +67,7 @@ backtrace_helper (struct _Unwind_Context
+ {
+ 	struct trace_arg *arg = a;
+ 
+-	assert (unwind_getip != NULL);
++	assert (unwind_getgr != NULL);
+ 
+ 	/* We are first called with address in the __backtrace function. Skip it. */
+ 	if (arg->cnt != -1)

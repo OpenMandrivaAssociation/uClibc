@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20130527
-Release:	0.%{gitdate}.5
+Release:	0.%{gitdate}.6
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -123,10 +123,7 @@ Small libc for building embedded applications.
 %setup -q
 %patch1 -p1 -b .lib64~
 %patch4 -p1 -b .abi~
-# breaks build if enabled on x86_64 at least...
-%ifarch %{arm}
 %patch5 -p1 -b .armasm~
-%endif
 %patch7 -p1 -b .unwind~
 %patch8 -p1 -b .gstabs~
 %patch9 -p1 -b .origin~
