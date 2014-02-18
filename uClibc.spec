@@ -42,6 +42,7 @@ Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
 
 # from origin/0.9.33
 Patch301.	0001-time.c-make-ll_tzname-static-again.patch
+Patch302:	0002-libc-rename-TRUNCATE64_HAS_4_ARGS-to-SYSCALL_ALIGN_6.patch
 
 BuildRequires:	locales-en kernel-headers
 
@@ -131,6 +132,7 @@ Small libc for building embedded applications.
 %patch201 -p1 -b .bits_time~
 
 %patch301 -p1 -b .time~
+%patch302 -p1 -b .rename_truncate64~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
