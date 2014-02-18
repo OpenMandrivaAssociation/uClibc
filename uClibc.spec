@@ -41,7 +41,7 @@ Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.pa
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
 
 # from origin/0.9.33
-Patch301.	0001-time.c-make-ll_tzname-static-again.patch
+Patch301:	0001-time.c-make-ll_tzname-static-again.patch
 Patch302:	0002-libc-rename-TRUNCATE64_HAS_4_ARGS-to-SYSCALL_ALIGN_6.patch
 Patch303:	0003-linux-pread-fix-__NR___syscall_pread-define.patch
 Patch304:	0004-linux-pread-pwrite-fix-64bit-handling.patch
