@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20130527
-Release:	0.%{gitdate}.1
+Release:	0.%{gitdate}.5
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -39,7 +39,8 @@ Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
 # from origin/HEAD branch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
-BuildRequires:	locales-en
+
+BuildRequires:	locales-en kernel-headers
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -197,6 +198,10 @@ exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
+cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/
+#error no auxv.h in uClibc yet!
+EOF
+
 install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros
 
 #(peroyvind) rpm will make these symlinks relative
@@ -229,7 +234,7 @@ for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bi
         %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
 %else
-for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/wchar.h bits/wordsize.h fpu_control.h sys/debugreg.h sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
+for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/uClibc_locale_data.h bits/wchar.h bits/wordsize.h fpu_control.h sys/debugreg.h sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
         %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
 %endif
