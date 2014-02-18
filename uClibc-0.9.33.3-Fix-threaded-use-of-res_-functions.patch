@@ -1,27 +1,6 @@
-From 20b69920b299585265eb100d0b67e1097ccb1092 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?S=C3=B8rensen=2C=20Kenneth?=
- <Kenneth.Sorensen@spectralink.com>
-Date: Thu, 11 Apr 2013 06:32:54 +0000
-Subject: [PATCH 1/2] Fix threaded use of res_ functions.
-
-Commit aab4df0fb51660300559f5f29290709db2f7bfee says that the line with
-after res_init() function. Commit
-7f74de5d4d6d10baafab4b37bb3d472f5c5f0e8c moves the res_init()
-function below the line with #undef _res.
-
-This commit moves res_init() back above #undef _res.
-
-Signed-off-by: Kenneth Soerensen <kenneth.sorensen@spectralink.com>
-Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
----
- libc/inet/resolv.c | 110 ++++++++++++++++++++++++++---------------------------
- 1 file changed, 55 insertions(+), 55 deletions(-)
-
-diff --git a/libc/inet/resolv.c b/libc/inet/resolv.c
-index 8546b27..ae0dce5 100644
---- a/libc/inet/resolv.c
-+++ b/libc/inet/resolv.c
-@@ -3530,6 +3530,61 @@ __res_vinit(res_state rp, int preinit)
+--- uClibc-0.9.33.3/libc/inet/resolv.c.res_thread~	2013-05-28 09:31:58.000000000 +0200
++++ uClibc-0.9.33.3/libc/inet/resolv.c	2014-02-18 15:04:51.861196526 +0100
+@@ -3536,6 +3536,61 @@ __res_vinit(res_state rp, int preinit)
  	return 0;
  }
  
@@ -81,9 +60,9 @@ index 8546b27..ae0dce5 100644
 +libc_hidden_def(res_init)
 +
  static void
- __res_iclose(res_state statp)
+ __res_iclose(void)
  {
-@@ -3600,61 +3655,6 @@ struct __res_state *__resp = &_res;
+@@ -3608,61 +3663,6 @@ struct __res_state *__resp = &_res;
  # endif
  #endif /* !__UCLIBC_HAS_THREADS__ */
  
@@ -145,6 +124,3 @@ index 8546b27..ae0dce5 100644
  /*
   * Set up default settings.  If the configuration file exist, the values
   * there will have precedence.  Otherwise, the server address is set to
--- 
-1.8.5.3
-
