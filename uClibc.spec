@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20130527
-Release:	0.%{gitdate}.7
+Release:	0.%{gitdate}.8
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -43,6 +43,7 @@ Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
 Patch203:	uClibc-0.9.33.3-Fix-threaded-use-of-res_-functions.patch
 Patch204:	0002-Make-res_init-thread-safe.patch
+Patch205:	0001-fix-pthread_cancel-lead-to-segmentation-fault-for-x8.patch
 
 # from origin/0.9.33
 Patch301:	0001-time.c-make-ll_tzname-static-again.patch
@@ -136,6 +137,7 @@ Small libc for building embedded applications.
 %patch202 -p1 -b .bfd_link~
 %patch203 -p1 -b .res_thread~
 %patch204 -p1 -b .res_init~
+%patch205 -p1 -b .x86_64_xsave~
 
 %patch301 -p1 -b .time~
 %patch302 -p1 -b .rename_truncate64~
