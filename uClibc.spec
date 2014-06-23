@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20130527
-Release:	0.%{gitdate}.8
+Release:	0.%{gitdate}.9
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -46,6 +46,7 @@ Patch24:	0001-nptl-atfork-Hide-pthread_atfork-in-shared-versions.patch
 Patch25:	0002-wire-setns-syscall.patch
 Patch26:	0001-atexit_old-Do-not-add-it-to-shared-libc.patch
 Patch27:	uClibc-0.9.33.3nptl-arm-Move-aeabi_read_tp-to-uclibc_nonshared.a.patch
+Patch28:	uClibc-0.9.33.3-Add-eventfd_read-and-eventfd_write.patch
 
 # from origin/HEAD branch
 Patch201:	uClibc-0.9.32-bits-time.h-sync-with-glibc-2.19.patch
@@ -150,6 +151,7 @@ Small libc for building embedded applications.
 %patch25 -p1 -b .setns~
 %patch26 -p1 -b .atexit_old~
 %patch27 -p1 -b .aeabi_read_tp~
+%patch28 -p1 -b .eventfd~
 
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .bfd_link~
