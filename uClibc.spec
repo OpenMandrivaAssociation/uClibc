@@ -45,6 +45,7 @@ Patch23:	0003-fcntl.h-Define-F_SETPIPE_SZ-and-F_GETPIPE_SZ.patch
 Patch24:	0001-nptl-atfork-Hide-pthread_atfork-in-shared-versions.patch
 Patch25:	0002-wire-setns-syscall.patch
 Patch26:	0001-atexit_old-Do-not-add-it-to-shared-libc.patch
+Patch27:	uClibc-0.9.33.3nptl-arm-Move-aeabi_read_tp-to-uclibc_nonshared.a.patch
 
 # from origin/HEAD branch
 Patch201:	uClibc-0.9.32-bits-time.h-sync-with-glibc-2.19.patch
@@ -148,6 +149,7 @@ Small libc for building embedded applications.
 %patch24 -p1 -b .pthread_atfork~
 %patch25 -p1 -b .setns~
 %patch26 -p1 -b .atexit_old~
+%patch27 -p1 -b .aeabi_read_tp~
 
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .bfd_link~

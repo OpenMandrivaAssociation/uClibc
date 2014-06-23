@@ -1,0 +1,13 @@
+--- uClibc-0.9.33.3/libc/sysdeps/linux/arm/Makefile.arch.aeabi_read_tp~	2014-06-23 15:45:56.541523662 +0200
++++ uClibc-0.9.33.3/libc/sysdeps/linux/arm/Makefile.arch	2014-06-23 15:48:47.666487919 +0200
+@@ -12,7 +12,9 @@ SSRC-y := \
+ 	bsd-_setjmp.S sigrestorer.S mmap64.S \
+ 	vfork.S clone.S
+ 
+-SSRC-$(UCLIBC_HAS_THREADS_NATIVE) += libc-aeabi_read_tp.S libc-thumb_atomics.S
++SSRC-$(UCLIBC_HAS_THREADS_NATIVE) += libc-thumb_atomics.S
++libc-nonshared-$(UCLIBC_HAS_THREADS_NATIVE) += $(ARCH_OUT)/libc-aeabi_read_tp.os
++libc-static-$(UCLIBC_HAS_THREADS_NATIVE) += $(ARCH_OUT)/libc-aeabi_read_tp.o
+ CSRC-$(UCLIBC_HAS_ADVANCED_REALTIME) += posix_fadvise.c posix_fadvise64.c
+ 
+ # Is our compiler set up for EABI ?
