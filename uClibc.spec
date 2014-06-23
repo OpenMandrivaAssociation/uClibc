@@ -42,6 +42,7 @@ Patch20:	uClibc-0.9.33.3-sync-netinet-ip.h-with-glibc-2.19.patch
 Patch21:	uClibc-0.9.33.3-add-clock_adjtime-syscall.patch
 Patch22:	0001-librt-Use-nodefaultlibs-instead-of-nostdlib.patch
 Patch23:	0003-fcntl.h-Define-F_SETPIPE_SZ-and-F_GETPIPE_SZ.patch
+Patch24:	0001-nptl-atfork-Hide-pthread_atfork-in-shared-versions.patch
 
 # from origin/HEAD branch
 Patch201:	uClibc-0.9.32-bits-time.h-sync-with-glibc-2.19.patch
@@ -142,6 +143,7 @@ Small libc for building embedded applications.
 %patch21 -p1 -b .adjtime~
 %patch22 -p1 -b .nostdlib~
 %patch23 -p1 -b .pipe_sz~
+%patch24 -p1 -b .pthread_atfork~
 
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .bfd_link~
