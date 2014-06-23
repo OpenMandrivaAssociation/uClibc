@@ -1,0 +1,39 @@
+--- uClibc-0.9.33.3/include/sys/timex.h.adjtime~	2014-06-23 15:22:50.684760212 +0200
++++ uClibc-0.9.33.3/include/sys/timex.h	2014-06-23 15:22:50.688093578 +0200
+@@ -21,6 +21,7 @@
+ 
+ #include <features.h>
+ #include <sys/time.h>
++#include <time.h>
+ 
+ /* These definitions from linux/timex.h as of 2.2.0.  */
+ 
+@@ -137,7 +138,9 @@ libc_hidden_proto(adjtimex)
+ extern int ntp_gettime (struct ntptimeval *__ntv) __THROW;
+ extern int ntp_adjtime (struct timex *__tntx) __THROW;
+ #endif
+-
++#if defined __UCLIBC_HAS_REALTIME__
++extern int clock_adjtime (clockid_t __clock_id, struct timex *__ntx) __THROW;
++#endif
+ __END_DECLS
+ 
+ #endif /* sys/timex.h */
+--- uClibc-0.9.33.3/libc/sysdeps/linux/common/clock_adjtime.c.adjtime~	2014-06-23 15:22:50.688093578 +0200
++++ uClibc-0.9.33.3/libc/sysdeps/linux/common/clock_adjtime.c	2014-06-23 15:22:50.688093578 +0200
+@@ -0,0 +1,15 @@
++/*
++ * clock_adjtime() for uClibc
++ *
++ * Copyright (C) 2005 by Peter Kjellerstedt <pkj@axis.com>
++ * Copyright (C) 2000-2006 Erik Andersen <andersen@uclibc.org>
++ *
++ * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
++ */
++
++#include <sys/syscall.h>
++#include <sys/timex.h>
++
++#ifdef __NR_clock_adjtime
++_syscall2(int, clock_adjtime, clockid_t, clock_id, struct timex*, ntx)
++#endif
