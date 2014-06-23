@@ -37,9 +37,10 @@ Patch12:	uClibc-0.9.33.2-add-missing-make-rule-on-locale-header.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
+Patch19:	uClibc-0.9.33.3-sync-timex.h-with-glibc-2.19.patch
 
 # from origin/HEAD branch
-Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
+Patch201:	uClibc-0.9.32-bits-time.h-sync-with-glibc-2.19.patch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
 Patch203:	uClibc-0.9.33.3-Fix-threaded-use-of-res_-functions.patch
 Patch204:	0002-Make-res_init-thread-safe.patch
@@ -132,6 +133,7 @@ Small libc for building embedded applications.
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
 %patch18 -p1 -b .trim_slashes~
+%patch19 -p1 -b .sys_timex~
 
 %patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .bfd_link~
