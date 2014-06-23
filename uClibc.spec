@@ -8,7 +8,7 @@
 %define libname %mklibname %{name} %{majorish}
 %define devname %mklibname %{name} -d
 
-%bcond_with bootstrap
+%bcond_with	bootstrap
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
