@@ -13,8 +13,8 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
-%define	gitdate	20130527
-Release:	0.%{gitdate}.10
+%define	gitdate	20140421
+Release:	0.%{gitdate}.1
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -49,17 +49,10 @@ Patch27:	uClibc-0.9.33.3nptl-arm-Move-aeabi_read_tp-to-uclibc_nonshared.a.patch
 Patch28:	uClibc-0.9.33.3-Add-eventfd_read-and-eventfd_write.patch
 
 # from origin/HEAD branch
-Patch201:	uClibc-0.9.32-bits-time.h-sync-with-glibc-2.19.patch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
 Patch203:	uClibc-0.9.33.3-Fix-threaded-use-of-res_-functions.patch
 Patch204:	0002-Make-res_init-thread-safe.patch
 Patch205:	0001-fix-pthread_cancel-lead-to-segmentation-fault-for-x8.patch
-
-# from origin/0.9.33
-Patch301:	0001-time.c-make-ll_tzname-static-again.patch
-Patch302:	0002-libc-rename-TRUNCATE64_HAS_4_ARGS-to-SYSCALL_ALIGN_6.patch
-Patch303:	0003-linux-pread-fix-__NR___syscall_pread-define.patch
-Patch304:	0004-linux-pread-pwrite-fix-64bit-handling.patch
 
 BuildRequires:	locales-en kernel-headers
 
@@ -153,16 +146,10 @@ Small libc for building embedded applications.
 %patch27 -p1 -b .aeabi_read_tp~
 %patch28 -p1 -b .eventfd~
 
-%patch201 -p1 -b .bits_time~
 %patch202 -p1 -b .bfd_link~
 %patch203 -p1 -b .res_thread~
 %patch204 -p1 -b .res_init~
 %patch205 -p1 -b .x86_64_xsave~
-
-%patch301 -p1 -b .time~
-%patch302 -p1 -b .rename_truncate64~
-%patch303 -p1 -b .pread_fix~
-%patch304 -p1 -b .pread_write_fix~
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
