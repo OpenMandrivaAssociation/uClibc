@@ -48,6 +48,7 @@ Patch26:	0001-atexit_old-Do-not-add-it-to-shared-libc.patch
 Patch27:	uClibc-0.9.33.3nptl-arm-Move-aeabi_read_tp-to-uclibc_nonshared.a.patch
 Patch28:	uClibc-0.9.33.3-Add-eventfd_read-and-eventfd_write.patch
 Patch29:	uClibc-0.9.33.3-add-AT_NO_AUTOMOUNT-AT_EMPTY_PATH-to-fcntl.patch
+Patch30:	uClibc-0.9.33.3-static_assert.patch
 
 # from origin/HEAD branch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
@@ -147,6 +148,7 @@ Small libc for building embedded applications.
 %patch27 -p1 -b .aeabi_read_tp~
 %patch28 -p1 -b .eventfd~
 %patch29 -p1 -b .fcntl_at~
+%patch30 -p1 -b .static_assert~
 
 %patch202 -p1 -b .bfd_link~
 %patch203 -p1 -b .res_thread~
