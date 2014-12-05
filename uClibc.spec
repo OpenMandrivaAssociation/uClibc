@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20140421
-Release:	0.%{gitdate}.3
+Release:	0.%{gitdate}.4
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -55,6 +55,16 @@ Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
 Patch203:	uClibc-0.9.33.3-Fix-threaded-use-of-res_-functions.patch
 Patch204:	0002-Make-res_init-thread-safe.patch
 Patch205:	0001-fix-pthread_cancel-lead-to-segmentation-fault-for-x8.patch
+Patch213:	0055-siginfo_h-add-a-missing-function-member.patch
+Patch214:	0056-MIPS-set-_NSIG-to-128-not-129.-This-matches-glibc.patch
+Patch215:	0056-siginfo_h-__SIGEV_PAD_SIZE-takes-__WORDSIZE-into-account.patch
+Patch216:	0057-bits-waitstatus.h-correctly-interpret-status-0x007f-.patch
+Patch217:	0058-test-tls-fix-build-with-newer-binutils.patch
+Patch218:	0059-test-cater-for-config.patch
+Patch219:	0060-test-Fix-math-c-dependency.patch
+Patch220:	0062-ldso-libdl-Also-include-dl-tls.h-for-for-SHARED.patch
+Patch221:	0062-nptl-remove-duplicate-vfork-in-libpthread.patch
+Patch222:	0065-Do-not-include-__iconv_codesets-into-iconv-utility.patch
 
 BuildRequires:	locales-en kernel-headers
 
@@ -131,33 +141,7 @@ Small libc for building embedded applications.
 
 %prep
 %setup -q
-%patch1 -p1 -b .lib64~
-%patch4 -p1 -b .abi~
-%patch5 -p1 -b .armasm~
-%patch7 -p1 -b .unwind~
-%patch8 -p1 -b .gstabs~
-%patch9 -p1 -b .origin~
-%patch12 -p1 -b .locale~
-%patch16 -p1 -b .argp_c~
-%patch17 -p1 -b .argp_h~
-%patch18 -p1 -b .trim_slashes~
-%patch19 -p1 -b .sys_timex~
-%patch20 -p1 -b .ip~
-%patch21 -p1 -b .adjtime~
-%patch22 -p1 -b .nostdlib~
-%patch23 -p1 -b .pipe_sz~
-%patch24 -p1 -b .pthread_atfork~
-%patch25 -p1 -b .setns~
-%patch26 -p1 -b .atexit_old~
-%patch27 -p1 -b .aeabi_read_tp~
-%patch28 -p1 -b .eventfd~
-%patch29 -p1 -b .fcntl_at~
-%patch30 -p1 -b .static_assert~
-
-%patch202 -p1 -b .bfd_link~
-%patch203 -p1 -b .res_thread~
-%patch204 -p1 -b .res_init~
-%patch205 -p1 -b .x86_64_xsave~
+%apply_patches
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
@@ -267,7 +251,7 @@ for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bi
 sys/debugreg.h sys/perm.h sys/reg.h \
 %endif
 sys/io.h sys/procfs.h sys/ucontext.h sys/user.h; do
-        %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
+	%{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
 
 %triggerposttransin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
