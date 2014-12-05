@@ -12,3 +12,8 @@
 
 *link_libgcc:
 %{muclibc:-L@GCC_PATH@/%(version) -L@UCLIBC_ROOT@/lib@MULTILIB@ -L@UCLIBC_ROOT@@PREFIX@/lib@MULTILIB@ -rpath=@UCLIBC_ROOT@/lib@MULTILIB@ -rpath=@UCLIBC_ROOT@@PREFIX@/lib@MULTILIB@}%{!muclibc:%D}
+
+%rename link old_link
+
+*link:
+%{muclibc:-nostdlib} %(old_link)
