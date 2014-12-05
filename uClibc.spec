@@ -21,7 +21,7 @@ Url:		http://uclibc.org/
 Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?gitdate:-%{gitdate}}.tar.xz
 Source1:	uclibc.macros
 Source2:	uClibc-0.9.33.3-config
-Source3:	gcc-spec-uclibc
+Source3:	uclibc-gcc.specs
 Patch1:		uClibc-0.9.33.2-lib64.patch
 # (proyvind): the ABI isn't stable, so set it to current version
 Patch4:		uClibc-0.9.33.3-git-unstable-abi.patch
@@ -222,12 +222,12 @@ find %{buildroot} -name \*~|xargs rm -f
 %endif
 
 install -d %{buildroot}%{uclibc_root}%{_datadir}
-sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
+sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/uclibc-gcc.specs
 
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
-exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@" 
+exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/uclibc-gcc.specs" "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
@@ -296,7 +296,7 @@ done
 #%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
 %dir %{uclibc_root}%{_datadir}
-%{uclibc_root}%{_datadir}/gcc-spec-uclibc
+%{uclibc_root}%{_datadir}/uclibc-gcc.specs
 
 %files -n %{libname}
 %dir %{uclibc_root}
