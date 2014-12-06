@@ -3,7 +3,7 @@
 %uclibc_cxx	uclibc-g++
 %uclibc_cflags	%{optflags} -fno-stack-protector -Os
 %uclibc_cxxflags %{uclibc_cflags}
-%uclibc_configure %configure2_5x \\\
+%uclibc_configure %configure \\\
 	--libdir=%{uclibc_root}%{_libdir} \\\
 	--prefix=%{uclibc_root}%{_prefix} \\\
 	--exec-prefix=%{uclibc_root}%{_prefix} \\\
