@@ -49,7 +49,7 @@ Patch27:	uClibc-0.9.33.3nptl-arm-Move-aeabi_read_tp-to-uclibc_nonshared.a.patch
 Patch28:	uClibc-0.9.33.3-Add-eventfd_read-and-eventfd_write.patch
 Patch29:	uClibc-0.9.33.3-add-AT_NO_AUTOMOUNT-AT_EMPTY_PATH-to-fcntl.patch
 Patch30:	uClibc-0.9.33.3-static_assert.patch
-Patch31:	uClibc-0.9.33.3-sync-sys-xattr-with-latest-glibc.spec
+Patch31:	uClibc-0.9.33.3-sync-sys-xattr-with-latest-glibc.patch
 
 # from origin/HEAD branch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
