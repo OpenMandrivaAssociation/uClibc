@@ -132,6 +132,8 @@ Requires:	%{dlopen_req mpfr %{uclibc_root}%{_libdir}}
 %if !%{with bootstrap}
 BuildRequires:	gettext-devel >= 0.18.1.1-9
 Requires:	%{dlopen_req intl}
+%if "%(rpm -q --qf '%%{name}' gettext-devel)" == "gettext-devel"
+%define	libintl	%(objdump -p %{uclibc_root}%{_libdir}/libintl.so|grep -e SONAME|sed -e 's#.*\\\(lib.*\\\)\$#\\\1#g')
 %endif
 %endif
 %rename		%{name}-devel
