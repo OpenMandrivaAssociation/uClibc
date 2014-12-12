@@ -1,7 +1,7 @@
 %uclibc_root	/usr/uclibc
 %uclibc_cc	uclibc-gcc
 %uclibc_cxx	uclibc-g++
-%uclibc_cflags	%{optflags} -fno-stack-protector -Os
+%uclibc_cflags	%{optflags} -fno-stack-protector -Oz
 %uclibc_cxxflags %{uclibc_cflags}
 %uclibc_configure %configure \\\
 	--libdir=%{uclibc_root}%{_libdir} \\\

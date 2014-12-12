@@ -158,7 +158,7 @@ Small libc for building embedded applications.
 # -fvar-tracking-assignments creates sections uClibc's ld.so can't parse
 %define arch_cflags -fno-var-tracking-assignments
 %endif
-%global	cflags %{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}  %{?arch_cflags}
+%global	cflags %{optflags} -Oz -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}  %{?arch_cflags}
 
 sed %{SOURCE2} \
 %ifarch armv7l
