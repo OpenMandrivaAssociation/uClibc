@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20140421
-Release:	0.%{gitdate}.4
+Release:	0.%{gitdate}.5
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -94,7 +94,6 @@ Requires:	uClibc >= %{EVRD}
 # in order to not pull in uClibc stuff just for getting a toolchain to build
 # kernel & kernel modules with
 Requires:	uclibc-%{mklibname z 1}
-Provides:	%{mklibname %{name} %{majorish}}
 %rename		%{_lib}uClibc
 
 %description -n	%{libname}
@@ -119,6 +118,13 @@ you plan to burn linux into the system's firmware...
 Summary:	Development files & libraries for uClibc
 Group:		Development/C
 Requires:	%{libname} = %{EVRD}
+BuildRequires:	gmp-devel
+BuildRequires:	libmpc-devel
+BuildRequires:	mpfr-devel
+Requires:	%{dlopen_req z %{uclibc_root}%{_libdir}}
+Requires:	%{dlopen_req gmp %{uclibc_root}%{_libdir}}
+Requires:	%{dlopen_req mpc %{uclibc_root}%{_libdir}
+Requires:	%{dlopen_req mpfr %{uclibc_root}%{_libdir}
 # as the libc.so linker scripts adds a AS_NEEDED dependency on libintl.so to
 # workaround issue with packages that expects to find some of it's functionality
 # in glibc, we need to add a dependency on it
