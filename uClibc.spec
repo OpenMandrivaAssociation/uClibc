@@ -123,8 +123,8 @@ BuildRequires:	libmpc-devel
 BuildRequires:	mpfr-devel
 Requires:	%{dlopen_req z %{uclibc_root}%{_libdir}}
 Requires:	%{dlopen_req gmp %{uclibc_root}%{_libdir}}
-Requires:	%{dlopen_req mpc %{uclibc_root}%{_libdir}
-Requires:	%{dlopen_req mpfr %{uclibc_root}%{_libdir}
+Requires:	%{dlopen_req mpc %{uclibc_root}%{_libdir}}
+Requires:	%{dlopen_req mpfr %{uclibc_root}%{_libdir}}
 # as the libc.so linker scripts adds a AS_NEEDED dependency on libintl.so to
 # workaround issue with packages that expects to find some of it's functionality
 # in glibc, we need to add a dependency on it
