@@ -129,7 +129,7 @@ BuildRequires:	gmp-devel
 BuildRequires:	libmpc-devel
 BuildRequires:	mpfr-devel
 Requires:	%{dlopen_req gmp %{uclibc_root}%{_libdir}}
-Requires:	%{dlopen_req intl}
+Requires:	%{dlopen_req intl %{uclibc_root}%{_libdir}}
 Requires:	%{dlopen_req mpc %{uclibc_root}%{_libdir}}
 Requires:	%{dlopen_req mpfr %{uclibc_root}%{_libdir}}
 Requires:	%{dlopen_req z %{uclibc_root}%{_libdir}}
