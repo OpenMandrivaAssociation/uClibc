@@ -119,20 +119,20 @@ you plan to burn linux into the system's firmware...
 Summary:	Development files & libraries for uClibc
 Group:		Development/C
 Requires:	%{libname} = %{EVRD}
-BuildRequires:	gmp-devel
-BuildRequires:	libmpc-devel
-BuildRequires:	mpfr-devel
-Requires:	%{dlopen_req z %{uclibc_root}%{_libdir}}
-Requires:	%{dlopen_req gmp %{uclibc_root}%{_libdir}}
-Requires:	%{dlopen_req mpc %{uclibc_root}%{_libdir}}
-Requires:	%{dlopen_req mpfr %{uclibc_root}%{_libdir}}
 # as the libc.so linker scripts adds a AS_NEEDED dependency on libintl.so to
 # workaround issue with packages that expects to find some of it's functionality
 # in glibc, we need to add a dependency on it
 # XXX: should dependency generator pick up dependencies from linker scripts?
 %if !%{with bootstrap}
 BuildRequires:	gettext-devel >= 0.18.1.1-9
+BuildRequires:	gmp-devel
+BuildRequires:	libmpc-devel
+BuildRequires:	mpfr-devel
+Requires:	%{dlopen_req gmp %{uclibc_root}%{_libdir}}
 Requires:	%{dlopen_req intl}
+Requires:	%{dlopen_req mpc %{uclibc_root}%{_libdir}}
+Requires:	%{dlopen_req mpfr %{uclibc_root}%{_libdir}}
+Requires:	%{dlopen_req z %{uclibc_root}%{_libdir}}
 %if "%(rpm -q --qf '%%{name}' gettext-devel)" == "gettext-devel"
 %define	libintl	%(objdump -p %{uclibc_root}%{_libdir}/libintl.so|grep -e SONAME|sed -e 's#.*\\\(lib.*\\\)\$#\\\1#g')
 %endif
