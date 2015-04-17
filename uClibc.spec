@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20140421
-Release:	0.%{gitdate}.5
+Release:	0.%{gitdate}.6
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -212,12 +212,12 @@ find %{buildroot} -name \*~|xargs rm -f
 %endif
 
 install -d %{buildroot}%{uclibc_root}%{_datadir}
-sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/uclibc-gcc.specs
+sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
 
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
-exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/uclibc-gcc.specs" "\$@"
+exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
@@ -286,7 +286,7 @@ done
 #%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
 %dir %{uclibc_root}%{_datadir}
-%{uclibc_root}%{_datadir}/uclibc-gcc.specs
+%{uclibc_root}%{_datadir}/gcc-spec-uclibc
 
 %files -n %{libname}
 %dir %{uclibc_root}
