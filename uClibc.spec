@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20140421
-Release:	0.%{gitdate}.7
+Release:	0.%{gitdate}.8
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -50,6 +50,7 @@ Patch28:	uClibc-0.9.33.3-Add-eventfd_read-and-eventfd_write.patch
 Patch29:	uClibc-0.9.33.3-add-AT_NO_AUTOMOUNT-AT_EMPTY_PATH-to-fcntl.patch
 Patch30:	uClibc-0.9.33.3-static_assert.patch
 Patch31:	uClibc-0.9.33.3-sync-sys-xattr-with-latest-glibc.patch
+Patch32:	0001-add-O_PATH-O_TMPFILE.patch
 
 # from origin/HEAD branch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
