@@ -1,0 +1,20 @@
+--- uClibc-0.9.33.3/libc/sysdeps/linux/common/bits/sched.h~	2015-05-27 18:26:54.050721162 +0200
++++ uClibc-0.9.33.3/libc/sysdeps/linux/common/bits/sched.h	2015-05-27 18:43:27.295536059 +0200
+@@ -27,11 +27,13 @@
+ 
+ 
+ /* Scheduling algorithms.  */
+-#define SCHED_OTHER	0
+-#define SCHED_FIFO	1
+-#define SCHED_RR	2
++#define SCHED_OTHER		0
++#define SCHED_FIFO		1
++#define SCHED_RR		2
+ #ifdef __USE_GNU
+-# define SCHED_BATCH	3
++# define SCHED_BATCH		3
++# define SCHED_IDLE		5
++# define SCHED_RESET_ON_FORK	0x40000000
+ #endif
+ 
+ #ifdef __USE_MISC
