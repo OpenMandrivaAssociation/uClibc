@@ -51,6 +51,7 @@ Patch29:	uClibc-0.9.33.3-add-AT_NO_AUTOMOUNT-AT_EMPTY_PATH-to-fcntl.patch
 Patch30:	uClibc-0.9.33.3-static_assert.patch
 Patch31:	uClibc-0.9.33.3-sync-sys-xattr-with-latest-glibc.patch
 Patch32:	0001-add-O_PATH-O_TMPFILE.patch
+Patch33:	uClibc-0.9.33.3-add-SCHED_IDLE-and-SCHED_RESET_ON_FORK.patch
 
 # from origin/HEAD branch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
@@ -223,7 +224,9 @@ EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
 
 cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/auxv.h << EOF
-#error no auxv.h in uClibc yet!
+#warning no auxv.h in uClibc yet!
+#undef _SYS_AUXV_H
+#undef HAVE_SYS_AUXV_H
 EOF
 
 install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros
