@@ -170,7 +170,7 @@ sed %{SOURCE2} \
 %ifarch armv7l
 	-e 's|.*\(UCLIBC_HAS_FPU\).*|# \1 is not set|g' \
 %endif
-%ifarch armv7hl
+%ifarch armv7hl armv7hln armv7hnl
 	-e 's|.*\(UCLIBC_HAS_FPU\).*|\1=y|g' \
 %endif
 	-e 's|^\(TARGET_[a-z].*\).*|# \1 is not set|g' \
