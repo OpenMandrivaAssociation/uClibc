@@ -70,6 +70,9 @@ Patch220:	0062-ldso-libdl-Also-include-dl-tls.h-for-for-SHARED.patch
 Patch221:	0062-nptl-remove-duplicate-vfork-in-libpthread.patch
 Patch222:	0065-Do-not-include-__iconv_codesets-into-iconv-utility.patch
 
+#from origin/ldso-future branch
+Patch300:	uClibc-0.9.33.3-fix-accessing-global-offset-table-on-x86.patch
+
 BuildRequires:	locales-en kernel-headers
 
 %description
