@@ -178,6 +178,9 @@ sed %{SOURCE2} \
 	-e 's|^\(TARGET_[a-z].*\).*|# \1 is not set|g' \
 	-e 's|.*\(TARGET_%{arch}\).*|\1=y|g' \
 	-e 's|.*\(TARGET_ARCH\).*|\1=%{arch}|g' \
+%ifarch %{ix86}
+	-e 's|.*\(TARGET_SUBARCH\).*|\1="%{_target_cpu}"\nCONFIG_586=y\n|g' \
+%endif
 	-e 's|.*\(RUNTIME_PREFIX\).*|\1="%{uclibc_root}"|g' \
 	-e 's|.*\(DEVEL_PREFIX\).*|\1="%{uclibc_root}%{_prefix}"|g' \
 	-e 's|.*\(MULTILIB_DIR\).*|\1="%{_lib}"|g' \
