@@ -54,6 +54,7 @@ Patch32:	0001-add-O_PATH-O_TMPFILE.patch
 Patch33:	uClibc-0.9.33.3-add-SCHED_IDLE-and-SCHED_RESET_ON_FORK.patch
 Patch34:	uClibc-0.9.33.3-socket_h-add-AF_VSOCK.patch
 Patch35:	uClibc-0.9.33.3-sync-brk-system-call-with-glibc.patch
+Patch36:	uClibc-0.9.33.3-add-syncfs-function-for-new-syncfs-syscall.patch
 
 # from origin/HEAD branch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
