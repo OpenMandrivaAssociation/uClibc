@@ -1,0 +1,146 @@
+--- uClibc-0.9.33.3/include/dirent.h.0037~	2015-06-25 04:07:51.444687358 +0200
++++ uClibc-0.9.33.3/include/dirent.h	2015-06-25 04:21:09.769794531 +0200
+@@ -341,6 +341,9 @@ extern __ssize_t getdirentries64 (int __
+ # endif
+ #endif /* Use BSD or misc.  */
+ 
++extern __ssize_t __getdents (int __fd, char *__buf, size_t __nbytes);
++extern __ssize_t __getdents64 (int __fd, char *__buf, size_t __nbytes);
++
+ #ifdef __USE_GNU
+ /* Function to compare two `struct dirent's by name & version.  */
+ # ifndef __USE_FILE_OFFSET64
+--- uClibc-0.9.33.3/libc/sysdeps/linux/common/getdents64.c.0037~	2015-05-20 12:25:24.000000000 +0200
++++ uClibc-0.9.33.3/libc/sysdeps/linux/common/getdents64.c	2015-06-25 03:38:00.846881703 +0200
+@@ -1,105 +1,37 @@
+-/*
+- * Copyright (C) 2000-2006 Erik Andersen <andersen@uclibc.org>
+- *
+- * Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
+- */
+-
+-#include <features.h>
+-#include <assert.h>
+-#include <errno.h>
+-#include <dirent.h>
++/* Copyright (C) 2011-2015 Free Software Foundation, Inc.
++   This file is part of the GNU C Library.
++   Contributed by Chris Metcalf <cmetcalf@tilera.com>, 2011.
++
++   The GNU C Library is free software; you can redistribute it and/or
++   modify it under the terms of the GNU Lesser General Public
++   License as published by the Free Software Foundation; either
++   version 2.1 of the License, or (at your option) any later version.
++
++   The GNU C Library is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   Lesser General Public License for more details.
++
++   You should have received a copy of the GNU Lesser General Public
++   License along with the GNU C Library.  If not, see
++   <http://www.gnu.org/licenses/>.  */
++
+ #include <stddef.h>
+ #include <stdint.h>
+-#include <string.h>
+ #include <unistd.h>
+-#include <sys/param.h>
+ #include <sys/types.h>
+-#include <sys/syscall.h>
+-#include <bits/kernel_types.h>
+-#include <bits/uClibc_alloc.h>
+-
+-#if defined __UCLIBC_HAS_LFS__ && defined __NR_getdents64
++#include <bits/wordsize.h>
+ 
+-# ifndef offsetof
+-#  define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+-# endif
+-
+-struct kernel_dirent64
+-{
+-    uint64_t		d_ino;
+-    int64_t		d_off;
+-    unsigned short	d_reclen;
+-    unsigned char	d_type;
+-    char		d_name[256];
+-};
+-
+-# define __NR___syscall_getdents64 __NR_getdents64
+-static __inline__ _syscall3(int, __syscall_getdents64, int, fd, unsigned char *, dirp, size_t, count)
++#include <sysdep.h>
++#include <sys/syscall.h>
+ 
+-ssize_t __getdents64 (int fd, char *buf, size_t nbytes) attribute_hidden;
+-ssize_t __getdents64 (int fd, char *buf, size_t nbytes)
++/* The kernel struct linux_dirent64 matches the 'struct getdents64' type.  */
++ssize_t
++__getdents64 (int fd, char *buf, size_t nbytes)
+ {
+-    struct dirent64 *dp;
+-    off64_t last_offset = -1;
+-    ssize_t retval;
+-    size_t red_nbytes;
+-    struct kernel_dirent64 *skdp, *kdp;
+-    const size_t size_diff = (offsetof (struct dirent64, d_name)
+-	    - offsetof (struct kernel_dirent64, d_name));
+-
+-    red_nbytes = MIN (nbytes - ((nbytes /
+-		    (offsetof (struct dirent64, d_name) + 14)) * size_diff),
+-	    nbytes - size_diff);
+-
+-    dp = (struct dirent64 *) buf;
+-    skdp = kdp = stack_heap_alloc(red_nbytes);
+-
+-    retval = __syscall_getdents64(fd, (unsigned char *)kdp, red_nbytes);
+-    if (retval == -1) {
+-	stack_heap_free(skdp);
+-	return -1;
+-    }
+-
+-    while ((char *) kdp < (char *) skdp + retval) {
+-	const size_t alignment = __alignof__ (struct dirent64);
+-	/* Since kdp->d_reclen is already aligned for the kernel structure
+-	   this may compute a value that is bigger than necessary.  */
+-	size_t new_reclen = ((kdp->d_reclen + size_diff + alignment - 1)
+-		& ~(alignment - 1));
+-	if ((char *) dp + new_reclen > buf + nbytes) {
+-	    /* Our heuristic failed.  We read too many entries.  Reset
+-	       the stream.  */
+-	    assert (last_offset != -1);
+-	    lseek64(fd, last_offset, SEEK_SET);
+-
+-	    if ((char *) dp == buf) {
+-		/* The buffer the user passed in is too small to hold even
+-		   one entry.  */
+-		stack_heap_free(skdp);
+-		__set_errno (EINVAL);
+-		return -1;
+-	    }
+-	    break;
+-	}
+-
+-	last_offset = kdp->d_off;
+-	dp->d_ino = kdp->d_ino;
+-	dp->d_off = kdp->d_off;
+-	dp->d_reclen = new_reclen;
+-	dp->d_type = kdp->d_type;
+-	memcpy (dp->d_name, kdp->d_name,
+-		kdp->d_reclen - offsetof (struct kernel_dirent64, d_name));
+-	dp = (struct dirent64 *) ((char *) dp + new_reclen);
+-	kdp = (struct kernel_dirent64 *) (((char *) kdp) + kdp->d_reclen);
+-    }
+-    stack_heap_free(skdp);
+-    return (char *) dp - buf;
++  return INLINE_SYSCALL (getdents64, 3, fd, buf, nbytes);
+ }
+ 
+ #if __WORDSIZE == 64
+-/* since getdents doesnt give us d_type but getdents64 does, try and
+- * use getdents64 as much as possible */
+-attribute_hidden strong_alias(__getdents64,__getdents)
+-#endif
+-
++strong_alias (__getdents64, __getdents)
+ #endif
