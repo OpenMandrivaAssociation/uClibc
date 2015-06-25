@@ -1,0 +1,76 @@
+From 85cfbc035370d2a3715ea9de3e590ba83fae52d1 Mon Sep 17 00:00:00 2001
+From: Zhiqiang Zhang <zhangzhiqiang.zhang@huawei.com>
+Date: Wed, 18 Mar 2015 18:44:50 +0800
+Subject: [PATCH] malloc: checked_request2size failure deadlocks
+
+For some rarely cases(almost App bugs), calling malloc with
+a very largre size, checked_request2size check will fail,set
+ENOMEM, and return 0 to caller.
+
+But this will let __malloc_lock futex locked and owned by the
+caller. In multithread circumstance, other thread calling
+malloc/calloc will NOT succeed and get locked.
+
+Signed-off-by: Zhiqiang Zhang <zhangzhiqiang.zhang@huawei.com>
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ libc/stdlib/malloc-standard/malloc.c   | 5 +++--
+ libc/stdlib/malloc-standard/memalign.c | 2 +-
+ libc/stdlib/malloc-standard/realloc.c  | 2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/libc/stdlib/malloc-standard/malloc.c b/libc/stdlib/malloc-standard/malloc.c
+index 2abb5bb..fd33b50 100644
+--- a/libc/stdlib/malloc-standard/malloc.c
++++ b/libc/stdlib/malloc-standard/malloc.c
+@@ -832,8 +832,6 @@ void* malloc(size_t bytes)
+     }
+ #endif
+ 
+-    __MALLOC_LOCK;
+-    av = get_malloc_state();
+     /*
+        Convert request size to internal form by adding (sizeof(size_t)) bytes
+        overhead plus possibly more to obtain necessary alignment and/or
+@@ -845,6 +843,9 @@ void* malloc(size_t bytes)
+ 
+     checked_request2size(bytes, nb);
+ 
++    __MALLOC_LOCK;
++    av = get_malloc_state();
++
+     /*
+        Bypass search if no frees yet
+        */
+diff --git a/libc/stdlib/malloc-standard/memalign.c b/libc/stdlib/malloc-standard/memalign.c
+index 6303c1d..e9ae5a7 100644
+--- a/libc/stdlib/malloc-standard/memalign.c
++++ b/libc/stdlib/malloc-standard/memalign.c
+@@ -52,8 +52,8 @@ void* memalign(size_t alignment, size_t bytes)
+ 	alignment = a;
+     }
+ 
+-    __MALLOC_LOCK;
+     checked_request2size(bytes, nb);
++    __MALLOC_LOCK;
+ 
+     /* Strategy: find a spot within that chunk that meets the alignment
+      * request, and then possibly free the leading and trailing space.  */
+diff --git a/libc/stdlib/malloc-standard/realloc.c b/libc/stdlib/malloc-standard/realloc.c
+index e060b70..e49d111 100644
+--- a/libc/stdlib/malloc-standard/realloc.c
++++ b/libc/stdlib/malloc-standard/realloc.c
+@@ -54,9 +54,9 @@ void* realloc(void* oldmem, size_t bytes)
+ 	return NULL;
+     }
+ 
++    checked_request2size(bytes, nb);
+     __MALLOC_LOCK;
+     av = get_malloc_state();
+-    checked_request2size(bytes, nb);
+ 
+     oldp    = mem2chunk(oldmem);
+     oldsize = chunksize(oldp);
+-- 
+2.4.1
+

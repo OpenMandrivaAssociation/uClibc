@@ -72,6 +72,10 @@ Patch219:	0060-test-Fix-math-c-dependency.patch
 Patch220:	0062-ldso-libdl-Also-include-dl-tls.h-for-for-SHARED.patch
 Patch221:	0062-nptl-remove-duplicate-vfork-in-libpthread.patch
 Patch222:	0065-Do-not-include-__iconv_codesets-into-iconv-utility.patch
+Patch223:	0001-stdlib-avoid-relocation.patch
+Patch224:	0001-libc-Avoid-redundant-setting-of-ENOMEM.patch
+Patch225:	0001-malloc-checked_request2size-failure-deadlocks.patch
+Patch226:	0001-malloc-standard-Add-locking-to-malloc_trim.patch
 
 #from origin/ldso-future branch
 Patch300:	uClibc-0.9.33.3-fix-accessing-global-offset-table-on-x86.patch

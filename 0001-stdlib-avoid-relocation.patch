@@ -1,0 +1,68 @@
+From 2be3edacc1f7279ac57b98e49ba3a189ae40b1fd Mon Sep 17 00:00:00 2001
+From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+Date: Wed, 3 Apr 2013 22:54:00 +0200
+Subject: [PATCH] stdlib: avoid relocation
+
+valloc uses memalign
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ include/malloc.h                       | 1 +
+ libc/stdlib/malloc-simple/alloc.c      | 1 +
+ libc/stdlib/malloc-standard/memalign.c | 2 +-
+ libc/stdlib/malloc/memalign.c          | 3 +++
+ 4 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/include/malloc.h b/include/malloc.h
+index a8f5023..20d799c 100644
+--- a/include/malloc.h
++++ b/include/malloc.h
+@@ -123,6 +123,7 @@ extern void free __MALLOC_P ((__malloc_ptr_t __ptr));
+ 
+ /* Allocate SIZE bytes allocated to ALIGNMENT bytes.  */
+ extern __malloc_ptr_t memalign __MALLOC_P ((size_t __alignment, size_t __size));
++libc_hidden_proto(memalign)
+ 
+ /* Allocate SIZE bytes on a page boundary.  */
+ extern __malloc_ptr_t valloc __MALLOC_P ((size_t __size)) __attribute_malloc__;
+diff --git a/libc/stdlib/malloc-simple/alloc.c b/libc/stdlib/malloc-simple/alloc.c
+index 6028dcb..14f3846 100644
+--- a/libc/stdlib/malloc-simple/alloc.c
++++ b/libc/stdlib/malloc-simple/alloc.c
+@@ -182,4 +182,5 @@ DONE:
+ 
+ 	return result;
+ }
++libc_hidden_def(memalign)
+ #endif
+diff --git a/libc/stdlib/malloc-standard/memalign.c b/libc/stdlib/malloc-standard/memalign.c
+index 7e0674b..6303c1d 100644
+--- a/libc/stdlib/malloc-standard/memalign.c
++++ b/libc/stdlib/malloc-standard/memalign.c
+@@ -127,4 +127,4 @@ void* memalign(size_t alignment, size_t bytes)
+     __MALLOC_UNLOCK;
+ 	return retval;
+ }
+-
++libc_hidden_def(memalign)
+diff --git a/libc/stdlib/malloc/memalign.c b/libc/stdlib/malloc/memalign.c
+index cb4d521..74d5dbd 100644
+--- a/libc/stdlib/malloc/memalign.c
++++ b/libc/stdlib/malloc/memalign.c
+@@ -29,6 +29,8 @@
+ */
+ 
+ void *memalign (size_t alignment, size_t size);
++/* XXX shadow outer malloc.h */
++libc_hidden_proto(memalign)
+ void *
+ memalign (size_t alignment, size_t size)
+ {
+@@ -91,3 +93,4 @@ memalign (size_t alignment, size_t size)
+ 
+   return MALLOC_SETUP (base, end_addr - (unsigned long)base);
+ }
++libc_hidden_def(memalign)
+-- 
+2.4.1
+

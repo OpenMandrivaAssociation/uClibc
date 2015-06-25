@@ -1,0 +1,34 @@
+From be61486447ab447ac24892845af92489fe0b7148 Mon Sep 17 00:00:00 2001
+From: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+Date: Wed, 18 Mar 2015 23:11:39 +0100
+Subject: [PATCH] malloc-standard: Add locking to malloc_trim
+
+Closes bugzilla #4586
+
+Signed-off-by: Bernhard Reutner-Fischer <rep.dot.nop@gmail.com>
+---
+ libc/stdlib/malloc-standard/free.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/libc/stdlib/malloc-standard/free.c b/libc/stdlib/malloc-standard/free.c
+index 39e54d6..8b7a81f 100644
+--- a/libc/stdlib/malloc-standard/free.c
++++ b/libc/stdlib/malloc-standard/free.c
+@@ -104,9 +104,13 @@ static int __malloc_trim(size_t pad, mstate av)
+ */
+ int malloc_trim(size_t pad)
+ {
++  int r;
++  __MALLOC_LOCK;
+   mstate av = get_malloc_state();
+   __malloc_consolidate(av);
+-  return __malloc_trim(pad, av);
++  r = __malloc_trim(pad, av);
++  __MALLOC_UNLOCK;
++  return r;
+ }
+ 
+ /*
+-- 
+2.4.1
+
