@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20150520
-Release:	0.%{gitdate}.2
+Release:	0.%{gitdate}.3
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -132,10 +132,11 @@ Requires:	%{libname} = %{EVRD}
 # in glibc, we need to add a dependency on it
 # XXX: should dependency generator pick up dependencies from linker scripts?
 %if !%{with bootstrap}
-BuildRequires:	gettext-devel >= 0.18.1.1-9
-BuildRequires:	gmp-devel
-BuildRequires:	libmpc-devel
-BuildRequires:	mpfr-devel
+BuildRequires:	uclibc-gettext-devel >= 0.18.1.1-9
+BuildRequires:	uclibc-gmp-devel
+BuildRequires:	uclibc-libmpc-devel
+BuildRequires:	uclibc-mpfr-devel
+BuildRequires:	uclibc-zlib-devel
 Requires:	%{dlopen_req gmp %{uclibc_root}%{_libdir}}
 Requires:	%{dlopen_req intl %{uclibc_root}%{_libdir}}
 Requires:	%{dlopen_req mpc %{uclibc_root}%{_libdir}}
