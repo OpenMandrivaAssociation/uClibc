@@ -14,7 +14,7 @@ Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.3
 %define	gitdate	20150520
-Release:	0.%{gitdate}.5
+Release:	0.%{gitdate}.6
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -56,6 +56,8 @@ Patch34:	uClibc-0.9.33.3-socket_h-add-AF_VSOCK.patch
 Patch35:	uClibc-0.9.33.3-sync-brk-system-call-with-glibc.patch
 Patch36:	uClibc-0.9.33.3-add-syncfs-function-for-new-syncfs-syscall.patch
 Patch37:	uClibc-0.9.33.3-use-inline-syscall-getdents-from-glibc.patch
+# from buildroot
+Patch38:	0071-Fix-libgcc_s_resume-issue.patch
 
 # from origin/HEAD branch
 Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
