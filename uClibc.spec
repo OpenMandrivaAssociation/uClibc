@@ -12,19 +12,21 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	%{majorish}.3
-%define	gitdate	20130527
-Release:	0.%{gitdate}.6
+Version:	%{majorish}.2
+Release:	35
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?gitdate:-%{gitdate}}.tar.xz
+Source0:	http://uclibc.org/downloads/%{name}-%{version}.tar.xz
 Source1:	uclibc.macros
-Source2:	uClibc-0.9.33.3-config
-Source3:	gcc-spec-uclibc
+Source2:	uClibc-0.9.33.2-config
 Patch1:		uClibc-0.9.33.2-lib64.patch
+# http://lists.busybox.net/pipermail/uclibc/2009-September/043035.html
+Patch2:		uClibc-0.9.32-rc3-add-rpmatch-function.patch
+# http://svn.exactcode.de/t2/branches/7.0/package/base/uclibc/scanf-aflag.patch
+Patch3:		uClibc-0.9.31-add-scanf-a-flag.patch
 # (proyvind): the ABI isn't stable, so set it to current version
-Patch4:		uClibc-0.9.33.3-git-unstable-abi.patch
+Patch4:		uClibc-0.9.33.2-unstable-abi.patch
 # (bero): Don't mix asm instructions into C code... Put them where they belong
 Patch5:		uClibc-0.9.33.2-arm-compile.patch
 # from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
@@ -33,24 +35,26 @@ Patch7:		uClibc-arm_hack_unwind.patch
 Patch8:		uClibc-0.9.32-no-gstabs.patch
 # http://lists.busybox.net/pipermail/uclibc/2011-March/045003.html
 Patch9:		uClibc-0.9.33.2-origin.patch
+Patch10:	uClibc-0.9.33-posix_fallocate.patch
+Patch11:	uClibc-0.9.33-dup3.patch
 Patch12:	uClibc-0.9.33.2-add-missing-make-rule-on-locale-header.patch
+Patch13:	uClibc-0.9.33.2-sync-mount.h-with-glibc.patch
+Patch14:	uClibc-0.9.33-add-execvpe.patch
+Patch15:	uClibc-0.9.33-define-MSG_CMSG_CLOEXEC.patch
 Patch16:	uClibc-0.9.33-argp-support.patch
 Patch17:	uClibc-0.9.33-argp-headers.patch
 Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
-
+# from origin/0.9.33 branch
+Patch100:	0001-librt-re-add-SIGCANCEL-to-the-list-of-blocked-signal.patch
+Patch101:	0001-nptl-sh-fix-race-condition-in-lll_wait_tid.patch
 # from origin/HEAD branch
+Patch200:	0001-i386-bits-syscalls.h-allow-immediate-values-as-6th-s.patch
 Patch201:	0001-bits-time.h-sync-with-glibc-2.16.patch
-Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
-Patch203:	uClibc-0.9.33.3-Fix-threaded-use-of-res_-functions.patch
-Patch204:	0002-Make-res_init-thread-safe.patch
-
-# from origin/0.9.33
-Patch301:	0001-time.c-make-ll_tzname-static-again.patch
-Patch302:	0002-libc-rename-TRUNCATE64_HAS_4_ARGS-to-SYSCALL_ALIGN_6.patch
-Patch303:	0003-linux-pread-fix-__NR___syscall_pread-define.patch
-Patch304:	0004-linux-pread-pwrite-fix-64bit-handling.patch
-
-BuildRequires:	locales-en kernel-headers
+# (tpg) fix build with kernel 3.10
+# http://git.mirror.nanl.de/?p=openwrt.git;a=blob;f=toolchain/uClibc/patches-0.9.33.2/970-add___kernel_long_and___kernel_ulong.patch
+Patch202:	0001-Remove-pragma-weak-for-undeclared-symbol.patch
+Patch203:	970-add___kernel_long_and___kernel_ulong-2.patch
+BuildRequires:	locales-en
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
@@ -122,25 +126,31 @@ Small libc for building embedded applications.
 %prep
 %setup -q
 %patch1 -p1 -b .lib64~
+%patch2 -p1 -b .rpmatch~
+%patch3 -p1 -b .a_flag~
 %patch4 -p1 -b .abi~
+# breaks build if enabled on x86_64 at least...
+%ifarch %{arm}
 %patch5 -p1 -b .armasm~
+%endif
 %patch7 -p1 -b .unwind~
 %patch8 -p1 -b .gstabs~
 %patch9 -p1 -b .origin~
+%patch10 -p1 -b .fallocate~
+%patch11 -p1 -b .dup3~
 %patch12 -p1 -b .locale~
+%patch13 -p1 -b .mount~
+%patch14 -p1 -b .execvpe~
+%patch15 -p1 -b .cloexec~
 %patch16 -p1 -b .argp_c~
 %patch17 -p1 -b .argp_h~
 %patch18 -p1 -b .trim_slashes~
-
+%patch100 -p1 -b .sigcancel~
+%patch101 -p1 -b .race_cond~
+%patch200 -p1 -b .immediate_vals~
 %patch201 -p1 -b .bits_time~
-%patch202 -p1 -b .bfd_link~
-%patch203 -p1 -b .res_thread~
-%patch204 -p1 -b .res_init~
-
-%patch301 -p1 -b .time~
-%patch302 -p1 -b .rename_truncate64~
-%patch303 -p1 -b .pread_fix~
-%patch304 -p1 -b .pread_write_fix~
+%patch202 -p1 -b .weak~
+%patch203 -p1 -b .ulong
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
@@ -151,7 +161,7 @@ Small libc for building embedded applications.
 # -fvar-tracking-assignments creates sections uClibc's ld.so can't parse
 %define arch_cflags -fno-var-tracking-assignments
 %endif
-%global	cflags %{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}  %{?arch_cflags}
+%global	cflags %{optflags} -Os -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir} -fuse-ld=bfd %{?arch_cflags}
 
 sed %{SOURCE2} \
 %ifarch armv7l
@@ -175,8 +185,7 @@ echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTL
 %build
 yes "" | %make oldconfig VERBOSE=2
 
-%make VERBOSE=2 CPU_CFLAGS="" all utils || %make VERBOSE=2 CPU_CFLAGS="" all utils || make VERBOSE=2 CPU_CFLAGS="" all utils
-
+%make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}"
 
 %check
 exit 0
@@ -190,33 +199,31 @@ rm -f test/inet/tst-ethers*
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
-%make VERBOSE=2 CPU_CFLAGS="" PREFIX=%{buildroot} install install_utils
+make CC="gcc -fuse-ld=bfd" VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}" PREFIX=%{buildroot} install
+make CC="gcc -fuse-ld=bfd" -C utils VERBOSE=2 CPU_CFLAGS="" UCLIBC_EXTRA_CFLAGS="%{cflags}" PREFIX=%{buildroot} utils_install
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
 
-
-%define gcc_path %(realpath %(gcc -print-search-dirs|grep install:|cut -d' '  -f2)/..)
-%if "%{_lib}" == "lib64"
-%define multilib %%{!m32:64}
-%else
-%define multilib %{nil}
-
-%endif
-
-install -d %{buildroot}%{uclibc_root}%{_datadir}
-sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
-
 install -d %{buildroot}%{_bindir}
+# using 'rpm --eval' here for multilib purposes..
+#TODO: figure out binutils --sysroot + multilib in binutils package?
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 #!/bin/sh
-exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@" 
+export C_INCLUDE_PATH="\$(rpm --eval %%{uclibc_root}%%{_includedir}):\$(gcc -print-search-dirs|grep install:|cut -d\  -f2)include"
+#XXX: this should add rpath, but for some reason it no longer happens and we
+# have to pass the -rpath option to the linker as well
+export LD_RUN_PATH="\$(rpm --eval %%{uclibc_root}/%%{_lib}:%%{uclibc_root}%%{_libdir})"
+export LIBRARY_PATH="\$LD_RUN_PATH"
+%ifarch %{arm}
+# avoid getting troubles. without it, linker is called with -lgcc -lgss_s and then
+# pulls glibc. Typical example are the unwind symbols.
+# It's a really nasty hack :(
+UNWIND_HACK=-static-libgcc
+%endif
+exec gcc -muclibc \$UNWIND_HACK -Wl,-rpath="\$LD_RUN_PATH" -Wl,-nostdlib "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
-
-cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/auxv.h << EOF
-#error no auxv.h in uClibc yet!
-EOF
 
 install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros
 
@@ -245,13 +252,15 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
 %endif
 
-for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/uClibc_locale_data.h bits/wchar.h bits/wordsize.h fpu_control.h \
-%ifnarch %{arm}
-sys/debugreg.h sys/perm.h sys/reg.h \
-%endif
-sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
+%ifarch %arm
+for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/uClibc_locale_data.h bits/wchar.h bits/wordsize.h fpu_control.h sys/io.h sys/procfs.h sys/ucontext.h sys/user.h; do
         %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
+%else
+for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/wchar.h bits/wordsize.h fpu_control.h sys/debugreg.h sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
+        %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
+done
+%endif
 
 %triggerposttransin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
 %{uclibc_root}/sbin/ldconfig -X
@@ -278,8 +287,6 @@ done
 %{uclibc_root}/lib/ld-uClibc.so.0
 #%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
-%dir %{uclibc_root}%{_datadir}
-%{uclibc_root}%{_datadir}/gcc-spec-uclibc
 
 %files -n %{libname}
 %dir %{uclibc_root}
