@@ -13,7 +13,7 @@
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
 Version:	%{majorish}.2
-Release:	35
+Release:	35.1
 License:	LGPLv2.1
 Group:		System/Libraries
 Url:		http://uclibc.org/
@@ -257,7 +257,7 @@ for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bi
         %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
 %else
-for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/wchar.h bits/wordsize.h fpu_control.h sys/debugreg.h sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
+for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/uClibc_locale_data.h bits/wchar.h bits/wordsize.h fpu_control.h sys/debugreg.h sys/io.h sys/perm.h sys/procfs.h sys/reg.h sys/ucontext.h sys/user.h; do
         %{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
 done
 %endif
