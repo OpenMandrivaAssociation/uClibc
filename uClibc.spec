@@ -108,10 +108,6 @@ you plan to burn linux into the system's firmware...
 Summary:	%{summary}
 Group:		System/Libraries
 Requires:	uClibc >= %{EVRD}
-# add this here as dependency on it has been removed from libz-devel package
-# in order to not pull in uClibc stuff just for getting a toolchain to build
-# kernel & kernel modules with
-Requires:	uclibc-%{mklibname z 1}
 %rename		%{_lib}uClibc
 
 %description -n	%{libname}
