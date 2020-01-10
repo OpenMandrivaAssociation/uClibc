@@ -161,7 +161,7 @@ Small libc for building embedded applications.
 
 %prep
 %setup -q
-%apply_patches
+%autopatch -p1
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
