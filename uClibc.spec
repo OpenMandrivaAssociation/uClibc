@@ -6,7 +6,6 @@
 %define uclibc_root %{_prefix}/uclibc
 %define uclibc_cc uclibc-gcc
 
-%define majorish 0.9.33
 %define libname %mklibname %{name} %{majorish}
 %define devname %mklibname %{name} -d
 
@@ -14,13 +13,12 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	%{majorish}.3
-%define	gitdate	20150520
-Release:	0.%{gitdate}.9
+Version:	1.0.42
+Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
-Url:		http://uclibc.org/
-Source0:	http://uclibc.org/downloads/%{name}-%{version}%{?gitdate:-%{gitdate}}.tar.xz
+Url:		http://uclibc-ng.org/
+Source0:	https://downloads.uclibc-ng.org/releases/%{version}/uClibc-ng-%{version}.tar.xz
 Source1:	uclibc.macros
 Source2:	uClibc-0.9.33.3-config
 Source3:	uclibc-gcc.specs
@@ -160,8 +158,7 @@ Provides:	libc-static
 Small libc for building embedded applications.
 
 %prep
-%setup -q
-%autopatch -p1
+%autosetup -p1 -n uClibc-ng-%{version}
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
