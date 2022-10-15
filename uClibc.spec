@@ -22,65 +22,6 @@ Source0:	https://downloads.uclibc-ng.org/releases/%{version}/uClibc-ng-%{version
 Source1:	uclibc.macros
 Source2:	uClibc-0.9.33.3-config
 Source3:	uclibc-gcc.specs
-Patch1:		uClibc-0.9.33.2-lib64.patch
-# (proyvind): the ABI isn't stable, so set it to current version
-Patch4:		uClibc-0.9.33.3-git-unstable-abi.patch
-# (bero): Don't mix asm instructions into C code... Put them where they belong
-Patch5:		uClibc-0.9.33.2-arm-compile.patch
-# from mga (rtp) add hacks for unwind symbol on arm (was picking glibc symbols
-# so was trying to link together glibc&uClibc...)
-Patch7:		uClibc-arm_hack_unwind.patch
-Patch8:		uClibc-0.9.32-no-gstabs.patch
-# http://lists.busybox.net/pipermail/uclibc/2011-March/045003.html
-Patch9:		uClibc-0.9.33.2-origin.patch
-Patch12:	uClibc-0.9.33.2-add-missing-make-rule-on-locale-header.patch
-Patch16:	uClibc-0.9.33-argp-support.patch
-Patch17:	uClibc-0.9.33-argp-headers.patch
-Patch18:	uClibc-0.9.33.2-trim-slashes-for-libubacktrace-path-in-linker-script.patch
-Patch19:	uClibc-0.9.33.3-sync-timex.h-with-glibc-2.19.patch
-Patch20:	uClibc-0.9.33.3-sync-netinet-ip.h-with-glibc-2.19.patch
-Patch21:	uClibc-0.9.33.3-add-clock_adjtime-syscall.patch
-Patch22:	0001-librt-Use-nodefaultlibs-instead-of-nostdlib.patch
-Patch23:	0003-fcntl.h-Define-F_SETPIPE_SZ-and-F_GETPIPE_SZ.patch
-Patch24:	0001-nptl-atfork-Hide-pthread_atfork-in-shared-versions.patch
-Patch25:	0002-wire-setns-syscall.patch
-Patch26:	0001-atexit_old-Do-not-add-it-to-shared-libc.patch
-Patch27:	uClibc-0.9.33.3nptl-arm-Move-aeabi_read_tp-to-uclibc_nonshared.a.patch
-Patch28:	uClibc-0.9.33.3-Add-eventfd_read-and-eventfd_write.patch
-Patch29:	uClibc-0.9.33.3-add-AT_NO_AUTOMOUNT-AT_EMPTY_PATH-to-fcntl.patch
-Patch30:	uClibc-0.9.33.3-static_assert.patch
-Patch31:	uClibc-0.9.33.3-sync-sys-xattr-with-latest-glibc.patch
-Patch32:	0001-add-O_PATH-O_TMPFILE.patch
-Patch33:	uClibc-0.9.33.3-add-SCHED_IDLE-and-SCHED_RESET_ON_FORK.patch
-Patch34:	uClibc-0.9.33.3-socket_h-add-AF_VSOCK.patch
-Patch35:	uClibc-0.9.33.3-sync-brk-system-call-with-glibc.patch
-Patch36:	uClibc-0.9.33.3-add-syncfs-function-for-new-syncfs-syscall.patch
-Patch37:	uClibc-0.9.33.3-use-inline-syscall-getdents-from-glibc.patch
-# from buildroot
-Patch38:	0071-Fix-libgcc_s_resume-issue.patch
-
-# from origin/HEAD branch
-Patch202:	uClibc-0.9.33-buildsys-pass-correct-linker-to-compiler-driver.patch
-Patch203:	uClibc-0.9.33.3-Fix-threaded-use-of-res_-functions.patch
-Patch204:	0002-Make-res_init-thread-safe.patch
-Patch205:	0001-fix-pthread_cancel-lead-to-segmentation-fault-for-x8.patch
-Patch213:	0055-siginfo_h-add-a-missing-function-member.patch
-Patch214:	0056-MIPS-set-_NSIG-to-128-not-129.-This-matches-glibc.patch
-Patch215:	0056-siginfo_h-__SIGEV_PAD_SIZE-takes-__WORDSIZE-into-account.patch
-Patch216:	0057-bits-waitstatus.h-correctly-interpret-status-0x007f-.patch
-Patch217:	0058-test-tls-fix-build-with-newer-binutils.patch
-Patch218:	0059-test-cater-for-config.patch
-Patch219:	0060-test-Fix-math-c-dependency.patch
-Patch220:	0062-ldso-libdl-Also-include-dl-tls.h-for-for-SHARED.patch
-Patch221:	0062-nptl-remove-duplicate-vfork-in-libpthread.patch
-Patch222:	0065-Do-not-include-__iconv_codesets-into-iconv-utility.patch
-Patch223:	0001-stdlib-avoid-relocation.patch
-Patch224:	0001-libc-Avoid-redundant-setting-of-ENOMEM.patch
-Patch225:	0001-malloc-checked_request2size-failure-deadlocks.patch
-Patch226:	0001-malloc-standard-Add-locking-to-malloc_trim.patch
-
-#from origin/ldso-future branch
-Patch300:	uClibc-0.9.33.3-fix-accessing-global-offset-table-on-x86.patch
 
 BuildRequires:	locales-en kernel-headers
 
