@@ -27,6 +27,7 @@
 # TARGET_or1k is not set
 # TARGET_powerpc is not set
 # TARGET_riscv64 is not set
+# TARGET_riscv32 is not set
 # TARGET_sh is not set
 # TARGET_sparc is not set
 # TARGET_sparc64 is not set
