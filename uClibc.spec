@@ -9,7 +9,7 @@
 %define libname %mklibname %{name} %{majorish}
 %define devname %mklibname %{name} -d
 
-%global optflags %{optflags} -ffreestanding
+%global optflags %{optflags} -ffreestanding -fcommon
 
 %bcond_without	bootstrap
 
@@ -139,11 +139,10 @@ echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTL
 %build
 make oldconfig VERBOSE=2 </dev/null
 
-%make VERBOSE=2 CPU_CFLAGS="" all utils || %make VERBOSE=2 CPU_CFLAGS="" all utils || make VERBOSE=2 CPU_CFLAGS="" all utils
+%make_build VERBOSE=2 CPU_CFLAGS="" all utils
 
 
 %check
-exit 0
 ln -snf %{_includedir}/{asm,asm-generic,linux} test
 ln -snf %{buildroot}%{uclibc_root} install_dir
 # This test relies on /etc/ethers being present to pass, so we'll skip it by
