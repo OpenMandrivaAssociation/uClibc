@@ -9,6 +9,8 @@
 %define libname %mklibname %{name} %{majorish}
 %define devname %mklibname %{name} -d
 
+%global optflags %{optflags} -ffreestanding
+
 %bcond_without	bootstrap
 
 Summary:	A C library optimized for size useful for embedded applications
