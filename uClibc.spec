@@ -13,7 +13,7 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	1.0.44
+Version:	1.0.45
 Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
@@ -135,7 +135,7 @@ echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTL
 %endif
 
 %build
-yes "" | %make oldconfig VERBOSE=2
+make oldconfig VERBOSE=2 </dev/null
 
 %make VERBOSE=2 CPU_CFLAGS="" all utils || %make VERBOSE=2 CPU_CFLAGS="" all utils || make VERBOSE=2 CPU_CFLAGS="" all utils
 
