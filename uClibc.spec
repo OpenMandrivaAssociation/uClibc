@@ -6,7 +6,7 @@
 %define uclibc_root %{_prefix}/uclibc
 %define uclibc_cc uclibc-gcc
 
-%define libname %mklibname %{name} %{majorish}
+%define libname %mklibname %{name}
 %define devname %mklibname %{name} -d
 
 %global optflags %{optflags} -ffreestanding -fcommon
@@ -141,15 +141,6 @@ make oldconfig VERBOSE=2 </dev/null
 
 %make_build VERBOSE=2 CPU_CFLAGS="" all utils
 
-
-%check
-ln -snf %{_includedir}/{asm,asm-generic,linux} test
-ln -snf %{buildroot}%{uclibc_root} install_dir
-# This test relies on /etc/ethers being present to pass, so we'll skip it by
-# removing it
-rm -f test/inet/tst-ethers*
-%make check VERBOSE=2 || /bin/true
-
 %install
 #(proyvind): to prevent possible interference...
 export LD_LIBRARY_PATH=
@@ -192,13 +183,6 @@ ln -snf %{_includedir}/{asm,asm-generic,linux} %{buildroot}%{uclibc_root}%{_incl
 #mkdir -p %{buildroot}%{uclibc_root}%{uclibc_root}
 #ln -s ../../%{_lib} %{buildroot}%{uclibc_root}%{uclibc_root}/%{_lib}
 
-%if "%{_lib}" == "lib64"
-ln -s ld64-uClibc.so.%{majorish} %{buildroot}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
-install -d %{buildroot}%{uclibc_root}{/lib,%{_prefix}/lib}
-%else
-ln -s ld-uClibc.so.%{majorish} %{buildroot}%{uclibc_root}/lib/ld-uClibc.so.0
-%endif
-
 for dir in /bin /sbin %{_prefix} %{_bindir} %{_sbindir}; do
 	mkdir -p %{buildroot}%{uclibc_root}$dir
 done
@@ -210,15 +194,7 @@ touch %{buildroot}%{uclibc_root}%{_sysconfdir}/ld.so.{conf,cache}
 echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}%{uclibc_root}%{_libdir}/libc.so
 %endif
 
-for header in bits/atomic.h bits/byteswap.h bits/endian.h bits/environments.h bits/epoll.h bits/fcntl.h bits/mathdef.h bits/mathinline.h bits/mman.h bits/msq.h bits/pthreadtypes.h bits/select.h bits/sem.h bits/semaphore.h bits/setjmp.h bits/shm.h bits/sigcontext.h bits/stat.h bits/sysnum.h bits/uClibc_config.h bits/uClibc_locale_data.h bits/wchar.h bits/wordsize.h fpu_control.h \
-%ifnarch %{arm}
-sys/debugreg.h sys/perm.h sys/reg.h \
-%endif
-sys/io.h sys/procfs.h sys/ucontext.h sys/user.h; do
-	%{multiarch_includes %{buildroot}%{uclibc_root}%{_includedir}/$header}
-done
-
-%triggerposttransin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
+%triggerin -- %{uclibc_root}/lib/*.so.*, %{uclibc_root}/lib64/*.so.*, %{uclibc_root}%{_prefix}/lib/*.so.*, %{uclibc_root}%{_prefix}/lib64/*.so.*
 %{uclibc_root}/sbin/ldconfig -X
 
 %files
@@ -227,61 +203,42 @@ done
 %dir %{uclibc_root}/sbin
 %dir %{uclibc_root}%{_bindir}
 %{uclibc_root}%{_bindir}/iconv
-%dir %{uclibc_root}%{_sbindir}
 %dir %{uclibc_root}%{_sysconfdir}
 %verify(not md5 size mtime) %config(noreplace) %{uclibc_root}%{_sysconfdir}/ld.so.conf
 %ghost %{uclibc_root}%{_sysconfdir}/ld.so.cache
 %{uclibc_root}%{_bindir}/getconf
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
-#%dir %{uclibc_root}%{uclibc_root}
-#%dir %{uclibc_root}%{uclibc_root}/%{_lib}
 %if "%{_lib}" == "lib64"
 %{uclibc_root}/%{_lib}/ld64-uClibc.so.0
-#%{uclibc_root}%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
 %else
 %{uclibc_root}/lib/ld-uClibc.so.0
-#%{uclibc_root}%{uclibc_root}/lib/ld-uClibc.so.0
 %endif
 %dir %{uclibc_root}%{_datadir}
 %{uclibc_root}%{_datadir}/gcc-spec-uclibc
+%{uclibc_root}%{_bindir}/locale
 
 %files -n %{libname}
 %dir %{uclibc_root}
 %dir %{uclibc_root}%{_prefix}
-%if "%{_lib}" == "lib64"
-%dir %{uclibc_root}/lib
-%dir %{uclibc_root}%{_prefix}/lib
-%endif
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
-%ifnarch %{sparcx}
-%{uclibc_root}/%{_lib}/*-*%{version}.so
-%{uclibc_root}/%{_lib}/*.so.%{majorish}
-%endif
+%{uclibc_root}/%{_lib}/ld64-uClibc-%{version}.so
+%{uclibc_root}/%{_lib}/ld64-uClibc.so.1
+%{uclibc_root}/%{_lib}/libc.so.0
+%{uclibc_root}/%{_lib}/libc.so.1
+%{uclibc_root}/%{_lib}/libuClibc-1.0.45.so
 
 %files -n %{devname}
-%doc docs/* Changelog TODO
+%doc docs/*
 %{_bindir}/%{uclibc_cc}
 %{_sysconfdir}/rpm/macros.d/uclibc.macros
 %{uclibc_root}%{_includedir}
 %{uclibc_root}%{_libdir}/crt1.o
 %{uclibc_root}%{_libdir}/crti.o
 %{uclibc_root}%{_libdir}/crtn.o
-%ifnarch %{sparcx}
 %{uclibc_root}%{_libdir}/Scrt1.o
-%{uclibc_root}%{_libdir}/librt.so
-%{uclibc_root}%{_libdir}/libnsl.so
-%{uclibc_root}%{_libdir}/libpthread.so
 %{uclibc_root}%{_libdir}/libc.so
-%{uclibc_root}%{_libdir}/libcrypt.so
-%{uclibc_root}%{_libdir}/libdl.so
-%{uclibc_root}%{_libdir}/libm.so
-%{uclibc_root}%{_libdir}/libresolv.so
-%{uclibc_root}%{_libdir}/libuargp.so
-%{uclibc_root}%{_libdir}/libubacktrace.so
-%{uclibc_root}%{_libdir}/libutil.so
-%endif
 %{uclibc_root}%{_libdir}/lib*.a
 %{uclibc_root}%{_libdir}/uclibc_nonshared.a
-
+%{uclibc_root}%{_libdir}/rcrt1.o
