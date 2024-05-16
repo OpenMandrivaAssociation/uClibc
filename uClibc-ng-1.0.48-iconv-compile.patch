@@ -1,0 +1,24 @@
+diff -up uClibc-ng-1.0.48/libc/misc/wchar/wchar.c.omv~ uClibc-ng-1.0.48/libc/misc/wchar/wchar.c
+--- uClibc-ng-1.0.48/libc/misc/wchar/wchar.c.omv~	2024-05-16 15:00:50.576628918 +0200
++++ uClibc-ng-1.0.48/libc/misc/wchar/wchar.c	2024-05-16 15:01:10.300847720 +0200
+@@ -1298,7 +1298,7 @@ iconv_t weak_function iconv_open(const c
+ 
+ int weak_function iconv_close(iconv_t cd)
+ {
+-	free(cd);
++	free((void*)cd);
+ 
+ 	return 0;
+ }
+diff -up uClibc-ng-1.0.48/libiconv/iconv.c.omv~ uClibc-ng-1.0.48/libiconv/iconv.c
+--- uClibc-ng-1.0.48/libiconv/iconv.c.omv~	2024-05-16 15:11:58.396023160 +0200
++++ uClibc-ng-1.0.48/libiconv/iconv.c	2024-05-16 15:12:12.536179519 +0200
+@@ -142,7 +142,7 @@ struct stateful_cd {
+ 
+ static iconv_t combine_to_from(size_t t, size_t f)
+ {
+-	return (void *)(f<<16 | t<<1 | 1);
++	return (iconv_t)(f<<16 | t<<1 | 1);
+ }
+ 
+ static size_t extract_from(iconv_t cd)

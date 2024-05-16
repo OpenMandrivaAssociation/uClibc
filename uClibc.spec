@@ -15,7 +15,7 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	1.0.45
+Version:	1.0.48
 Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
@@ -24,6 +24,7 @@ Source0:	https://downloads.uclibc-ng.org/releases/%{version}/uClibc-ng-%{version
 Source1:	uclibc.macros
 Source2:	uClibc-0.9.33.3-config
 Source3:	uclibc-gcc.specs
+Patch0:		uClibc-ng-1.0.48-iconv-compile.patch
 
 BuildRequires:	locales-en kernel-headers
 
@@ -227,7 +228,7 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 %{uclibc_root}/%{_lib}/ld64-uClibc.so.1
 %{uclibc_root}/%{_lib}/libc.so.0
 %{uclibc_root}/%{_lib}/libc.so.1
-%{uclibc_root}/%{_lib}/libuClibc-1.0.45.so
+%{uclibc_root}/%{_lib}/libuClibc-%{version}.so
 
 %files -n %{devname}
 %doc docs/*
