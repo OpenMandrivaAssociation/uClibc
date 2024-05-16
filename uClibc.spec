@@ -148,7 +148,7 @@ find %{buildroot} -name \*~|xargs rm -f
 %endif
 
 install -d %{buildroot}%{uclibc_root}%{_datadir}
-sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{SOURCE3} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
+sed -e 's#@UCLIBC_ROOT@#%{uclibc_root}#g' -e 's#@PREFIX@#%{_prefix}#g' -e 's#@GCC_PATH@#%{gcc_path}#g' -e 's#@MULTILIB@#%{multilib}#g' %{S:2} > %{buildroot}%{uclibc_root}%{_datadir}/gcc-spec-uclibc
 
 install -d %{buildroot}%{_bindir}
 cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
