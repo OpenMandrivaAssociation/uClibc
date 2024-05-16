@@ -22,8 +22,10 @@ Group:		System/Libraries
 Url:		http://uclibc-ng.org/
 Source0:	https://downloads.uclibc-ng.org/releases/%{version}/uClibc-ng-%{version}.tar.xz
 Source1:	uclibc.macros
-Source2:	uClibc-0.9.33.3-config
-Source3:	uclibc-gcc.specs
+Source2:	uclibc-gcc.specs
+Source10:	uClibc-common.config
+Source11:	uClibc-x86_64.config
+Source12:	uClibc-aarch64.config
 Patch0:		uClibc-ng-1.0.48-iconv-compile.patch
 
 BuildRequires:	locales-en kernel-headers
@@ -115,30 +117,16 @@ Small libc for building embedded applications.
 %endif
 %global	cflags %{optflags} -Oz -std=gnu99 %{ldflags} -muclibc -Wl,-rpath=%{uclibc_root}/%{_lib} -Wl,-rpath=%{uclibc_root}%{_libdir}  %{?arch_cflags}
 
-sed %{SOURCE2} \
-%ifarch armv7l
-	-e 's|.*\(UCLIBC_HAS_FPU\).*|# \1 is not set|g' \
-%endif
-%ifarch armv7hl armv7hln armv7hnl
-	-e 's|.*\(UCLIBC_HAS_FPU\).*|\1=y|g' \
-%endif
-	-e 's|^\(TARGET_[a-z].*\).*|# \1 is not set|g' \
-	-e 's|.*\(TARGET_%{arch}\).*|\1=y|g' \
-	-e 's|.*\(TARGET_ARCH\).*|\1=%{arch}|g' \
-%ifarch %{ix86}
-	-e 's|.*\(TARGET_SUBARCH\).*|\1="%{_target_cpu}"\nCONFIG_586=y\n|g' \
-%endif
-	-e 's|.*\(RUNTIME_PREFIX\).*|\1="%{uclibc_root}"|g' \
-	-e 's|.*\(DEVEL_PREFIX\).*|\1="%{uclibc_root}%{_prefix}"|g' \
-	-e 's|.*\(MULTILIB_DIR\).*|\1="%{_lib}"|g' \
-	-e 's|.*\(UCLIBC_EXTRA_CFLAGS\)=.*|\1="%{cflags}"|g' \
-	> .config
-%ifarch %{arm}
-echo -e "CONFIG_ARM_EABI=y\n# ARCH_WANTS_BIG_ENDIAN is not set\nARCH_WANTS_LITTLE_ENDIAN=y\nCOMPILE_IN_THUMB_MODE=y\nUSE_BX=y\nCONFIG_FPU=y\n" >> .config
-%endif
+cat %{S:10} %{_sourcedir}/uClibc-%{_arch}.config >.config
+cat >>.config <<EOF
+RUNTIME_PREFIX="%{uclibc_root}"
+DEVEL_PREFIX="%{uclibc_root}%{_prefix}"
+MULTILIB_DIR="%{_lib}"
+UCLIBC_EXTRA_CFLAGS="%{cflags}"
+EOF
+make oldconfig VERBOSE=2
 
 %build
-make oldconfig VERBOSE=2 </dev/null
 
 %make_build VERBOSE=2 CPU_CFLAGS="" all utils
 
