@@ -27,6 +27,7 @@ Source10:	uClibc-common.config
 Source11:	uClibc-x86_64.config
 Source12:	uClibc-aarch64.config
 Patch0:		uClibc-ng-1.0.48-iconv-compile.patch
+Patch1:		ldconfig-_dl_auxvt.patch
 
 BuildRequires:	locales-en kernel-headers
 
@@ -127,13 +128,10 @@ EOF
 make oldconfig VERBOSE=2
 
 %build
-
-%make_build VERBOSE=2 CPU_CFLAGS="" all utils
+%make_build all utils
 
 %install
-#(proyvind): to prevent possible interference...
-export LD_LIBRARY_PATH=
-%make VERBOSE=2 CPU_CFLAGS="" PREFIX=%{buildroot} install install_utils
+%make_install install_utils
 
 # be sure that we don't package any backup files
 find %{buildroot} -name \*~|xargs rm -f
@@ -156,12 +154,6 @@ cat > %{buildroot}%{_bindir}/%{uclibc_cc} << EOF
 exec gcc -muclibc -specs="%{uclibc_root}%{_datadir}/gcc-spec-uclibc" "\$@"
 EOF
 chmod +x %{buildroot}%{_bindir}/%{uclibc_cc}
-
-cat > %{buildroot}%{uclibc_root}%{_includedir}/sys/auxv.h << EOF
-#warning no auxv.h in uClibc yet!
-#undef _SYS_AUXV_H
-#undef HAVE_SYS_AUXV_H
-EOF
 
 install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/rpm/macros.d/uclibc.macros
 
@@ -198,11 +190,7 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 %{uclibc_root}%{_bindir}/getconf
 %{uclibc_root}%{_bindir}/ldd
 %{uclibc_root}/sbin/ldconfig
-%if "%{_lib}" == "lib64"
-%{uclibc_root}/%{_lib}/ld64-uClibc.so.0
-%else
-%{uclibc_root}/lib/ld-uClibc.so.0
-%endif
+%{uclibc_root}/%{_lib}/ld*-uClibc.so.0
 %dir %{uclibc_root}%{_datadir}
 %{uclibc_root}%{_datadir}/gcc-spec-uclibc
 %{uclibc_root}%{_bindir}/locale
@@ -212,8 +200,8 @@ echo 'GROUP ( AS_NEEDED ( %{uclibc_root}/%{_lib}/%{libintl} ) )' >> %{buildroot}
 %dir %{uclibc_root}%{_prefix}
 %dir %{uclibc_root}/%{_lib}
 %dir %{uclibc_root}%{_libdir}
-%{uclibc_root}/%{_lib}/ld64-uClibc-%{version}.so
-%{uclibc_root}/%{_lib}/ld64-uClibc.so.1
+%{uclibc_root}/%{_lib}/ld*-uClibc-%{version}.so
+%{uclibc_root}/%{_lib}/ld*-uClibc.so.1
 %{uclibc_root}/%{_lib}/libc.so.0
 %{uclibc_root}/%{_lib}/libc.so.1
 %{uclibc_root}/%{_lib}/libuClibc-%{version}.so

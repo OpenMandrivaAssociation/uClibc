@@ -1,0 +1,12 @@
+diff -up uClibc-ng-1.0.48/utils/ldconfig.c.omv~ uClibc-ng-1.0.48/utils/ldconfig.c
+--- uClibc-ng-1.0.48/utils/ldconfig.c.omv~	2024-05-16 20:20:38.970035897 +0100
++++ uClibc-ng-1.0.48/utils/ldconfig.c	2024-05-16 20:21:38.700225983 +0100
+@@ -30,6 +30,8 @@
+ 
+ #define BUFFER_SIZE 4096
+ 
++ElfW(auxv_t) _dl_auxvt[40];
++
+ struct exec {
+ 	unsigned long a_info;	/* Use macros N_MAGIC, etc for access */
+ 	unsigned a_text;	/* length of text, in bytes */
