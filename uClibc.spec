@@ -19,7 +19,7 @@ Version:	1.0.48
 Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
-Url:		http://uclibc-ng.org/
+Url:		https://uclibc-ng.org/
 Source0:	https://downloads.uclibc-ng.org/releases/%{version}/uClibc-ng-%{version}.tar.xz
 Source1:	uclibc.macros
 Source2:	uclibc-gcc.specs
