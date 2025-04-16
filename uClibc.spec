@@ -15,7 +15,7 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	1.0.51
+Version:	1.0.52
 Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
@@ -99,6 +99,7 @@ Requires:	%{dlopen_req z %{uclibc_root}/lib}
 %rename		%{_lib}uClibc-static-devel
 %rename		%{name}-static-devel
 Provides:	libc-static
+Provides:	cross-%(echo %{_target_platform}|sed -e 's,-gnu,-uclibc,')-libc = %{EVRD}
 
 %description -n	%{devname}
 Small libc for building embedded applications.
