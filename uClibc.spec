@@ -28,6 +28,7 @@ Source11:	uClibc-x86_64.config
 Source12:	uClibc-aarch64.config
 Patch1:		ldconfig-_dl_auxvt.patch
 
+BuildRequires:	make
 BuildRequires:	locales-en kernel-headers
 
 %description
