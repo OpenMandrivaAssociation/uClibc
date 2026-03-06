@@ -1,0 +1,68 @@
+diff -up uClibc-ng-1.0.57/libc/sysdeps/linux/common/rename.c.omv~ uClibc-ng-1.0.57/libc/sysdeps/linux/common/rename.c
+--- uClibc-ng-1.0.57/libc/sysdeps/linux/common/rename.c.omv~	2026-03-06 23:27:25.263629907 +0100
++++ uClibc-ng-1.0.57/libc/sysdeps/linux/common/rename.c	2026-03-06 23:27:40.156213561 +0100
+@@ -18,10 +18,10 @@ int rename(const char *oldpath, const ch
+ }
+ #elif defined __NR_renameat2
+ # include <fcntl.h>
++_syscall5(int, renameat2, int, olddfd, const char *, oldpath,
++	  int, newdfd, const char *, newpath, int, flags)
+ int rename(const char *oldpath, const char *newpath)
+ {
+-	_syscall5(int, renameat2, int, olddfd, const char *, oldpath,
+-		  int, newdfd, const char *, newpath, int, flags)
+ 	return renameat2(AT_FDCWD, oldpath, AT_FDCWD, newpath, 0);
+ }
+ #else
+diff -up uClibc-ng-1.0.57/libpthread/nptl/allocatestack.c.omv~ uClibc-ng-1.0.57/libpthread/nptl/allocatestack.c
+--- uClibc-ng-1.0.57/libpthread/nptl/allocatestack.c.omv~	2026-03-06 23:37:35.574518616 +0100
++++ uClibc-ng-1.0.57/libpthread/nptl/allocatestack.c	2026-03-06 23:39:16.705081399 +0100
+@@ -780,6 +780,21 @@ __make_stacks_executable (void **stack_e
+   return err;
+ }
+ 
++static inline int check_list (list_t *l, list_t *elem)
++{
++  if (l->next->prev != l)
++    {
++      assert (l->next->prev == elem);
++
++      elem->next = l->next;
++      elem->prev = l;
++      l->next = elem;
++
++      return 1;
++    }
++
++  return 0;
++}
+ 
+ /* In case of a fork() call the memory allocation in the child will be
+    the same but only one thread is running.  All stacks except that of
+@@ -803,24 +818,8 @@ __reclaim_stacks (void)
+ 	{
+ 	  /* We always add at the beginning of the list.  So in this
+ 	     case we only need to check the beginning of these lists.  */
+-	  int check_list (list_t *l)
+-	  {
+-	    if (l->next->prev != l)
+-	      {
+-		assert (l->next->prev == elem);
+-
+-		elem->next = l->next;
+-		elem->prev = l;
+-		l->next = elem;
+-
+-		return 1;
+-	      }
+-
+-	    return 0;
+-	  }
+-
+-	  if (check_list (&stack_used) == 0)
+-	    (void) check_list (&stack_cache);
++	  if (check_list (&stack_used, elem) == 0)
++	    (void) check_list (&stack_cache, elem);
+ 	}
+       else
+ 	{

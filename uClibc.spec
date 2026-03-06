@@ -15,7 +15,7 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	1.0.52
+Version:	1.0.57
 Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
@@ -26,6 +26,7 @@ Source2:	uclibc-gcc.specs
 Source10:	uClibc-common.config
 Source11:	uClibc-x86_64.config
 Source12:	uClibc-aarch64.config
+Patch0:		uClibc-ng-1.0.57-clang.patch
 Patch1:		ldconfig-_dl_auxvt.patch
 
 BuildRequires:	make
