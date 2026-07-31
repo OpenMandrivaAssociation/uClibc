@@ -15,7 +15,7 @@
 
 Summary:	A C library optimized for size useful for embedded applications
 Name:		uClibc
-Version:	1.0.57
+Version:	1.0.58
 Release:	1
 License:	LGPLv2.1
 Group:		System/Libraries
@@ -26,7 +26,7 @@ Source2:	uclibc-gcc.specs
 Source10:	uClibc-common.config
 Source11:	uClibc-x86_64.config
 Source12:	uClibc-aarch64.config
-Patch0:		uClibc-ng-1.0.57-clang.patch
+# dropped (no longer applies): Patch0:		uClibc-ng-1.0.58-clang.patch
 Patch1:		ldconfig-_dl_auxvt.patch
 
 BuildRequires:	make
@@ -107,7 +107,7 @@ Provides:	cross-%(echo %{_target_platform}|sed -e 's,-gnu,-uclibc,')-libc = %{EV
 Small libc for building embedded applications.
 
 %prep
-%autosetup -p1 -n uClibc-ng-%{version}
+%autosetup -p1 -n uClibc-ng-1.0.58
 
 %define arch %(echo %{_arch} | sed -e 's/ppc/powerpc/' -e 's!mips*!mips!')
 
