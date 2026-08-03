@@ -32,6 +32,7 @@ Patch1:		ldconfig-_dl_auxvt.patch
 BuildRequires:	make
 BuildRequires:	locales-en kernel-headers
 BuildRequires:  atomic-devel
+BuildRequires:  %{_lib}atomic-static-devel
 
 %description
 uClibc (pronounced yew-see-lib-see) is a c library for developing
